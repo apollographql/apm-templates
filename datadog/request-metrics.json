@@ -1,0 +1,446 @@
+{
+  "title": "RR-65 incoming http request metrics",
+  "description": "[[suggested_dashboards]]",
+  "widgets": [
+    {
+      "id": 8946993247458357,
+      "definition": {
+        "title": "Request Traffic & Health",
+        "background_color": "vivid_blue",
+        "show_title": true,
+        "type": "group",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 1224218507683046,
+            "definition": {
+              "title": "Http Requests by Status Code",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "count:http.server.request.duration{$service} by {http.response.status_code}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "semantic",
+                    "order_by": "tags",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "bars"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear"
+              },
+              "custom_links": []
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 5,
+              "height": 4
+            }
+          },
+          {
+            "id": 8270570877484838,
+            "definition": {
+              "type": "note",
+              "content": "This chart shows the volume of requests Apollo Router is handling over time, broken down by status code.\n\n### It helps answer:\n\n-   Are most requests successful (`2xx`)?\n-   Are clients misbehaving (`4xx`)?\n-   Is the router or a subgraph failing (`5xx`)?\n\n### This metric helps spot trends and issues:\n\n-   A **spike in `5xx`** likely means something is broken downstream.\n-   A **rise in `4xx`** may signal client bugs or deprecated queries.\n-   **Changes in total volume** may reflect traffic surges or outages.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 4,
+              "width": 5,
+              "height": 1
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 12,
+        "height": 6
+      }
+    },
+    {
+      "id": 3840969086320674,
+      "definition": {
+        "title": " Request Characteristics",
+        "background_color": "vivid_blue",
+        "show_title": true,
+        "type": "group",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 989162476390562,
+            "definition": {
+              "title": "Request Body Size (p99 / Max)",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "name": "query1",
+                      "data_source": "metrics",
+                      "query": "max:http.server.request.body.size{$service}"
+                    },
+                    {
+                      "name": "query2",
+                      "data_source": "metrics",
+                      "query": "p99:http.server.request.body.size{$service}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "alias": "max",
+                      "formula": "query1"
+                    },
+                    {
+                      "alias": "p99",
+                      "formula": "query2"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "values",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 5,
+              "height": 3
+            }
+          },
+          {
+            "id": 4330685396345820,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the size of incoming HTTP request bodies over time, highlighting the largest payloads seen.\n\n### Why it matters\n\n-   **`p99`** shows typical large requests.\n-   **`max`** shows the absolute biggest — helpful for spotting outliers.\n\nLarge payloads can:\n\n-   Increase parsing/validation time.\n-   Cause memory pressure or latency spikes.\n-   Indicate misuse (e.g., file uploads, bloated mutations).\n\n### What to look for\n\n-   A stable `p99` suggests consistent request sizes.\n-   Occasional `max` spikes are okay — frequent ones may require investigation.\n-   Rising trends could signal a client change or growing inefficiency.\n\n### Caveats\n\n-   Doesn’t reflect query complexity — a small body can still be expensive.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 3,
+              "width": 5,
+              "height": 1
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 6,
+        "width": 12,
+        "height": 5
+      }
+    },
+    {
+      "id": 2547398354023131,
+      "definition": {
+        "title": "Request Performance & Latency",
+        "background_color": "vivid_blue",
+        "show_title": true,
+        "type": "group",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 4277427124049773,
+            "definition": {
+              "type": "note",
+              "content": "**Apollo Router Latency Overview**\n\nApollo Router routes incoming GraphQL requests to subgraphs, handles query planning, and coordinates responses. Latency here reflects the total time the Router takes to process and respond to an HTTP request, including:\n\n-   Parsing and validating the GraphQL query\n-   Calling subgraphs\n-   Merging responses, handling errors, and formatting results\n-   Any middleware or plugin logic you've added\n\nIf your latency rises, the cause could be the Router itself, one or more subgraphs, or custom logic you've installed.",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": false,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 3
+            }
+          },
+          {
+            "id": 5087230123283744,
+            "definition": {
+              "title": "Request Duration Distribution",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "time": {},
+              "type": "distribution",
+              "xaxis": {
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto",
+                "include_zero": true
+              },
+              "yaxis": {
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto",
+                "include_zero": true
+              },
+              "requests": [
+                {
+                  "request_type": "histogram",
+                  "query": {
+                    "data_source": "metrics",
+                    "name": "query1",
+                    "aggregator": "avg",
+                    "query": "avg:http.server.request.duration{service:$service.value}"
+                  }
+                }
+              ]
+            },
+            "layout": {
+              "x": 0,
+              "y": 3,
+              "width": 6,
+              "height": 3
+            }
+          },
+          {
+            "id": 73435209590847,
+            "definition": {
+              "title": "Request Duration Percentiles",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "vertical",
+              "legend_columns": [
+                "value"
+              ],
+              "time": {},
+              "type": "timeseries",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "alias": "p99",
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "formula": "query2"
+                    },
+                    {
+                      "alias": "p95",
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "formula": "query3"
+                    },
+                    {
+                      "alias": "p90",
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "formula": "query4"
+                    },
+                    {
+                      "alias": "Min",
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "formula": "query5"
+                    },
+                    {
+                      "alias": "Max",
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "formula": "query6"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "name": "query2",
+                      "data_source": "metrics",
+                      "query": "p99:http.server.request.duration{$service}"
+                    },
+                    {
+                      "name": "query3",
+                      "data_source": "metrics",
+                      "query": "p95:http.server.request.duration{$service}"
+                    },
+                    {
+                      "name": "query4",
+                      "data_source": "metrics",
+                      "query": "p90:http.server.request.duration{$service}"
+                    },
+                    {
+                      "name": "query5",
+                      "data_source": "metrics",
+                      "query": "min:http.server.request.duration{$service}"
+                    },
+                    {
+                      "name": "query6",
+                      "data_source": "metrics",
+                      "query": "max:http.server.request.duration{$service}"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "dog_classic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "sqrt"
+              }
+            },
+            "layout": {
+              "x": 6,
+              "y": 3,
+              "width": 6,
+              "height": 3
+            }
+          },
+          {
+            "id": 6514407841345693,
+            "definition": {
+              "type": "note",
+              "content": "This chart shows the distribution of HTTP request durations handled by the Apollo Router.\n\n-   **Metric:** [http.server.request.duration](https://opentelemetry.io/docs/specs/semconv/http/http-metrics/#metric-httpserverrequestduration) — measures how long each HTTP request takes.\n\n### What this tells you\n\n-   The shape of the distribution helps identify performance patterns:\n\n    -   A narrow peak near the left means most requests are fast.\n    -   A long tail to the right indicates some requests are slower and may require investigation.\n\n-   Sudden shifts or broadening of the distribution can indicate latency issues or backend slowdowns.\n\n### Why it matters\n\nMonitoring request duration distribution helps you:\n\n-   Understand if performance issues impact many requests or just a few outliers.\n-   Make informed decisions on where to focus optimization or debugging efforts.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 6,
+              "width": 6,
+              "height": 1
+            }
+          },
+          {
+            "id": 2631813081995925,
+            "definition": {
+              "type": "note",
+              "content": "### What the percentiles tell you\n\n-   **p90 / p95:** These percentiles represent the upper range of _typical_ request latencies.\\\n    If these values rise, it generally means a significant portion of requests are experiencing slower responses. Possible causes include:\n\n    -   A subgraph is responding more slowly than usual (e.g., due to load or inefficiency)\n    -   The Router’s query planning step is taking longer (especially with complex or highly federated queries)\n    -   Overall increased load causing processing delays\n\n-   **p99:** This is a _tail latency_ metric that reflects the slowest 1% of requests.\\\n    Spikes here often indicate rare but impactful delays, such as:\n\n    -   Intermittent subgraph performance issues or temporary timeouts\n    -   Specific heavy or complex queries that take much longer to plan or execute\n    -   Unusual overhead in middleware or Router internals affecting some requests\n\n-   **Max:** The absolute slowest observed request during the timeframe.\\\n    Isolated high max values are usually less concerning (e.g., caused by a single unusual request). However, frequent or sustained high max latencies may point to:\n\n    -   Clients issuing extremely large or repeated queries causing resource exhaustion or retries\n    -   Transient infrastructure problems (network issues, DNS delays, resource contention)\n\n-   **Min:** Represents the fastest possible response from the Router. A surprisingly high minimum usually reflects baseline overhead within the Router itself — such as:\n\n    -   Middleware or plugin execution time\n    \n    -   Query parsing, validation, or planning\n    \n    -   Routing logic that's inherently non-negligible\n\n### Caveats\n\n-   Low request volumes can skew percentiles; a single slow request distorts p99 or max.\n-   Slow subgraphs inflate Router latency here—this chart shows total request time, not internal breakdowns.\n-   Latency spikes without load increase may point to network hiccups, subgraph cold starts, or cloud platform noise outside the Router’s control.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 6,
+              "width": 6,
+              "height": 1
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 12,
+        "height": 8,
+        "is_column_break": true
+      }
+    }
+  ],
+  "template_variables": [
+    {
+      "name": "service",
+      "prefix": "service",
+      "available_values": [],
+      "default": "*"
+    }
+  ],
+  "layout_type": "ordered",
+  "notify_list": [],
+  "reflow_type": "fixed",
+  "tags": [
+    "team:runtime-readiness"
+  ]
+}
