@@ -5,7 +5,7 @@
     {
       "id": 8946993247458357,
       "definition": {
-        "title": "Request Traffic & Health",
+        "title": "Request Traffic & Health (Router)",
         "background_color": "vivid_blue",
         "show_title": true,
         "type": "group",
@@ -14,7 +14,7 @@
           {
             "id": 1224218507683046,
             "definition": {
-              "title": "Http Requests by Status Code",
+              "title": "Volume of Requests Per Status Code",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
@@ -44,7 +44,7 @@
                   ],
                   "style": {
                     "palette": "semantic",
-                    "order_by": "tags",
+                    "order_by": "values",
                     "line_type": "solid",
                     "line_width": "normal"
                   },
@@ -60,7 +60,56 @@
             "layout": {
               "x": 0,
               "y": 0,
-              "width": 5,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 5890661141790956,
+            "definition": {
+              "title": "Throughput Rate",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "count:http.server.request.duration{$service}.as_count()"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "alias": "Requests per second",
+                      "formula": "throughput(query1)"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "values",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            },
+            "layout": {
+              "x": 6,
+              "y": 0,
+              "width": 6,
               "height": 4
             }
           },
@@ -81,7 +130,28 @@
             "layout": {
               "x": 0,
               "y": 4,
-              "width": 5,
+              "width": 6,
+              "height": 1
+            }
+          },
+          {
+            "id": 7248723417019108,
+            "definition": {
+              "type": "note",
+              "content": "This chart shows **requests per second (RPS)** hitting the Apollo Router — your clearest view into how much work the Router is doing right now.\n\n**What to look for:**\n\n-   Sudden drops? Could be outages upstream or config errors.\n-   Steady growth? Make sure latency and errors aren’t creeping up.\n-   Flatline during known busy periods? You might be hitting limits.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 4,
+              "width": 6,
               "height": 1
             }
           }
@@ -97,7 +167,7 @@
     {
       "id": 3840969086320674,
       "definition": {
-        "title": " Request Characteristics",
+        "title": " Request Characteristics (Router)",
         "background_color": "vivid_blue",
         "show_title": true,
         "type": "group",
@@ -137,11 +207,23 @@
                   "formulas": [
                     {
                       "alias": "max",
-                      "formula": "query1"
+                      "formula": "query1",
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "byte_in_decimal_bytes_family"
+                        }
+                      }
                     },
                     {
                       "alias": "p99",
-                      "formula": "query2"
+                      "formula": "query2",
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "byte_in_decimal_bytes_family"
+                        }
+                      }
                     }
                   ],
                   "style": {
@@ -152,7 +234,11 @@
                   },
                   "display_type": "line"
                 }
-              ]
+              ],
+              "yaxis": {
+                "include_zero": false,
+                "scale": "log"
+              }
             },
             "layout": {
               "x": 0,
@@ -194,7 +280,7 @@
     {
       "id": 2547398354023131,
       "definition": {
-        "title": "Request Performance & Latency",
+        "title": "Request Performance & Latency (Router)",
         "background_color": "vivid_blue",
         "show_title": true,
         "type": "group",
@@ -228,7 +314,6 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "time": {},
               "type": "distribution",
               "xaxis": {
                 "scale": "linear",
@@ -268,11 +353,10 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "vertical",
+              "legend_layout": "auto",
               "legend_columns": [
                 "value"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -365,8 +449,8 @@
                 }
               ],
               "yaxis": {
-                "include_zero": true,
-                "scale": "sqrt"
+                "include_zero": false,
+                "scale": "log"
               }
             },
             "layout": {
