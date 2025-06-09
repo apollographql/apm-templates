@@ -1,1 +1,786 @@
-{"title":"RR-68: Query Planning Metrics","description":"[[suggested_dashboards]]","widgets":[{"id":1355103844861603,"definition":{"title":"Query Planning","background_color":"white","show_title":true,"type":"group","layout_type":"ordered","widgets":[{"id":942676723835878,"definition":{"type":"note","content":"The query planner is the heart of the runtime's computational efforts. This is where a request to your supergraph is translated into an invocation plan for the appropriate underlying subgraphs. Its performance will be very closely correlated to your supergraph schema and request characteristics, and will be the other determining factor in your response times beyond the subgraphs themselves.","background_color":"white","font_size":"14","text_align":"left","vertical_align":"top","show_tick":false,"tick_pos":"50%","tick_edge":"left","has_padding":true},"layout":{"x":0,"y":0,"width":12,"height":1}},{"id":7301212877184944,"definition":{"title":"Compute Job Avg Duration and Wait Time","title_size":"16","title_align":"left","show_legend":true,"legend_layout":"auto","legend_columns":["avg","min","max","value","sum"],"time":{},"type":"timeseries","requests":[{"response_format":"timeseries","queries":[{"data_source":"metrics","name":"query1","query":"avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value} by {job.type}"},{"data_source":"metrics","name":"query2","query":"avg:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value} by {job.type}"}],"formulas":[{"number_format":{"unit":{"type":"canonical_unit","unit_name":"second"}},"alias":"avg wait duration","formula":"query1"},{"number_format":{"unit":{"type":"canonical_unit","unit_name":"second"}},"alias":"avg execution duration","formula":"query2"}],"style":{"palette":"dog_classic","order_by":"tags","line_type":"solid","line_width":"normal"},"display_type":"line"},{"formulas":[{"alias":"schema reload","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"}],"response_format":"timeseries","style":{"palette":"gray","line_type":"solid","line_width":"normal"},"display_type":"overlay"},{"formulas":[{"alias":"cache warmup","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"}],"response_format":"timeseries","style":{"palette":"gray","line_type":"solid","line_width":"normal"},"display_type":"overlay"}],"yaxis":{"include_zero":true,"scale":"sqrt"}},"layout":{"x":0,"y":1,"width":5,"height":4}},{"id":7160674322835385,"definition":{"title":"Compute Job Max Duration","title_size":"16","title_align":"left","show_legend":true,"legend_layout":"auto","legend_columns":["avg","min","max","value","sum"],"type":"timeseries","requests":[{"response_format":"timeseries","queries":[{"data_source":"metrics","name":"query2","query":"max:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value} by {job.type}"}],"formulas":[{"number_format":{"unit":{"type":"canonical_unit","unit_name":"second"}},"alias":"max execution duration","formula":"query2"}],"style":{"palette":"dog_classic","order_by":"tags","line_type":"solid","line_width":"normal"},"display_type":"line"}],"yaxis":{"include_zero":true,"scale":"sqrt"}},"layout":{"x":5,"y":1,"width":4,"height":4}},{"id":2646683015980845,"definition":{"title":"Queued Compute Jobs","title_size":"16","title_align":"left","show_legend":false,"legend_layout":"auto","legend_columns":["avg","min","max","value","sum"],"type":"timeseries","requests":[{"response_format":"timeseries","queries":[{"data_source":"metrics","name":"query1","query":"max:apollo.router.compute_jobs.queued{service:$service.value,env:$env.value,version:$version.value}"}],"formulas":[{"formula":"query1"}],"style":{"palette":"dog_classic","order_by":"values","line_type":"solid","line_width":"normal"},"display_type":"line"},{"formulas":[{"alias":"schema reload","formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"}],"response_format":"timeseries","style":{"palette":"gray","line_type":"solid","line_width":"normal"},"display_type":"overlay"}]},"layout":{"x":9,"y":1,"width":3,"height":4}},{"id":8368245832144593,"definition":{"type":"note","content":"This graph contains both the average wait and execution duration for all compute job types. This can help you detect if schema changes, config changes, or deployments have impacted the runtime's ability to plan queries for your supergraph.","background_color":"yellow","font_size":"14","text_align":"left","vertical_align":"center","show_tick":true,"tick_pos":"50%","tick_edge":"top","has_padding":true},"layout":{"x":0,"y":5,"width":5,"height":2}},{"id":5645196489907085,"definition":{"type":"note","content":"The maximum duration of your compute jobs can highlight if outlier queries are causing abnormal behavior in the query planner.","background_color":"yellow","font_size":"14","text_align":"left","vertical_align":"center","show_tick":true,"tick_pos":"50%","tick_edge":"top","has_padding":true},"layout":{"x":5,"y":5,"width":4,"height":2}},{"id":5923077997925504,"definition":{"type":"note","content":"A non-zero queue of compute jobs means that your runtime is backing up on work and will exhibit increased latency on any requests that are waiting on those jobs. This is generally an indication of insufficient CPU resources being allocated to handle your traffic.","background_color":"yellow","font_size":"14","text_align":"left","vertical_align":"center","show_tick":true,"tick_pos":"50%","tick_edge":"top","has_padding":true},"layout":{"x":9,"y":5,"width":3,"height":2}}]},"layout":{"x":0,"y":0,"width":12,"height":8}}],"template_variables":[{"name":"service","prefix":"service","available_values":[],"default":"router"},{"name":"env","prefix":"env","available_values":[],"default":"prod"},{"name":"version","prefix":"version","available_values":[],"default":"*"}],"layout_type":"ordered","notify_list":[],"reflow_type":"fixed","tags":["team:runtime-readiness"]}
+{
+  "title": "RR-68: Query Planning Metrics",
+  "description": "[[suggested_dashboards]]",
+  "widgets": [
+    {
+      "id": 1355103844861603,
+      "definition": {
+        "title": "Query Planning",
+        "background_color": "white",
+        "show_title": true,
+        "type": "group",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 942676723835878,
+            "definition": {
+              "type": "note",
+              "content": "The query planner is the heart of the runtime's computational efforts. This is where a request to your supergraph is translated into an invocation plan for the appropriate underlying subgraphs. Its performance will be very closely correlated to your supergraph schema and request characteristics, and will be the other determining factor in your response times beyond the subgraphs themselves.",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": false,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 1
+            }
+          },
+          {
+            "id": 7301212877184944,
+            "definition": {
+              "title": "Query Planning Duration and Wait Time",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "time": {},
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query2",
+                      "query": "avg:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value ,job.type:query_planning}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "max:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query3",
+                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query4",
+                      "query": "max:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "alias": "avg execution duration",
+                      "formula": "query2"
+                    },
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "alias": "max execution duration",
+                      "formula": "query1"
+                    },
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "alias": "avg wait time",
+                      "formula": "query3"
+                    },
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "alias": "max wait time",
+                      "formula": "query4"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "tags",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "schema reload",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "cache warmup",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "sqrt"
+              }
+            },
+            "layout": {
+              "x": 0,
+              "y": 1,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 3371314754887370,
+            "definition": {
+              "title": "Query Planning Evaluated Plans",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "time": {},
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query2",
+                      "query": "avg:apollo.router.query_planning.plan.evaluated_plans{*}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "max:apollo.router.query_planning.plan.evaluated_plans{*}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "number_format": {},
+                      "alias": "average evaluated",
+                      "formula": "query2"
+                    },
+                    {
+                      "number_format": {},
+                      "alias": "max evaluated",
+                      "formula": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "tags",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "schema reload",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "cache warmup",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "sqrt"
+              }
+            },
+            "layout": {
+              "x": 6,
+              "y": 1,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 8368245832144593,
+            "definition": {
+              "type": "note",
+              "content": "This graph contains both the wait and execution duration query planning jobs. This can help you detect if schema changes, config changes, or deployments have impacted the runtime's ability to plan queries for your supergraph. The maximum duration can highlight if outlier queries are causing abnormal behavior in the query planner. When diagnosing outlier queries, consider [the best practices for query planning](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices).",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 5,
+              "width": 6,
+              "height": 2
+            }
+          },
+          {
+            "id": 3057614794403403,
+            "definition": {
+              "type": "note",
+              "content": "This graph showcases the number of query plans evaluated before the optimal one is selected. The average will ideally trend close to 1. The max can help you identify how costly your most complex queries are to plan.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 5,
+              "width": 6,
+              "height": 2
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 12,
+        "height": 8
+      }
+    },
+    {
+      "id": 3027455303862458,
+      "definition": {
+        "title": "Compute Jobs",
+        "background_color": "white",
+        "show_title": true,
+        "type": "group",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 7402516847608650,
+            "definition": {
+              "type": "note",
+              "content": "Compute jobs are CPU-intensive tasks that get managed on a dedicated thread pool, inclusive of query planning tasks. Non-query-planning tasks tend to be either low-cost (in the case of query parsing) or infrequent to nonexistent (in the case of introspection resolution) and are consequently less commonly a performance pain point. Most diagnosis will be done against the query planning metrics directly, but this section is provided for informational purposes.",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": false,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 1
+            }
+          },
+          {
+            "id": 2646683015980845,
+            "definition": {
+              "title": "Queued Compute Jobs",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": false,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "time": {},
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.compute_jobs.queued{service:$service.value,env:$env.value,version:$version.value}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    },
+                    {
+                      "alias": "queued jobs",
+                      "formula": "query1 * 1000"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "values",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "bars"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "schema reload",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                }
+              ]
+            },
+            "layout": {
+              "x": 0,
+              "y": 1,
+              "width": 4,
+              "height": 3
+            }
+          },
+          {
+            "id": 1568178430355607,
+            "definition": {
+              "title": "Introspection Avg Duration and Wait Time",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "time": {},
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "avg:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:introspection}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query3",
+                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value ,job.type:introspection}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "alias": "avg execution duration",
+                      "formula": "query1"
+                    },
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "alias": "avg wait time",
+                      "formula": "query3"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "tags",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "schema reload",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "cache warmup",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "sqrt"
+              }
+            },
+            "layout": {
+              "x": 4,
+              "y": 1,
+              "width": 4,
+              "height": 3
+            }
+          },
+          {
+            "id": 6504562094582051,
+            "definition": {
+              "title": "Query Parsing Avg Duration and Wait Time",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "time": {},
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "avg:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_parsing}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query3",
+                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value ,job.type:query_parsing}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "alias": "avg execution duration",
+                      "formula": "query1"
+                    },
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "alias": "avg wait time",
+                      "formula": "query3"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "tags",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "schema reload",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "cache warmup",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "sqrt"
+              }
+            },
+            "layout": {
+              "x": 8,
+              "y": 1,
+              "width": 4,
+              "height": 3
+            }
+          },
+          {
+            "id": 5923077997925504,
+            "definition": {
+              "type": "note",
+              "content": "A non-zero queue of compute jobs means that your runtime is backing up on work and will exhibit increased latency on any requests that are waiting on those jobs. This is generally an indication of insufficient CPU resources being allocated to handle your traffic.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 4,
+              "width": 4,
+              "height": 2
+            }
+          },
+          {
+            "id": 4800289724652787,
+            "definition": {
+              "type": "note",
+              "content": "While we [do not recommend enabling Introspection in Production](https://www.apollographql.com/blog/why-you-should-disable-graphql-introspection-in-production), if you do have it enabled you can see the compute cost of such queries against your supergraph here.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 4,
+              "y": 4,
+              "width": 4,
+              "height": 2
+            }
+          },
+          {
+            "id": 8647054076741359,
+            "definition": {
+              "type": "note",
+              "content": "Query parsing is the initial compute step before planning. This is where the actual GraphQL parsing of your federated query is handled. This will generally be a very low and stable value unless your actual GraphQL queries themselves have significant variance in size and complexity.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 8,
+              "y": 4,
+              "width": 4,
+              "height": 2
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 8,
+        "width": 12,
+        "height": 7
+      }
+    }
+  ],
+  "template_variables": [
+    {
+      "name": "service",
+      "prefix": "service",
+      "available_values": [],
+      "default": "router"
+    },
+    {
+      "name": "env",
+      "prefix": "env",
+      "available_values": [],
+      "default": "prod"
+    },
+    {
+      "name": "version",
+      "prefix": "version",
+      "available_values": [],
+      "default": "*"
+    }
+  ],
+  "layout_type": "ordered",
+  "notify_list": [],
+  "reflow_type": "fixed",
+  "tags": [
+    "team:runtime-readiness"
+  ]
+}
