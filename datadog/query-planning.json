@@ -292,7 +292,7 @@
             "id": 8368245832144593,
             "definition": {
               "type": "note",
-              "content": "This graph contains both the wait and execution duration query planning jobs. This can help you detect if schema changes, config changes, or deployments have impacted the runtime's ability to plan queries for your supergraph. The maximum duration can highlight if outlier queries are causing abnormal behavior in the query planner. When diagnosing outlier queries, consider [the best practices for query planning](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices).",
+              "content": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**Why it matters**\n\n-   Query planning is critical to routing — delays here increase end-to-end latency.\n-   Schema or configuration changes can unexpectedly impact planning performance.\n-   High max durations may point to specific queries performing poorly in the planner.\n\n**What to look for**\n\n-   Low, stable execution times indicate efficient planning.\n-   Spikes in max duration could signal complex or inefficient queries.\n-   Rising trends after deployments or schema changes may require investigation.\n\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices).",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
@@ -313,7 +313,7 @@
             "id": 3057614794403403,
             "definition": {
               "type": "note",
-              "content": "This graph showcases the number of query plans evaluated before the optimal one is selected. The average will ideally trend close to 1. The max can help you identify how costly your most complex queries are to plan.",
+              "content": "This chart shows how many query plans are evaluated before selecting the optimal one for a request.\n\n**Why it matters**\n-   Fewer evaluated plans mean faster query planning and consequently lower CPU usage and response latency.\n\n**What to look for**\n\n-   An average near 1 is ideal — it means the planner is doing the minimal possible work per request.\n-   Occasional spikes in max are expected, but frequent or rising values may indicate overly complex queries.\n-   Sustained increases above 1 could suggest a need to revisit schema design or client queries.",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
@@ -683,7 +683,7 @@
             "id": 5923077997925504,
             "definition": {
               "type": "note",
-              "content": "A non-zero queue of compute jobs means that your runtime is backing up on work and will exhibit increased latency on any requests that are waiting on those jobs. This is generally an indication of insufficient CPU resources being allocated to handle your traffic if you see it happening for sustained periods of time.",
+              "content": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**Why it matters:**\n\n* A non-zero queue means jobs are backing up, introducing latency for any requests that depend on them.\n* Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n* Helps identify runtime saturation under load.\n\n**What to look for**\n\n* A consistently empty queue is ideal — jobs are being processed as they arrive.\n* Short spikes can be normal during brief load surges.\n* Sustained nonzero periods may require scaling CPU resources or optimizing workload.",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
@@ -725,7 +725,7 @@
             "id": 6257474700798550,
             "definition": {
               "type": "note",
-              "content": "While we [do not recommend enabling Introspection in Production](https://www.apollographql.com/blog/why-you-should-disable-graphql-introspection-in-production), if you do have it enabled you can see the compute cost of such queries against your supergraph here.",
+              "content": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns.",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
@@ -757,7 +757,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -817,7 +816,7 @@
             "id": 8647054076741359,
             "definition": {
               "type": "note",
-              "content": "This metric gives insight into the total number of compute jobs executing in your runtime and whether or not they are succeeding. A healthy runtime should have only `executed_ok` jobs.",
+              "content": "This chart shows the total number of compute jobs actively running in your runtime, broken down by success or failure status.\n\n**Why it matters**\n-   Failed jobs may indicate internal issues, misconfigurations, or upstream errors.\n-   Monitoring execution volume helps assess load and throughput.\n\n**What to look for**\n\n-   A steady level of `executed_ok` jobs.\n-   Any presence of failed job types (`executed_error`, `rejected_queue_full`, etc.).",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
