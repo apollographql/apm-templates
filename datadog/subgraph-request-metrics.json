@@ -26,6 +26,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -38,7 +39,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.client.request.duration{$service} by {subgraph.name,http.response.status_code}.as_count()"
+                      "query": "count:http.client.request.duration{$service, $env ,$version} by {subgraph.name,http.response.status_code}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -74,6 +75,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -82,7 +84,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.client.request.duration{$service} by {subgraph.name}.as_count()"
+                      "query": "count:http.client.request.duration{$service, $env ,$version} by {subgraph.name}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -165,6 +167,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -176,7 +179,7 @@
                   ],
                   "queries": [
                     {
-                      "query": "count:http.client.request.duration{subgraph.name:*,!http.response.status_code:2*,$service} by {subgraph.name,http.response.status_code}.as_count()",
+                      "query": "count:http.client.request.duration{subgraph.name:*,!http.response.status_code:2* ,$service, $env ,$version} by {subgraph.name,http.response.status_code}.as_count()",
                       "data_source": "metrics",
                       "name": "query1"
                     }
@@ -298,26 +301,27 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
                   "formulas": [
                     {
                       "alias": "Sum",
-                      "formula": "query4",
                       "number_format": {
                         "unit": {
                           "type": "canonical_unit",
                           "unit_name": "byte_in_decimal_bytes_family"
                         }
-                      }
+                      },
+                      "formula": "query4"
                     }
                   ],
                   "queries": [
                     {
                       "name": "query4",
                       "data_source": "metrics",
-                      "query": "avg:http.client.response.body.size{$service} by {subgraph.name}.as_count()"
+                      "query": "avg:http.client.response.body.size{$service, $env ,$version} by {subgraph.name}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -392,6 +396,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -400,7 +405,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "p95:http.client.request.duration{$service} by {subgraph.name}"
+                      "query": "p95:http.client.request.duration{$service, $env ,$version} by {subgraph.name}"
                     }
                   ],
                   "formulas": [
@@ -445,13 +450,13 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.client.request.duration{$service} by {subgraph.name}.as_count()",
+                      "query": "count:http.client.request.duration{$service, $env ,$version} by {subgraph.name}.as_count()",
                       "aggregator": "sum"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "p95:http.client.request.duration{$service} by {subgraph.name}",
+                      "query": "p95:http.client.request.duration{$service, $env ,$version} by {subgraph.name}",
                       "aggregator": "percentile"
                     }
                   ],
@@ -541,6 +546,7 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
+              "time": {},
               "type": "distribution",
               "xaxis": {
                 "scale": "linear",
@@ -561,7 +567,7 @@
                     "data_source": "metrics",
                     "name": "query1",
                     "aggregator": "avg",
-                    "query": "avg:http.client.request.duration{service:$service.value, subgraph.name:*}"
+                    "query": "avg:http.client.request.duration{subgraph.name:* ,$service, $env ,$version}"
                   }
                 }
               ]
@@ -655,7 +661,8 @@
               "query": {
                 "data_source": "metrics",
                 "name": "query1",
-                "query": "histogram:http.client.request.duration{$service, subgraph.name:*}"
+                "aggregator": "avg",
+                "query": "avg:http.client.request.duration{subgraph.name:* ,$service, $env ,$version}"
               }
             }
           ]
@@ -690,6 +697,18 @@
     {
       "name": "service",
       "prefix": "service",
+      "available_values": [],
+      "default": "*"
+    },
+    {
+      "name": "env",
+      "prefix": "env",
+      "available_values": [],
+      "default": "*"
+    },
+    {
+      "name": "version",
+      "prefix": "version",
       "available_values": [],
       "default": "*"
     }
