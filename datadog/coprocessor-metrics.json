@@ -47,7 +47,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -96,7 +95,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -145,7 +143,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -165,13 +162,13 @@
                   "formulas": [
                     {
                       "alias": "coprocessor success rate",
-                      "formula": "query0 / query1 * 100",
                       "number_format": {
                         "unit": {
                           "type": "canonical_unit",
                           "unit_name": "percent"
                         }
-                      }
+                      },
+                      "formula": "(query0 / query1) * 100"
                     }
                   ],
                   "style": {
@@ -189,6 +186,69 @@
               "width": 4,
               "height": 4
             }
+          },
+          {
+            "id": 7167731681168763,
+            "definition": {
+              "type": "note",
+              "content": "This chart shows the average duration added by coprocessor invocations at each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Coprocessors introduce additional network calls — even fast ones add latency.\n-   High or rising durations can affect overall request performance.\n-   Each stage (e.g., request, supergraph, subgraph) may have different performance profiles depending on configuration and coprocessor logic.\n\n**What to look for**\n\n-   Low, stable durations suggest efficient coprocessor behavior.\n-   Spikes may indicate backend slowness, increased payload size, or external service degradation.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 5,
+              "width": 4,
+              "height": 2
+            }
+          },
+          {
+            "id": 8612773097510573,
+            "definition": {
+              "type": "note",
+              "content": "This chart breaks down how often coprocessors are invoked at each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Helps validate where and how often your coprocessors are engaged.\n-   Useful for confirming configuration and understanding the load placed on each external service.\n-   Invocation patterns typically align with overall request volume, but may vary by routing logic or stage-specific conditions.\n\n**What to look for**\n\n-   Consistent counts per stage indicate expected behavior.\n-   Unexpected drops or surges may reflect routing changes, config issues, or stage-specific errors.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 4,
+              "y": 5,
+              "width": 4,
+              "height": 2
+            }
+          },
+          {
+            "id": 3453193672865711,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the success rate of coprocessor invocations across each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Coprocessors are on the critical path — failures here can short-circuit requests before they reach subgraphs.\n-   A drop in success rate will correlate with elevated error responses at the supergraph level.\n-   Helps isolate external causes of failure when subgraphs appear healthy.\n\n**What to look for**\n\n-   A consistent 100% success rate is expected for stable, production-grade coprocessors.\n-   Any dip may signal availability issues, timeouts, or bugs in coprocessor logic.\n-   If supergraph error rates rise while subgraphs remain unaffected, investigate this metric as a potential root cause.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 8,
+              "y": 5,
+              "width": 4,
+              "height": 2
+            }
           }
         ]
       },
@@ -196,7 +256,7 @@
         "x": 0,
         "y": 0,
         "width": 12,
-        "height": 6
+        "height": 8
       }
     }
   ],
