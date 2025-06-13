@@ -5,7 +5,7 @@
     {
       "id": 8946993247458357,
       "definition": {
-        "title": "Request Traffic & Health (Router)",
+        "title": "Request Traffic & Health: Client -> Router",
         "background_color": "vivid_blue",
         "show_title": true,
         "type": "group",
@@ -34,7 +34,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.server.request.duration{$service} by {http.response.status_code}.as_count()"
+                      "query": "count:http.server.request.duration{$service, $env ,$version} by {http.response.status_code}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -79,7 +79,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -88,7 +87,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.server.request.duration{$service}.as_count()"
+                      "query": "count:http.server.request.duration{$service, $env ,$version}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -168,7 +167,7 @@
     {
       "id": 3840969086320674,
       "definition": {
-        "title": " Request Characteristics (Router)",
+        "title": " Request Characteristics: Client -> Router",
         "background_color": "vivid_blue",
         "show_title": true,
         "type": "group",
@@ -197,34 +196,34 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "max:http.server.request.body.size{$service}"
+                      "query": "max:http.server.request.body.size{$service, $env ,$version}"
                     },
                     {
                       "name": "query2",
                       "data_source": "metrics",
-                      "query": "p99:http.server.request.body.size{$service}"
+                      "query": "p99:http.server.request.body.size{$service, $env ,$version}"
                     }
                   ],
                   "formulas": [
                     {
                       "alias": "max",
-                      "formula": "query1",
                       "number_format": {
                         "unit": {
                           "type": "canonical_unit",
                           "unit_name": "byte_in_decimal_bytes_family"
                         }
-                      }
+                      },
+                      "formula": "query1"
                     },
                     {
                       "alias": "p99",
-                      "formula": "query2",
                       "number_format": {
                         "unit": {
                           "type": "canonical_unit",
                           "unit_name": "byte_in_decimal_bytes_family"
                         }
-                      }
+                      },
+                      "formula": "query2"
                     }
                   ],
                   "style": {
@@ -281,7 +280,7 @@
     {
       "id": 2547398354023131,
       "definition": {
-        "title": "Request Performance & Latency (Router)",
+        "title": "Request Performance & Latency: Cient -> Router",
         "background_color": "vivid_blue",
         "show_title": true,
         "type": "group",
@@ -335,7 +334,7 @@
                     "data_source": "metrics",
                     "name": "query1",
                     "aggregator": "avg",
-                    "query": "avg:http.server.request.duration{service:$service.value}"
+                    "query": "avg:http.server.request.duration{$service, $env ,$version}"
                   }
                 }
               ]
@@ -417,27 +416,27 @@
                     {
                       "name": "query2",
                       "data_source": "metrics",
-                      "query": "p99:http.server.request.duration{$service}"
+                      "query": "p99:http.server.request.duration{$service, $env ,$version}"
                     },
                     {
                       "name": "query3",
                       "data_source": "metrics",
-                      "query": "p95:http.server.request.duration{$service}"
+                      "query": "p95:http.server.request.duration{$service, $env ,$version}"
                     },
                     {
                       "name": "query4",
                       "data_source": "metrics",
-                      "query": "p90:http.server.request.duration{$service}"
+                      "query": "p90:http.server.request.duration{$service, $env ,$version}"
                     },
                     {
                       "name": "query5",
                       "data_source": "metrics",
-                      "query": "min:http.server.request.duration{$service}"
+                      "query": "min:http.server.request.duration{$service, $env ,$version}"
                     },
                     {
                       "name": "query6",
                       "data_source": "metrics",
-                      "query": "max:http.server.request.duration{$service}"
+                      "query": "max:http.server.request.duration{$service, $env ,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -518,7 +517,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -527,12 +525,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "p95:http.server.request.duration{$service}"
+                      "query": "p95:http.server.request.duration{$service, $env ,$version}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "p95:http.client.request.duration{$service , subgraph.name:*}"
+                      "query": "p95:http.client.request.duration{$service, $env ,$version ,subgraph.name:*}"
                     }
                   ],
                   "formulas": [
@@ -594,6 +592,18 @@
     {
       "name": "service",
       "prefix": "service",
+      "available_values": [],
+      "default": "*"
+    },
+    {
+      "name": "env",
+      "prefix": "env",
+      "available_values": [],
+      "default": "*"
+    },
+    {
+      "name": "version",
+      "prefix": "version",
       "available_values": [],
       "default": "*"
     }
