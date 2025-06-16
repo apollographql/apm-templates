@@ -35,7 +35,7 @@
           {
             "id": 7301212877184944,
             "definition": {
-              "title": "Query Planning Duration and Wait Time",
+              "title": "Duration and Wait Time",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
@@ -183,7 +183,7 @@
           {
             "id": 3371314754887370,
             "definition": {
-              "title": "Query Planning Evaluated Plans",
+              "title": "Evaluated Plans",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
@@ -195,7 +195,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -373,7 +372,7 @@
           {
             "id": 2646683015980845,
             "definition": {
-              "title": "Queued Compute Jobs",
+              "title": "Queued Jobs",
               "title_size": "16",
               "title_align": "left",
               "show_legend": false,
@@ -746,7 +745,7 @@
           {
             "id": 3496774608895013,
             "definition": {
-              "title": "Compute Job Counts by Outcome",
+              "title": "Job Counts by Outcome",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
