@@ -195,6 +195,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -203,12 +204,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "avg:apollo.router.query_planning.plan.evaluated_plans{*}"
+                      "query": "avg:apollo.router.query_planning.plan.evaluated_plans{$service, $env, $version}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "max:apollo.router.query_planning.plan.evaluated_plans{*}"
+                      "query": "max:apollo.router.query_planning.plan.evaluated_plans{$service, $env, $version}"
                     }
                   ],
                   "formulas": [
@@ -837,9 +838,10 @@
       },
       "layout": {
         "x": 0,
-        "y": 8,
+        "y": 0,
         "width": 12,
-        "height": 10
+        "height": 10,
+        "is_column_break": true
       }
     }
   ],
