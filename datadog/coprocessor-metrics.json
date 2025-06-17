@@ -35,7 +35,7 @@
           {
             "id": 7202644430123243,
             "definition": {
-              "title": "Coprocessor Request Duration",
+              "title": "Request Duration",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
@@ -83,7 +83,7 @@
           {
             "id": 8422381032516479,
             "definition": {
-              "title": "Coprocessor Request Count",
+              "title": "Request Count",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
@@ -131,7 +131,7 @@
           {
             "id": 1752147216961256,
             "definition": {
-              "title": "Coprocessor Success Rate",
+              "title": "Success Rate",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
