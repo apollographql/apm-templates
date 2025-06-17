@@ -15,7 +15,7 @@
             "id": 2338005724257191,
             "definition": {
               "type": "note",
-              "content": "Monitoring your caching provides insights into both how normal your traffic is and how well your router is able to serve those requests. Your ideal cache performance and hit rates will vary depending on your expected traffic patterns. With the in-memory cache, it will be common to see spikes of cache misses and changes in cache size when new instances are deployed, new schemas are deployed, or new config versions are deployed. During this time, the cache will be evicted and re-warmed up.\n\nThese charts are pre-populated with event overlays for schema reloads and query plan warmup events. Schema reloads will accompany an expected drop in cache record count and a spike in cache miss rate as unusable cache records are evicted. [Cache warmups](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory#cache-warm-up) will accompany a period of cache misses as new plans are deliberately hit to prime them into the cache. The router does not serve traffic on the new schema until after that precompute warmup has completed.\n\nFor context on what’s cached and why, review the in-memory caching  [documentation](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory) before interpreting the charts below.\n\n**Caveats**\n- These metrics assume that you are running an in-memory cache on your Router. \n\n- If you are using Redis for distributed caching, you will want to monitor that separately [via Datadog's agent](https://docs.datadoghq.com/integrations/redisdb/?tab=host).\n\n- If you are using Entity Caching, [separate metrics will be available](https://www.apollographql.com/docs/graphos/routing/performance/caching/entity#observability) to monitor the performance of that feature.\n\n",
+              "content": "Whenever your router receives an incoming GraphQL operation, it generates a [query plan](https://www.apollographql.com/docs/federation/query-plans/) to determine which subgraphs it needs to query to resolve that operation. By caching previously generated query plans, your router can _skip_ generating them _again_ if a client later sends the exact same operation. This improves your router's responsiveness.\n\nMonitoring your caching provides insights into both how normal your traffic is and how well your router is able to serve those requests. Your ideal cache performance and hit rates will vary depending on your expected traffic patterns. With the in-memory cache, it will be common to see spikes of cache misses and changes in cache size when new instances are deployed, new schemas are deployed, or new config versions are deployed. During this time, the cache will be evicted and re-warmed up.\n\nThese charts are pre-populated with event overlays for schema reloads and query plan warmup events. Schema reloads will accompany an expected drop in cache record count and a spike in cache miss rate as unusable cache records are evicted. [Cache warmups](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory#cache-warm-up) will accompany a period of cache misses as new plans are deliberately hit to prime them into the cache. The router does not serve traffic on the new schema until after that precompute warmup has completed.\n\nFor context on what’s cached and why, review the in-memory caching  [documentation](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory) before interpreting the charts below.\n\n**Caveats**\n- These metrics assume that you are running an in-memory cache on your Router. \n\n- If you are using Redis for distributed caching, you will want to monitor that separately [via Datadog's agent](https://docs.datadoghq.com/integrations/redisdb/?tab=host).\n\n- If you are using Entity Caching, [separate metrics will be available](https://www.apollographql.com/docs/graphos/routing/performance/caching/entity#observability) to monitor the performance of that feature.\n\n",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -29,7 +29,7 @@
               "x": 0,
               "y": 0,
               "width": 12,
-              "height": 4
+              "height": 3
             }
           },
           {
@@ -47,7 +47,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -179,7 +178,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 4,
+              "y": 3,
               "width": 6,
               "height": 4
             }
@@ -199,7 +198,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -272,7 +270,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 4,
+              "y": 3,
               "width": 6,
               "height": 4
             }
@@ -293,7 +291,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 8,
+              "y": 7,
               "width": 6,
               "height": 1
             }
@@ -314,7 +312,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 8,
+              "y": 7,
               "width": 6,
               "height": 1
             }
@@ -334,7 +332,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -368,7 +365,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 9,
+              "y": 8,
               "width": 4,
               "height": 3
             }
@@ -388,7 +385,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -422,7 +418,7 @@
             },
             "layout": {
               "x": 4,
-              "y": 9,
+              "y": 8,
               "width": 4,
               "height": 3
             }
@@ -442,7 +438,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -484,7 +479,7 @@
             },
             "layout": {
               "x": 8,
-              "y": 9,
+              "y": 8,
               "width": 4,
               "height": 3
             }
@@ -505,7 +500,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 12,
+              "y": 11,
               "width": 4,
               "height": 1
             }
@@ -526,7 +521,7 @@
             },
             "layout": {
               "x": 4,
-              "y": 12,
+              "y": 11,
               "width": 4,
               "height": 1
             }
@@ -547,7 +542,7 @@
             },
             "layout": {
               "x": 8,
-              "y": 12,
+              "y": 11,
               "width": 4,
               "height": 1
             }
@@ -558,7 +553,7 @@
         "x": 0,
         "y": 0,
         "width": 12,
-        "height": 14
+        "height": 13
       }
     }
   ],
