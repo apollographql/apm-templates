@@ -15,7 +15,7 @@
             "id": 2338005724257191,
             "definition": {
               "type": "note",
-              "content": "These metrics assume that you are running an in-memory cache [(see the documentation for details on what data is cached and why)](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory) on your Router. If you are using Redis for distributed caching, you will want to monitor that separately [via Datadog's agent](https://docs.datadoghq.com/integrations/redisdb/?tab=host).\n\nIf you are using Entity Caching, [separate metrics will be available](https://www.apollographql.com/docs/graphos/routing/performance/caching/entity#observability) to monitor the performance of that feature.\n\nMonitoring your caching provides insights into both how normal your traffic is and how well your router is able to serve those requests. Your ideal cache performance and hit rates will vary depending on your expected traffic patterns. With the in-memory cache, it will be common to see spikes of cache misses and changes in cache size when new instances are deployed, new schemas are deployed, or new config versions are deployed. During this time, the cache will be evicted and re-warmed up. To make it clear when this is happening, we recommend configuring an [event overlay](https://docs.datadoghq.com/dashboards/widgets/timeseries/#event-overlay) on the charts that correlates to instance deployments.",
+              "content": "Monitoring your caching provides insights into both how normal your traffic is and how well your router is able to serve those requests. Your ideal cache performance and hit rates will vary depending on your expected traffic patterns. With the in-memory cache, it will be common to see spikes of cache misses and changes in cache size when new instances are deployed, new schemas are deployed, or new config versions are deployed. During this time, the cache will be evicted and re-warmed up.\n\nThese charts are pre-populated with event overlays for schema reloads and query plan warmup events. Schema reloads will accompany an expected drop in cache record count and a spike in cache miss rate as unusable cache records are evicted. [Cache warmups](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory#cache-warm-up) will accompany a period of cache misses as new plans are deliberately hit to prime them into the cache. The router does not serve traffic on the new schema until after that precompute warmup has completed.\n\nFor context on what’s cached and why, review the in-memory caching  [documentation](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory) before interpreting the charts below.\n\n**Caveats**\n- These metrics assume that you are running an in-memory cache on your Router. \n\n- If you are using Redis for distributed caching, you will want to monitor that separately [via Datadog's agent](https://docs.datadoghq.com/integrations/redisdb/?tab=host).\n\n- If you are using Entity Caching, [separate metrics will be available](https://www.apollographql.com/docs/graphos/routing/performance/caching/entity#observability) to monitor the performance of that feature.\n\n",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -29,13 +29,13 @@
               "x": 0,
               "y": 0,
               "width": 12,
-              "height": 3
+              "height": 4
             }
           },
           {
             "id": 280811115102223,
             "definition": {
-              "title": "Cache Misses vs. Cache Record Count",
+              "title": "Misses vs. Record Count",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
@@ -47,6 +47,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -126,7 +127,7 @@
                 {
                   "formulas": [
                     {
-                      "alias": "query plan warmup",
+                      "alias": "cache warmup",
                       "formula": "query1"
                     }
                   ],
@@ -178,7 +179,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 3,
+              "y": 4,
               "width": 6,
               "height": 4
             }
@@ -186,7 +187,7 @@
           {
             "id": 5973444432338869,
             "definition": {
-              "title": "Cache Record Counts by Instance",
+              "title": "Record Counts by Instance",
               "title_size": "16",
               "title_align": "left",
               "show_legend": false,
@@ -198,6 +199,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -225,7 +227,7 @@
                 {
                   "formulas": [
                     {
-                      "alias": "query plan warmup",
+                      "alias": "cache warmup",
                       "formula": "query1"
                     }
                   ],
@@ -270,7 +272,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 3,
+              "y": 4,
               "width": 6,
               "height": 4
             }
@@ -279,7 +281,7 @@
             "id": 3045863848046569,
             "definition": {
               "type": "note",
-              "content": "This chart shows an aggregate view across all cache types of your record counts and how many cache misses are happening.\n\n**Why it matters:**\n\n* Your cache sizes impact the memory footprint of your runtime\n* Your cache miss counts represent costlier requests to your runtime\n\n**What to look for:**\n* Spikes in cache misses that are *not* correlated to expected events like cache invalidation from a schema reload or a new deployment",
+              "content": "This chart shows an aggregate view across all cache types of your record counts and how many cache misses are happening. This is a lower-cardinality aggregate view of all the other charts in this section, specifically for correlating events between them.\n\n**Why it matters:**\n\n* Your cache sizes impact the memory footprint of your runtime\n* Your cache miss counts represent costlier requests to your runtime\n\n**What to look for:**\n* Drops in record counts that are *not* correlated to schema reloads or new instance deployments\n* Spikes in cache misses that are *not* correlated to a drop in record count\n* Spikes in cache misses that *do* correlate to a significant drop in cache hit percentage",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
@@ -291,7 +293,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 7,
+              "y": 8,
               "width": 6,
               "height": 1
             }
@@ -312,7 +314,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 7,
+              "y": 8,
               "width": 6,
               "height": 1
             }
@@ -320,7 +322,7 @@
           {
             "id": 8120174499044240,
             "definition": {
-              "title": "Cache Record Counts by Cache Type",
+              "title": "Record Counts by Type",
               "title_size": "16",
               "title_align": "left",
               "show_legend": false,
@@ -332,6 +334,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -365,7 +368,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 8,
+              "y": 9,
               "width": 4,
               "height": 3
             }
@@ -373,7 +376,7 @@
           {
             "id": 8691777953686757,
             "definition": {
-              "title": "Cache Misses by Cache Type",
+              "title": "Misses by Type",
               "title_size": "16",
               "title_align": "left",
               "show_legend": false,
@@ -385,6 +388,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -418,7 +422,7 @@
             },
             "layout": {
               "x": 4,
-              "y": 8,
+              "y": 9,
               "width": 4,
               "height": 3
             }
@@ -426,7 +430,7 @@
           {
             "id": 7905054550039923,
             "definition": {
-              "title": "Cache Hit % by Instance",
+              "title": "Hit % by Instance",
               "title_size": "16",
               "title_align": "left",
               "show_legend": false,
@@ -438,6 +442,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -479,7 +484,7 @@
             },
             "layout": {
               "x": 8,
-              "y": 8,
+              "y": 9,
               "width": 4,
               "height": 3
             }
@@ -500,7 +505,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 11,
+              "y": 12,
               "width": 4,
               "height": 1
             }
@@ -521,7 +526,7 @@
             },
             "layout": {
               "x": 4,
-              "y": 11,
+              "y": 12,
               "width": 4,
               "height": 1
             }
@@ -542,7 +547,7 @@
             },
             "layout": {
               "x": 8,
-              "y": 11,
+              "y": 12,
               "width": 4,
               "height": 1
             }
@@ -553,7 +558,7 @@
         "x": 0,
         "y": 0,
         "width": 12,
-        "height": 13
+        "height": 14
       }
     }
   ],
