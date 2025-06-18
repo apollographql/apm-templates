@@ -143,6 +143,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -168,7 +169,7 @@
                           "unit_name": "percent"
                         }
                       },
-                      "formula": "(query0 / query1) * 100"
+                      "formula": "anomalies((query0 / query1) * 100, 'basic', 1)"
                     }
                   ],
                   "style": {
@@ -178,7 +179,10 @@
                   },
                   "display_type": "line"
                 }
-              ]
+              ],
+              "yaxis": {
+                "include_zero": true
+              }
             },
             "layout": {
               "x": 8,
