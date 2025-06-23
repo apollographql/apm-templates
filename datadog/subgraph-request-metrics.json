@@ -267,6 +267,97 @@
               "width": 8,
               "height": 1
             }
+          },
+          {
+            "id": 2117758270276748,
+            "definition": {
+              "title": "GraphQL Errors by Operation",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "time": {},
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "name": "query1",
+                      "data_source": "spans",
+                      "search": {
+                        "query": "status:error $service $env $version"
+                      },
+                      "indexes": [
+                        "*"
+                      ],
+                      "group_by": [
+                        {
+                          "facet": "@graphql.operation.name",
+                          "limit": 1000,
+                          "sort": {
+                            "aggregation": "count",
+                            "order": "desc",
+                            "metric": "count"
+                          },
+                          "should_exclude_missing": true
+                        }
+                      ],
+                      "compute": {
+                        "aggregation": "count"
+                      },
+                      "storage": "hot"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "values",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "bars"
+                }
+              ]
+            },
+            "layout": {
+              "x": 0,
+              "y": 10,
+              "width": 8,
+              "height": 4
+            }
+          },
+          {
+            "id": 7728601524817940,
+            "definition": {
+              "type": "note",
+              "content": "This chart focuses specifically on GraphQL errors from subgraphs — grouped by subgraph.\n\n**Why it matters:**\n\n-   These are the requests that reported back a 2xx response, but with errors within the actual GraphQL API.\n-   These do not directly impact router performance, but can be an indicator of incorrect logic on your client or subgraph side.\n\n**Caveats**\n\n- This chart is populated via traces, not metrics, so the numbers will not necessarily be abolute",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 8,
+              "y": 10,
+              "width": 4,
+              "height": 4
+            }
           }
         ]
       },
