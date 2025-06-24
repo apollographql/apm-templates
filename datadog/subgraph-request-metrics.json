@@ -754,6 +754,27 @@
             }
           },
           {
+            "id": 422220421274293,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the 95th percentile (P95) request duration from the Router to each subgraph.\n\n### Why It Matters\n\n-   P95 is more **resilient to outliers** than max but still reveals tail latency problems that affect real users.\n\n### What to Look For\n\n-   📈 **Rising P95** values can indicate:\n\n    -   Backend slowness\n    -   Schema changes causing more complex queries\n    -   Increased load on subgraphs\n\n-   📉 **Flat or low P95** suggests stable performance under current conditions.\n\n-   🔁 **Correlate with throughput** — rising latency during peak traffic may mean you’re under-provisioned.\n\n\n### Actionable Insights\n\n-   Investigate consistently high-latency subgraphs — even if they aren’t crashing, they may be degrading user experience.\n-   Compare with response body size and throughput to find potential root causes (e.g., payload bloat or traffic spikes).\n-   Check if retry or @requires patterns are contributing.\n-   Consider the use of the [@defer](https://www.apollographql.com/docs/graphos/routing/operations/defer) directive to handle fields that take a particularly long time to resolve.\n\n\n### Caveats\n\n-   P95 latency is unreliable for low-throughput subgraphs because small sample sizes let outliers disproportionately skew the metric, making it hard to distinguish real issues from statistical noise.\n-   P95 doesn’t reveal all latency issues — check the distribution chart for outliers and long tails.\n",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 4,
+              "width": 6,
+              "height": 1
+            }
+          },
+          {
             "id": 6615090037432379,
             "definition": {
               "type": "note",
