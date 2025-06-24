@@ -195,6 +195,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -215,7 +216,7 @@
                     {
                       "number_format": {},
                       "alias": "average evaluated",
-                      "formula": "query2"
+                      "formula": "anomalies(query2, 'basic', 2)"
                     },
                     {
                       "number_format": {},
@@ -837,7 +838,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 0,
+        "y": 8,
         "width": 12,
         "height": 10,
         "is_column_break": true
