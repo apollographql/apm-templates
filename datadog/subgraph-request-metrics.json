@@ -274,7 +274,7 @@
         "x": 0,
         "y": 0,
         "width": 12,
-        "height": 11
+        "height": 15
       }
     },
     {
@@ -396,7 +396,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -432,7 +431,177 @@
             }
           },
           {
+            "id": 5190503484238670,
+            "definition": {
+              "title": "Latency by GraphQL Operation",
+              "title_size": "16",
+              "title_align": "left",
+              "type": "query_table",
+              "requests": [
+                {
+                  "queries": [
+                    {
+                      "name": "query2",
+                      "data_source": "spans",
+                      "search": {
+                        "query": "$service $env $version"
+                      },
+                      "indexes": [
+                        "*"
+                      ],
+                      "group_by": [
+                        {
+                          "facet": "@graphql.operation.name",
+                          "limit": 1000,
+                          "sort": {
+                            "aggregation": "avg",
+                            "order": "desc",
+                            "metric": "@duration"
+                          },
+                          "should_exclude_missing": true
+                        }
+                      ],
+                      "compute": {
+                        "aggregation": "avg",
+                        "metric": "@duration"
+                      },
+                      "storage": "hot"
+                    }
+                  ],
+                  "response_format": "scalar",
+                  "sort": {
+                    "count": 1000,
+                    "order_by": [
+                      {
+                        "type": "formula",
+                        "index": 0,
+                        "order": "desc"
+                      }
+                    ]
+                  },
+                  "formulas": [
+                    {
+                      "cell_display_mode": "bar",
+                      "alias": "avg duration",
+                      "formula": "query2"
+                    }
+                  ]
+                }
+              ],
+              "has_search_bar": "auto"
+            },
+            "layout": {
+              "x": 6,
+              "y": 0,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 422220421274293,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the 95th percentile (P95) request duration from the Router to each subgraph.\n\n### Why It Matters\n\n-   P95 is more **resilient to outliers** than max but still reveals tail latency problems that affect real users.\n\n### What to Look For\n\n-   📈 **Rising P95** values can indicate:\n\n    -   Backend slowness\n    -   Schema changes causing more complex queries\n    -   Increased load on subgraphs\n\n-   📉 **Flat or low P95** suggests stable performance under current conditions.\n\n-   🔁 **Correlate with throughput** — rising latency during peak traffic may mean you’re under-provisioned.\n\n\n### Actionable Insights\n\n-   Investigate consistently high-latency subgraphs — even if they aren’t crashing, they may be degrading user experience.\n-   Compare with response body size and throughput to find potential root causes (e.g., payload bloat or traffic spikes).\n-   Check if retry or @requires patterns are contributing.\n-   Consider the use of the [@defer](https://www.apollographql.com/docs/graphos/routing/operations/defer) directive to handle fields that take a particularly long time to resolve.\n\n\n### Caveats\n\n-   P95 latency is unreliable for low-throughput subgraphs because small sample sizes let outliers disproportionately skew the metric, making it hard to distinguish real issues from statistical noise.\n-   P95 doesn’t reveal all latency issues — check the distribution chart for outliers and long tails.\n",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 4,
+              "width": 6,
+              "height": 1
+            }
+          },
+          {
+            "id": 8992800975500272,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the average request duration from the Router to each GraphQL operation for your top 1000 operations.\n\nWhy it matters\n\n-   Captures the end-to-end time it takes the Router to process and respond to a specific operation.\n-   Helps identify slow or expensive operations affecting user experience.\n\nWhat to look for\n\n-   Operations should have consistent, predictable durations over time.\n-   Rising averages may indicate schema changes, degraded subgraph performance, or increased data complexity.\n-   Watch for high-variance or long-tail operations that may benefit from optimization or caching.\n\n### Caveats\n\n-   These values are retrieved via sampling to avoid the cost of high-cardinality metrics ingestion, so they are not 100% accurate especially over small time windows",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 4,
+              "width": 6,
+              "height": 1
+            }
+          },
+          {
             "id": 4614292295630845,
+            "definition": {
+              "title": "Subgraph Performance Profile",
+              "title_size": "16",
+              "title_align": "left",
+              "type": "scatterplot",
+              "requests": {
+                "table": {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "count:http.client.request.duration{$service, $env ,$version} by {subgraph.name}.as_count()",
+                      "aggregator": "sum"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query2",
+                      "query": "p95:http.client.request.duration{$service, $env ,$version} by {subgraph.name}",
+                      "aggregator": "percentile"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "alias": "Requests",
+                      "dimension": "x",
+                      "formula": "throughput(query1)"
+                    },
+                    {
+                      "dimension": "y",
+                      "alias": "P95 Latency (Seconds)",
+                      "formula": "query2"
+                    }
+                  ]
+                }
+              },
+              "xaxis": {
+                "scale": "linear",
+                "include_zero": true,
+                "min": "auto",
+                "max": "auto"
+              },
+              "yaxis": {
+                "scale": "linear",
+                "include_zero": true,
+                "min": "auto",
+                "max": "auto"
+              },
+              "color_by_groups": [
+                "subgraph.name"
+              ]
+            },
+            "layout": {
+              "x": 0,
+              "y": 5,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 6179363342034765,
             "definition": {
               "title": "Subgraph Performance Profile",
               "title_size": "16",
@@ -492,30 +661,9 @@
             },
             "layout": {
               "x": 6,
-              "y": 0,
+              "y": 5,
               "width": 6,
               "height": 4
-            }
-          },
-          {
-            "id": 422220421274293,
-            "definition": {
-              "type": "note",
-              "content": "This chart tracks the 95th percentile (P95) request duration from the Router to each subgraph.\n\n### Why It Matters\n\n-   P95 is more **resilient to outliers** than max but still reveals tail latency problems that affect real users.\n\n### What to Look For\n\n-   📈 **Rising P95** values can indicate:\n\n    -   Backend slowness\n    -   Schema changes causing more complex queries\n    -   Increased load on subgraphs\n\n-   📉 **Flat or low P95** suggests stable performance under current conditions.\n\n-   🔁 **Correlate with throughput** — rising latency during peak traffic may mean you’re under-provisioned.\n\n\n### Actionable Insights\n\n-   Investigate consistently high-latency subgraphs — even if they aren’t crashing, they may be degrading user experience.\n-   Compare with response body size and throughput to find potential root causes (e.g., payload bloat or traffic spikes).\n-   Check if retry or @requires patterns are contributing.\n\n\n### Caveats\n\n-   P95 latency is unreliable for low-throughput subgraphs because small sample sizes let outliers disproportionately skew the metric, making it hard to distinguish real issues from statistical noise.\n-   P95 doesn’t reveal all latency issues — check the distribution chart for outliers and long tails.\n",
-              "background_color": "yellow",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 0,
-              "y": 4,
-              "width": 6,
-              "height": 1
             }
           },
           {
@@ -533,8 +681,29 @@
               "has_padding": true
             },
             "layout": {
+              "x": 0,
+              "y": 9,
+              "width": 6,
+              "height": 1
+            }
+          },
+          {
+            "id": 1856669505570071,
+            "definition": {
+              "type": "note",
+              "content": "This chart is a companion to the scatter plot to the left, set to a fixed time window of 1 week to provide a reference point against whatever timescale you have your dashboard configured to.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
               "x": 6,
-              "y": 4,
+              "y": 9,
               "width": 6,
               "height": 1
             }
