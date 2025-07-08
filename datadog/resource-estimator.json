@@ -57,7 +57,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.server.request.duration{service:$service.value}.as_rate()",
+                      "query": "count:http.server.request.duration{service:$service.value,env:$env.value,version:$version.value}.as_rate()",
                       "aggregator": "avg"
                     }
                   ],
@@ -102,7 +102,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.server.request.duration{service:$service.value}.as_rate()",
+                      "query": "count:http.server.request.duration{service:$service.value,env:$env.value,version:$version.value}.as_rate()",
                       "aggregator": "max"
                     }
                   ],
@@ -150,7 +150,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:http.client.request.duration{service:$service.value}",
+                      "query": "avg:http.client.request.duration{service:$service.value,env:$env.value,version:$version.value}",
                       "aggregator": "avg"
                     }
                   ],
@@ -199,7 +199,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:http.client.request.body.size{service:$service.value}",
+                      "query": "avg:http.client.request.body.size{service:$service.value,env:$env.value,version:$version.value}",
                       "aggregator": "avg"
                     }
                   ],
@@ -248,7 +248,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:http.client.response.body.size{service:$service.value}",
+                      "query": "avg:http.client.response.body.size{service:$service.value,env:$env.value,version:$version.value}",
                       "aggregator": "avg"
                     }
                   ],

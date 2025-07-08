@@ -34,7 +34,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.server.request.duration{$service, $env ,$version} by {http.response.status_code}.as_count()"
+                      "query": "count:http.server.request.duration{service:$service.value,env:$env.value,version:$version.value} by {http.response.status_code}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -87,7 +87,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.server.request.duration{$service, $env ,$version}.as_count()"
+                      "query": "count:http.server.request.duration{service:$service.value,env:$env.value,version:$version.value}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -196,12 +196,12 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "max:http.server.request.body.size{$service, $env ,$version}"
+                      "query": "max:http.server.request.body.size{service:$service.value,env:$env.value,version:$version.value}"
                     },
                     {
                       "name": "query2",
                       "data_source": "metrics",
-                      "query": "p99:http.server.request.body.size{$service, $env ,$version}"
+                      "query": "p99:http.server.request.body.size{service:$service.value,env:$env.value,version:$version.value}"
                     }
                   ],
                   "formulas": [
@@ -280,7 +280,7 @@
     {
       "id": 2547398354023131,
       "definition": {
-        "title": "Request Performance & Latency: Cient -> Router",
+        "title": "Request Performance & Latency: Client -> Router",
         "background_color": "vivid_blue",
         "show_title": true,
         "type": "group",
@@ -334,7 +334,7 @@
                     "data_source": "metrics",
                     "name": "query1",
                     "aggregator": "avg",
-                    "query": "avg:http.server.request.duration{$service, $env ,$version}"
+                    "query": "avg:http.server.request.duration{service:$service.value,env:$env.value,version:$version.value}"
                   }
                 }
               ]
@@ -416,27 +416,27 @@
                     {
                       "name": "query2",
                       "data_source": "metrics",
-                      "query": "p99:http.server.request.duration{$service, $env ,$version}"
+                      "query": "p99:http.server.request.duration{service:$service.value,env:$env.value,version:$version.value}"
                     },
                     {
                       "name": "query3",
                       "data_source": "metrics",
-                      "query": "p95:http.server.request.duration{$service, $env ,$version}"
+                      "query": "p95:http.server.request.duration{service:$service.value,env:$env.value,version:$version.value}"
                     },
                     {
                       "name": "query4",
                       "data_source": "metrics",
-                      "query": "p90:http.server.request.duration{$service, $env ,$version}"
+                      "query": "p90:http.server.request.duration{service:$service.value,env:$env.value,version:$version.value}"
                     },
                     {
                       "name": "query5",
                       "data_source": "metrics",
-                      "query": "min:http.server.request.duration{$service, $env ,$version}"
+                      "query": "min:http.server.request.duration{service:$service.value,env:$env.value,version:$version.value}"
                     },
                     {
                       "name": "query6",
                       "data_source": "metrics",
-                      "query": "max:http.server.request.duration{$service, $env ,$version}"
+                      "query": "max:http.server.request.duration{service:$service.value,env:$env.value,version:$version.value}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -525,7 +525,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "p95:http.server.request.duration{$service, $env ,$version}"
+                      "query": "p95:http.server.request.duration{service:$service.value,env:$env.value,version:$version.value}"
                     },
                     {
                       "data_source": "metrics",
