@@ -79,6 +79,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -93,7 +94,7 @@
                   "formulas": [
                     {
                       "alias": "Requests per second",
-                      "formula": "throughput(query1)"
+                      "formula": "anomalies(throughput(query1), 'basic', 5)"
                     }
                   ],
                   "style": {
@@ -154,6 +155,87 @@
               "width": 6,
               "height": 1
             }
+          },
+          {
+            "id": 5348236615021926,
+            "definition": {
+              "title": "Error Rate Percent",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "time": {},
+              "type": "timeseries",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "alias": "Error Rate (%)",
+                      "formula": "anomalies(((query1 + query2) / query3) * 100, 'basic', 2)"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "name": "query1",
+                      "data_source": "metrics",
+                      "query": "count:http.server.request.duration{graphql.errors:*,$service ,$env ,$version}.as_count()"
+                    },
+                    {
+                      "name": "query2",
+                      "data_source": "metrics",
+                      "query": "count:http.server.request.duration{$service ,$env ,$version , !http.response.status_code:2* , !http.response.status_code:4*}.as_count()"
+                    },
+                    {
+                      "name": "query3",
+                      "data_source": "metrics",
+                      "query": "count:http.server.request.duration{$service ,$env ,$version}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "tags",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            },
+            "layout": {
+              "x": 6,
+              "y": 5,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 6132914662720110,
+            "definition": {
+              "type": "note",
+              "content": "This chart displays the total error rate percentage of requests handled by the Router. It includes:\n\n-   **GraphQL errors** (e.g., validation failures, resolver exceptions).\n-   **HTTP 5xx responses**, typically indicating internal or subgraph infrastructure issues.\n\nThe formula adds these two failure categories together and divides by the total request count, giving a single view into how often requests fail from the client’s perspective.\n\n***\n\n### Why It Matters\n\nUnderstanding total error rate is critical for:\n\n-   **Reliability tracking**: Errors reflect user-facing failures and service health.\n-   **Incident detection**: Elevated error rates can signal broken schemas, subgraph failures, or deploy issues.\n-   **SLO compliance**: Helps teams track whether reliability objectives (like <1% error rate) are being met.\n\n***\n\n### What to Watch Out For\n\n-   **Spikes in error rate**, especially following deploys or traffic increases.\n-   **Sustained error rates above 1–2%**, which may indicate regressions or uncaught edge cases.\n-   **Increased 5xx errors** without corresponding GraphQL errors—this may point to subgraph crashes or timeouts.\n-   **Silent drops in traffic**: If error rate decreases while request volume drops, it could signal issues upstream (e.g., client timeouts or DNS problems).",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "center",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 9,
+              "width": 6,
+              "height": 1
+            }
           }
         ]
       },
@@ -161,7 +243,7 @@
         "x": 0,
         "y": 0,
         "width": 12,
-        "height": 6
+        "height": 11
       }
     },
     {
@@ -272,7 +354,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 6,
+        "y": 11,
         "width": 12,
         "height": 5
       }
@@ -581,7 +663,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 0,
+        "y": 16,
         "width": 12,
         "height": 12,
         "is_column_break": true

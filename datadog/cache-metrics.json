@@ -1,6 +1,6 @@
 {
   "title": "RR-88: Cache Metrics",
-  "description": null,
+  "description": "[[suggested_dashboards]]",
   "widgets": [
     {
       "id": 1015408870961857,
@@ -206,7 +206,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:apollo.router.cache.size{service:$service.value,env:$env.value,version:$version.value} by {instance-id}"
+                      "query": "avg:apollo.router.cache.size{service:$service.value,env:$env.value,version:$version.value} by {host,pod_name,container_id}"
                     }
                   ],
                   "formulas": [
@@ -300,7 +300,7 @@
             "id": 4941765757767393,
             "definition": {
               "type": "note",
-              "content": "This chart breaks down the number of records in the cache of each of your runtime instances.\n\n**Why it matters:**\n\n* If your traffic isn't well-distributed across your instances, some caches will lag behind in growth rate\n* If you have an instance go into an unhealthy state, you may see the anomaly represented here\n\n**What to look for:**\n* An instance or instances that have an anomalous count of records without a corresponding deployment or schema change\n* An instance or instances that are growing at a different rate than the others without a corresponding deployment",
+              "content": "This chart breaks down the number of records in the cache of each of your runtime instances.\n\n**Why it matters:**\n\n* If your traffic isn't well-distributed across your instances, some caches will lag behind in growth rate\n* If you have an instance go into an unhealthy state, you may see the anomaly represented here\n\n**What to look for:**\n* An instance or instances that have an anomalous count of records without a corresponding deployment or schema change\n* An instance or instances that are growing at a different rate than the others without a corresponding deployment\n\n**Caveat:**\n\nGrouping by `host`, `pod_name`, and `container_id` may cause fragmented data if these tags aren’t consistent or unique in your setup. Update the group-by fields to whatever works best in your environment for accurate results.",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
@@ -446,12 +446,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "sum:apollo.router.cache.hit.time.count{service:$service.value,env:$env.value,version:$version.value} by {instance-id}.as_count()"
+                      "query": "sum:apollo.router.cache.hit.time.count{service:$service.value,env:$env.value,version:$version.value} by {host,pod_name,container_id}.as_count()"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.cache.miss.time.count{service:$service.value,env:$env.value,version:$version.value} by {instance-id}.as_count()"
+                      "query": "sum:apollo.router.cache.miss.time.count{service:$service.value,env:$env.value,version:$version.value} by {host,pod_name,container_id}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -530,7 +530,7 @@
             "id": 2128081234153598,
             "definition": {
               "type": "note",
-              "content": "This chart shows cache hit rate broken down by each individual running instance of your runtime.\n\n**Why it matters:**\n\n* When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail",
+              "content": "This chart shows cache hit rate broken down by each individual running instance of your runtime.\n\n**Why it matters:**\n\n* When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail\n\n**Caveat:**\n\nGrouping by `host`, `pod_name`, and `container_id` may cause fragmented data if these tags aren’t consistent or unique in your setup. Update the group-by fields to whatever works best in your environment for accurate results.",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",

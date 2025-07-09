@@ -47,7 +47,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -168,7 +167,7 @@
             "id": 4964203965396888,
             "definition": {
               "type": "note",
-              "content": "[Uplink is used to retrieve your GraphOS license (where applicable) and published schemas from Apollo](https://www.apollographql.com/docs/graphos/routing/uplink). If Uplink has an outage, your license or schema pulls may fail, and this metric can give you a warning when that is the reason.",
+              "content": "[Uplink is used to retrieve your GraphOS license (where applicable) and published schemas from Apollo](https://www.apollographql.com/docs/graphos/routing/uplink). If Uplink has an outage or incident, your license or schema pulls may fail, and this metric can give you a warning when that is the reason.",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
