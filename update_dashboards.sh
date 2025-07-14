@@ -102,8 +102,7 @@ fetch_dashboard() {
             template_variables: .template_variables,
             layout_type: .layout_type,
             notify_list: .notify_list,
-            reflow_type: .reflow_type,
-            tags: .tags
+            reflow_type: .reflow_type
         }' > "$filename"
         echo -e "${GREEN}✓ Successfully updated ${filename}${NC}"
         return 0
@@ -217,16 +216,6 @@ Setup Methods:
 
   3. Using inline variables:
      DD_API_KEY=your_api_key DD_APP_KEY=your_app_key $0
-
-Dashboard Files Updated:
-  - datadog/cache-metrics.json
-  - datadog/subgraph-request-metrics.json  
-  - datadog/request-metrics.json
-  - datadog/container-host-metrics.json
-  - datadog/query-planning.json
-  - datadog/coprocessor-metrics.json
-  - datadog/sentinel-metrics.json
-  - datadog/resource-estimator.json
 
 EOF
 }

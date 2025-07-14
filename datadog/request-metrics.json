@@ -692,8 +692,5 @@
   ],
   "layout_type": "ordered",
   "notify_list": [],
-  "reflow_type": "fixed",
-  "tags": [
-    "team:runtime-readiness"
-  ]
+  "reflow_type": "fixed"
 }
