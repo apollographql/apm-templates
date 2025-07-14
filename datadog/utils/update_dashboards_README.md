@@ -9,11 +9,11 @@ The `update_dashboards.sh` script automates the process of fetching and updating
 
 1. **Copy the environment template**:
    ```bash
-   cp datadog.env.example .env
+   cp ../../.env.example ../../.env
    ```
 
 2. **Configure your API credentials**:
-   Edit `.env` and add your Datadog API credentials:
+   Edit `../../.env` and add your Datadog API credentials:
    ```bash
    # Your Datadog API Key
    DD_API_KEY=your_actual_api_key
@@ -39,7 +39,7 @@ Run the script to update all dashboard files:
 ```
 
 The script will:
-1. Load API credentials from `.env`
+1. Load API credentials from `../../.env`
 2. Fetch current configurations for all 8 runtime-readiness dashboards
 3. Extract clean JSON (title, description, widgets, template_variables, etc.)
-4. Update the corresponding files in the `datadog/` directory
+4. Update the corresponding JSON files in the parent directory (`../`)

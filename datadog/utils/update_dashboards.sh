@@ -13,7 +13,7 @@ NC='\033[0m' # No Color
 
 # Function to load environment variables from .env file
 load_env_file() {
-    local env_file=".env"
+    local env_file="../../.env"
     
     if [[ -f "$env_file" ]]; then
         echo -e "${YELLOW}Loading environment variables from ${env_file}...${NC}"
@@ -41,7 +41,7 @@ load_env_file
 if [[ -z "${DD_API_KEY:-}" || -z "${DD_APP_KEY:-}" ]]; then
     echo -e "${RED}Error: DD_API_KEY and DD_APP_KEY must be set${NC}"
     echo "You can set them by:"
-    echo "  1. Creating a .env file (copy datadog.env.example to .env and fill in values)"
+    echo "  1. Creating a .env file (copy ../../.env.example to ../../.env and fill in values)"
     echo "  2. Setting environment variables:"
     echo "     export DD_API_KEY=your_api_key"
     echo "     export DD_APP_KEY=your_app_key"
@@ -54,14 +54,14 @@ DD_API_BASE="https://api.datadoghq.com/api/v1"
 
 # Dashboard mapping: filename:dashboard_id pairs
 DASHBOARD_MAPPINGS=(
-    "datadog/cache-metrics.json:air-k6h-j5s"
-    "datadog/subgraph-request-metrics.json:68y-wn4-f3e"
-    "datadog/request-metrics.json:rqe-it2-pcw"
-    "datadog/container-host-metrics.json:3wf-es2-cse"
-    "datadog/query-planning.json:s3k-q4m-tnt"
-    "datadog/coprocessor-metrics.json:p6f-fc6-pe8"
-    "datadog/sentinel-metrics.json:5a4-7pv-hiq"
-    "datadog/resource-estimator.json:vyy-vkr-777"
+    "../cache-metrics.json:air-k6h-j5s"
+    "../subgraph-request-metrics.json:68y-wn4-f3e"
+    "../request-metrics.json:rqe-it2-pcw"
+    "../container-host-metrics.json:3wf-es2-cse"
+    "../query-planning.json:s3k-q4m-tnt"
+    "../coprocessor-metrics.json:p6f-fc6-pe8"
+    "../sentinel-metrics.json:5a4-7pv-hiq"
+    "../resource-estimator.json:vyy-vkr-777"
 )
 
 # Function to fetch dashboard JSON
@@ -132,10 +132,9 @@ check_dependencies() {
 
 # Function to create datadog directory if it doesn't exist
 ensure_datadog_dir() {
-    if [[ ! -d "datadog" ]]; then
-        echo -e "${YELLOW}Creating datadog directory...${NC}"
-        mkdir -p datadog
-    fi
+    # We're already in the datadog directory, so this function is no longer needed
+    # but keeping it for compatibility
+    :
 }
 
 # Main execution
@@ -205,8 +204,8 @@ Environment Variables:
 
 Setup Methods:
   1. Using .env file (recommended):
-     cp datadog.env.example .env
-     # Edit .env with your actual API keys
+     cp ../../.env.example ../../.env
+     # Edit ../../.env with your actual API keys
      $0
 
   2. Using environment variables:
