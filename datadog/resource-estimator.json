@@ -38,7 +38,6 @@
               "title": "Average Request Rate",
               "title_size": "16",
               "title_align": "left",
-              "time": {},
               "type": "query_value",
               "requests": [
                 {
@@ -83,7 +82,6 @@
               "title": "Peak Request Rate",
               "title_size": "16",
               "title_align": "left",
-              "time": {},
               "type": "query_value",
               "requests": [
                 {
@@ -137,20 +135,24 @@
                 {
                   "formulas": [
                     {
-                      "formula": "query1",
                       "number_format": {
                         "unit": {
                           "type": "canonical_unit",
                           "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
                         }
-                      }
+                      },
+                      "formula": "query1"
                     }
                   ],
                   "queries": [
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:http.client.request.duration{service:$service.value}",
+                      "query": "avg:http.client.request.duration{service:$service.value , subgraph.name:*}",
                       "aggregator": "avg"
                     }
                   ],
@@ -176,7 +178,6 @@
               "title": "Average Client Request Size",
               "title_size": "16",
               "title_align": "left",
-              "time": {},
               "type": "query_value",
               "requests": [
                 {
@@ -225,7 +226,6 @@
               "title": "Average Client Response Size",
               "title_size": "16",
               "title_align": "left",
-              "time": {},
               "type": "query_value",
               "requests": [
                 {
@@ -300,8 +300,5 @@
   ],
   "layout_type": "ordered",
   "notify_list": [],
-  "reflow_type": "fixed",
-  "tags": [
-    "team:runtime-readiness"
-  ]
+  "reflow_type": "fixed"
 }
