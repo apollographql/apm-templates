@@ -7,28 +7,43 @@ The `update_dashboards.sh` script automates the process of fetching and updating
 
 ### Setup
 
+#### Manually
 1. **Copy the environment template**:
    ```bash
-   cp ../../.env.example ../../.env
+   cp ./.env.example ./.env
    ```
 
 2. **Configure your API credentials**:
-   Edit `../../.env` and add your Datadog API credentials:
+   Edit `./.env` and add your Datadog API credentials:
    ```bash
    # Your Datadog API Key
    DD_API_KEY=your_actual_api_key
 
-   # Your Datadog Application Key  
+   # Your Datadog Application Key
    DD_APP_KEY=your_actual_app_key
    ```
 
    Get your API key from: https://app.datadoghq.com/organization-settings/api-keys
    Get your Application Key from: https://app.datadoghq.com/organization-settings/application-keys
 
-3. **Make the script executable**:
+#### Using Direnv and a Password/Secrets Manager
+1. **Copy the environment template**:
    ```bash
-   chmod +x update_dashboards.sh
+   cp ./.envrc.example ./.envrc
    ```
+
+2. **Configure your API credentials**:
+   Edit `./.envrc` and add your Datadog API credentials:
+   ```bash
+   # Your Datadog API Key
+   export DD_API_KEY=$(function_to_retrieve_your_API_key)
+
+   # Your Datadog Application Key
+   export DD_APP_KEY=$(function_to_retrieve_your_app_key)
+   ```
+
+Get your API key from: https://app.datadoghq.com/organization-settings/api-keys
+Get your Application Key from: https://app.datadoghq.com/organization-settings/application-keys
 
 ### Usage
 
@@ -39,7 +54,7 @@ Run the script to update all dashboard files:
 ```
 
 The script will:
-1. Load API credentials from `../../.env`
+1. Load API credentials from `./.env`
 2. Fetch current configurations for all 8 runtime-readiness dashboards
 3. Extract clean JSON (title, description, widgets, template_variables, etc.)
 4. Update the corresponding JSON files in the parent directory (`../`)

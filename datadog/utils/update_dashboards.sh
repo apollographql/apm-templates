@@ -13,7 +13,7 @@ NC='\033[0m' # No Color
 
 # Function to load environment variables from .env file
 load_env_file() {
-    local env_file="../../.env"
+    local env_file="./.env"
     
     if [[ -f "$env_file" ]]; then
         echo -e "${YELLOW}Loading environment variables from ${env_file}...${NC}"

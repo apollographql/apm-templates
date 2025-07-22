@@ -1,0 +1,5 @@
+# Your Datadog API Key
+export DD_API_KEY=$(function_to_retrieve_your_API_key)
+
+# Your Datadog Application Key  
+export DD_APP_KEY=$(function_to_retrieve_your_app_key)
