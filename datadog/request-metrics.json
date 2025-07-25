@@ -79,7 +79,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -171,7 +170,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -583,90 +581,56 @@
               "width": 6,
               "height": 1
             }
-          },
-          {
-            "id": 2996807578664040,
-            "definition": {
-              "title": "Router Internal Latency",
-              "title_size": "16",
-              "title_align": "left",
-              "show_legend": true,
-              "legend_layout": "auto",
-              "legend_columns": [
-                "avg",
-                "min",
-                "max",
-                "value",
-                "sum"
-              ],
-              "type": "timeseries",
-              "requests": [
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "query1",
-                      "query": "p95:http.server.request.duration{$service, $env ,$version}"
-                    },
-                    {
-                      "data_source": "metrics",
-                      "name": "query2",
-                      "query": "p95:http.client.request.duration{$service, $env ,$version ,subgraph.name:*}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "alias": "P95 Router Overhead",
-                      "formula": "query1 - query2"
-                    }
-                  ],
-                  "style": {
-                    "palette": "dog_classic",
-                    "order_by": "values",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  },
-                  "display_type": "line"
-                }
-              ]
-            },
-            "layout": {
-              "x": 0,
-              "y": 7,
-              "width": 6,
-              "height": 3
-            }
-          },
-          {
-            "id": 758034316141236,
-            "definition": {
-              "type": "note",
-              "content": "Ideally this chart shows how much time (P95) is spent inside the Router vs waiting on subgraphs.\n\n**Where Time is Spent** \n\n-   **Higher values** suggest internal Router work: merging, `@requires`, retries, etc.\n-   **Lower values** (close to 0) indicate subgraphs dominate latency and the router is highly performant.\n\n Helps diagnose whether optimizations are needed in the Router or subgraphs.\n    \n### Caveats & Considerations\n\n-   **Not a precise breakdown**\\\n    The chart gives an approximation—`server - client` infers Router time, but doesn’t capture exact Router internals.\n-   **Parallelism in subgraph calls**\\\n    The Router can send subgraph requests in parallel. So `http.client.request.duration` might not equal the sum of all subgraph durations—it reflects _wall time_, not total subgraph work.\n-   **Retries and fallback logic**\\\n    Router retry behavior (e.g., on 5xxs or network failures) can inflate Router time but not necessarily show up in client-side metrics as multiple attempts.",
-              "background_color": "yellow",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 0,
-              "y": 10,
-              "width": 6,
-              "height": 1
-            }
           }
         ]
       },
       "layout": {
         "x": 0,
-        "y": 16,
+        "y": 0,
         "width": 12,
-        "height": 12,
+        "height": 8,
         "is_column_break": true
+      }
+    },
+    {
+      "id": 7297406716732741,
+      "definition": {
+        "title": "",
+        "title_size": "16",
+        "title_align": "left",
+        "type": "timeseries",
+        "requests": [
+          {
+            "response_format": "timeseries",
+            "queries": [
+              {
+                "data_source": "spans",
+                "name": "query1",
+                "search": {
+                  "query": ""
+                },
+                "indexes": [],
+                "compute": {
+                  "aggregation": "count"
+                },
+                "group_by": []
+              }
+            ],
+            "style": {
+              "palette": "dog_classic",
+              "order_by": "values",
+              "line_type": "solid",
+              "line_width": "normal"
+            },
+            "display_type": "line"
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 4,
+        "height": 2
       }
     }
   ],
