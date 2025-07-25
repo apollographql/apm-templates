@@ -55,8 +55,8 @@ DD_API_BASE="https://api.datadoghq.com/api/v1"
 # Dashboard mapping: filename:dashboard_id pairs
 DASHBOARD_MAPPINGS=(
     "../cache-metrics.json:air-k6h-j5s"
-    "../subgraph-request-metrics.json:68y-wn4-f3e"
-    "../request-metrics.json:rqe-it2-pcw"
+    "../subgraph-request-metrics.json:rqe-it2-pcw"
+    "../request-metrics.json:68y-wn4-f3e"
     "../container-host-metrics.json:3wf-es2-cse"
     "../query-planning.json:s3k-q4m-tnt"
     "../coprocessor-metrics.json:p6f-fc6-pe8"

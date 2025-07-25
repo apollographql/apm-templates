@@ -1,11 +1,11 @@
 {
-  "title": "RR-65 incoming http request metrics",
+  "title": "RR-66 outgoing http request metrics",
   "description": "[[suggested_dashboards]]",
   "widgets": [
     {
       "id": 8946993247458357,
       "definition": {
-        "title": "Request Traffic & Health: Client -> Router",
+        "title": "Request Traffic & Health: Router -> Subgraph",
         "background_color": "vivid_blue",
         "show_title": true,
         "type": "group",
@@ -14,11 +14,11 @@
           {
             "id": 1224218507683046,
             "definition": {
-              "title": "Volume of Requests Per Status Code",
+              "title": "Http Requests by Status Code",
               "title_size": "16",
               "title_align": "left",
-              "show_legend": true,
-              "legend_layout": "auto",
+              "show_legend": false,
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
@@ -29,19 +29,19 @@
               "type": "timeseries",
               "requests": [
                 {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "query1",
-                      "query": "count:http.server.request.duration{$service, $env ,$version} by {http.response.status_code}.as_count()"
-                    }
-                  ],
                   "formulas": [
                     {
                       "formula": "query1"
                     }
                   ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "count:http.client.request.duration{$service, $env ,$version} by {subgraph.name,http.response.status_code}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
                   "style": {
                     "palette": "semantic",
                     "order_by": "values",
@@ -50,12 +50,7 @@
                   },
                   "display_type": "bars"
                 }
-              ],
-              "yaxis": {
-                "include_zero": true,
-                "scale": "linear"
-              },
-              "custom_links": []
+              ]
             },
             "layout": {
               "x": 0,
@@ -65,12 +60,12 @@
             }
           },
           {
-            "id": 5890661141790956,
+            "id": 8436708637768666,
             "definition": {
-              "title": "Throughput: Requests Per Second",
+              "title": "Throughput (Requests per Second)",
               "title_size": "16",
               "title_align": "left",
-              "show_legend": true,
+              "show_legend": false,
               "legend_layout": "auto",
               "legend_columns": [
                 "avg",
@@ -87,17 +82,17 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.server.request.duration{$service, $env ,$version}.as_count()"
+                      "query": "count:http.client.request.duration{$service, $env ,$version} by {subgraph.name}.as_count()"
                     }
                   ],
                   "formulas": [
                     {
                       "alias": "Requests per second",
-                      "formula": "anomalies(throughput(query1), 'basic', 5)"
+                      "formula": "anomalies(throughput(query1), 'basic', 4)"
                     }
                   ],
                   "style": {
-                    "palette": "dog_classic",
+                    "palette": "semantic",
                     "order_by": "values",
                     "line_type": "solid",
                     "line_width": "normal"
@@ -114,14 +109,14 @@
             }
           },
           {
-            "id": 8270570877484838,
+            "id": 1604866605637428,
             "definition": {
               "type": "note",
-              "content": "This chart shows the volume of requests Apollo Router is handling over time, broken down by status code.\n\n### It helps answer:\n\n-   Are most requests successful (`2xx`)?\n-   Are clients misbehaving (`4xx`)?\n-   Is the router or a subgraph failing (`5xx`)?\n\n### This metric helps spot trends and issues:\n\n-   A **spike in `5xx`** likely means something is broken downstream.\n-   A **rise in `4xx`** may signal client bugs or deprecated queries.\n-   **Changes in total volume** may reflect traffic surges or outages.",
+              "content": "This chart shows the volume of outgoing HTTP requests from the Router to subgraphs, broken down by HTTP status code and subgraph.\n\n**Why it matters:**\n\n-   Tracks overall subgraph traffic.\n\nWhat to look for:\n\n-   High volume of `2xx` is normal and healthy.",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
@@ -135,10 +130,10 @@
             }
           },
           {
-            "id": 7248723417019108,
+            "id": 8148807184808558,
             "definition": {
               "type": "note",
-              "content": "This chart shows **requests per second (RPS)** hitting the Apollo Router — your clearest view into how much work the Router is doing right now.\n\n**What to look for:**\n\n-   Sudden drops? Could be outages upstream or config errors.\n-   Steady growth? Make sure latency and errors aren’t creeping up.\n-   Flatline during known busy periods? You might be hitting limits.",
+              "content": "This chart shows how many requests per second (RPS) each subgraph is handling. It's useful for understanding traffic distribution across your federated architecture and identifying which subgraphs are the busiest.\n\n**What to Look For:**\n\n-   **Consistently high RPS** on a subgraph may indicate:\n\n    -   It supports popular or frequently queried fields.\n    -   It could become a performance bottleneck if not properly scaled or optimized.\n\n-   **Sudden spikes** can signal usage surges or potential issues downstream (e.g., retry storms).\n\n-   **Low RPS subgraphs** might be underutilized or intentionally lightweight.\n\n**Actionable Insights:**\n\n-   Ensure high-throughput subgraphs are well-instrumented and autoscaled where possible.\n-   Investigate traffic spikes for correlation with client activity or backend issues.\n-   Cross-reference with latency charts to catch early signs of degradation under load.\n\n**Caveats:**\n\n-   This reflects traffic from the Router to each subgraph, not necessarily user-facing load.\n-   Subgraphs handling many small, fast requests may show high RPS but minimal latency or load — context is key.",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
@@ -156,13 +151,13 @@
             }
           },
           {
-            "id": 5348236615021926,
+            "id": 3375905945773031,
             "definition": {
-              "title": "Error Rate Percent",
+              "title": "Non-2xx Responses",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
@@ -175,202 +170,43 @@
                 {
                   "formulas": [
                     {
-                      "alias": "Error Rate (%)",
-                      "formula": "anomalies(((query1 + query2) / query3) * 100, 'basic', 2)"
-                    }
-                  ],
-                  "queries": [
-                    {
-                      "name": "query1",
-                      "data_source": "metrics",
-                      "query": "count:http.server.request.duration{graphql.errors:*,$service ,$env ,$version}.as_count()"
-                    },
-                    {
-                      "name": "query2",
-                      "data_source": "metrics",
-                      "query": "count:http.server.request.duration{$service ,$env ,$version , !http.response.status_code:2* , !http.response.status_code:4*}.as_count()"
-                    },
-                    {
-                      "name": "query3",
-                      "data_source": "metrics",
-                      "query": "count:http.server.request.duration{$service ,$env ,$version}.as_count()"
-                    }
-                  ],
-                  "response_format": "timeseries",
-                  "style": {
-                    "palette": "dog_classic",
-                    "order_by": "tags",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  },
-                  "display_type": "line"
-                }
-              ]
-            },
-            "layout": {
-              "x": 6,
-              "y": 5,
-              "width": 6,
-              "height": 4
-            }
-          },
-          {
-            "id": 6132914662720110,
-            "definition": {
-              "type": "note",
-              "content": "This chart displays the total error rate percentage of requests handled by the Router. It includes:\n\n-   **GraphQL errors** (e.g., validation failures, resolver exceptions).\n-   **HTTP 5xx responses**, typically indicating internal or subgraph infrastructure issues.\n\nThe formula adds these two failure categories together and divides by the total request count, giving a single view into how often requests fail from the client’s perspective.\n\n***\n\n### Why It Matters\n\nUnderstanding total error rate is critical for:\n\n-   **Reliability tracking**: Errors reflect user-facing failures and service health.\n-   **Incident detection**: Elevated error rates can signal broken schemas, subgraph failures, or deploy issues.\n-   **SLO compliance**: Helps teams track whether reliability objectives (like <1% error rate) are being met.\n\n***\n\n### What to Watch Out For\n\n-   **Spikes in error rate**, especially following deploys or traffic increases.\n-   **Sustained error rates above 1–2%**, which may indicate regressions or uncaught edge cases.\n-   **Increased 5xx errors** without corresponding GraphQL errors—this may point to subgraph crashes or timeouts.\n-   **Silent drops in traffic**: If error rate decreases while request volume drops, it could signal issues upstream (e.g., client timeouts or DNS problems).",
-              "background_color": "yellow",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "center",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 6,
-              "y": 9,
-              "width": 6,
-              "height": 1
-            }
-          }
-        ]
-      },
-      "layout": {
-        "x": 0,
-        "y": 0,
-        "width": 12,
-        "height": 11
-      }
-    },
-    {
-      "id": 3840969086320674,
-      "definition": {
-        "title": " Request Characteristics: Client -> Router",
-        "background_color": "vivid_blue",
-        "show_title": true,
-        "type": "group",
-        "layout_type": "ordered",
-        "widgets": [
-          {
-            "id": 989162476390562,
-            "definition": {
-              "title": "Request Body Size (p99 / Max)",
-              "title_size": "16",
-              "title_align": "left",
-              "show_legend": true,
-              "legend_layout": "auto",
-              "legend_columns": [
-                "avg",
-                "min",
-                "max",
-                "value",
-                "sum"
-              ],
-              "type": "timeseries",
-              "requests": [
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "name": "query1",
-                      "data_source": "metrics",
-                      "query": "max:http.server.request.body.size{$service, $env ,$version}"
-                    },
-                    {
-                      "name": "query2",
-                      "data_source": "metrics",
-                      "query": "p99:http.server.request.body.size{$service, $env ,$version}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "alias": "max",
-                      "number_format": {
-                        "unit": {
-                          "type": "canonical_unit",
-                          "unit_name": "byte_in_decimal_bytes_family"
-                        }
-                      },
+                      "alias": "Sum",
                       "formula": "query1"
-                    },
-                    {
-                      "alias": "p99",
-                      "number_format": {
-                        "unit": {
-                          "type": "canonical_unit",
-                          "unit_name": "byte_in_decimal_bytes_family"
-                        }
-                      },
-                      "formula": "query2"
                     }
                   ],
+                  "queries": [
+                    {
+                      "query": "count:http.client.request.duration{subgraph.name:*,!http.response.status_code:2* ,$service, $env ,$version} by {subgraph.name,http.response.status_code}.as_count()",
+                      "data_source": "metrics",
+                      "name": "query1"
+                    }
+                  ],
+                  "response_format": "timeseries",
                   "style": {
-                    "palette": "dog_classic",
-                    "order_by": "values",
-                    "line_type": "solid",
+                    "palette": "semantic",
+                    "line_type": "dotted",
                     "line_width": "normal"
                   },
-                  "display_type": "line"
+                  "display_type": "bars"
                 }
               ],
               "yaxis": {
-                "include_zero": false,
-                "scale": "log"
-              }
+                "include_zero": false
+              },
+              "markers": []
             },
             "layout": {
               "x": 0,
-              "y": 0,
-              "width": 5,
-              "height": 3
+              "y": 5,
+              "width": 8,
+              "height": 4
             }
           },
           {
-            "id": 4330685396345820,
+            "id": 8928058460124150,
             "definition": {
               "type": "note",
-              "content": "This chart tracks the size of incoming HTTP request bodies over time, highlighting the largest payloads seen.\n\n### Why it matters\n\n-   **`p99`** shows typical large requests.\n-   **`max`** shows the absolute biggest — helpful for spotting outliers.\n\nLarge payloads can:\n\n-   Increase parsing/validation time.\n-   Cause memory pressure or latency spikes.\n-   Indicate misuse (e.g., file uploads, bloated mutations).\n\n### What to look for\n\n-   A stable `p99` suggests consistent request sizes.\n-   Occasional `max` spikes are okay — frequent ones may require investigation.\n-   Rising trends could signal a client change or growing inefficiency.\n\n### Caveats\n\n-   Doesn’t reflect query complexity — a small body can still be expensive.",
-              "background_color": "yellow",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "center",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 0,
-              "y": 3,
-              "width": 5,
-              "height": 1
-            }
-          }
-        ]
-      },
-      "layout": {
-        "x": 0,
-        "y": 11,
-        "width": 12,
-        "height": 5
-      }
-    },
-    {
-      "id": 2547398354023131,
-      "definition": {
-        "title": "Request Performance & Latency: Cient -> Router",
-        "background_color": "vivid_blue",
-        "show_title": true,
-        "type": "group",
-        "layout_type": "ordered",
-        "widgets": [
-          {
-            "id": 4277427124049773,
-            "definition": {
-              "type": "note",
-              "content": "**Apollo Router Latency Overview**\n\nApollo Router routes incoming GraphQL requests to subgraphs, handles query planning, and coordinates responses. Latency here reflects the total time the Router takes to process and respond to an HTTP request, including:\n\n-   Parsing and validating the GraphQL query\n-   Calling subgraphs\n-   Merging responses, handling errors, and formatting results\n-   Any middleware or plugin logic you've added\n\nIf your latency rises, the cause could be the Router itself, one or more subgraphs, or custom logic you've installed.",
+              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from any subgraph.\n-   Reliability SLO: ≥99.9% of Router→subgraph requests should be 2xx and without error.",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -381,10 +217,582 @@
               "has_padding": true
             },
             "layout": {
+              "x": 8,
+              "y": 5,
+              "width": 4,
+              "height": 2
+            }
+          },
+          {
+            "id": 2347349834910780,
+            "definition": {
+              "type": "note",
+              "content": "### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": false,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 8,
+              "y": 7,
+              "width": 4,
+              "height": 3
+            }
+          },
+          {
+            "id": 6943674061818587,
+            "definition": {
+              "type": "note",
+              "content": "This chart focuses specifically on non-successful(non-2xx) responses from subgraphs — grouped by subgraph and status code.\n\n**Why it matters:**\n\n-   These are the requests that failed, either due to config errors (4xx) or server-side issues (5xx).\n-   The Router isn’t failing — it’s forwarding a query that the subgraph can't fulfill.\n\n**Common causes of 4xx:**\n\n-   Schema mismatch between subgraph and Supergraph (e.g., schema drift)\n-   Missing auth headers or invalid inputs\n\n**Common causes of 5xx:**\n\n-   Crashes, timeouts, or errors in a subgraphs logic\n\n**How this impacts Router performance:**\n\n-   Frequent 5xxs inflate latency as the Router retries or collects error details.\n-   Repeated 4xxs may be harmless, but still consume Router resources and can signal client or schema issues.\n\n\n**Pro tip:**\\\nIf a subgraph frequently appears here, coordinate with its owning team to investigate error logs or validate schema compatibility.\n\n**Caveats**\n- You might see `N/A` as a status code. This means that a request was made but a response was not received. ",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 9,
+              "width": 8,
+              "height": 1
+            }
+          },
+          {
+            "id": 2117758270276748,
+            "definition": {
+              "title": "GraphQL Errors by Operation",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "name": "query1",
+                      "data_source": "spans",
+                      "search": {
+                        "query": "status:error $service $env $version"
+                      },
+                      "indexes": [
+                        "*"
+                      ],
+                      "group_by": [
+                        {
+                          "facet": "@graphql.operation.name",
+                          "limit": 1000,
+                          "sort": {
+                            "aggregation": "count",
+                            "order": "desc",
+                            "metric": "count"
+                          },
+                          "should_exclude_missing": true
+                        }
+                      ],
+                      "compute": {
+                        "aggregation": "count"
+                      },
+                      "storage": "hot"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "values",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "bars"
+                }
+              ]
+            },
+            "layout": {
+              "x": 0,
+              "y": 10,
+              "width": 8,
+              "height": 4
+            }
+          },
+          {
+            "id": 7728601524817940,
+            "definition": {
+              "type": "note",
+              "content": "This chart focuses specifically on GraphQL errors from subgraphs — grouped by subgraph.\n\n**Why it matters:**\n\n-   These are the requests that reported back a 2xx response, but with errors within the actual GraphQL API.\n-   These do not directly impact router performance, but can be an indicator of incorrect logic on your client or subgraph side.\n\n**Caveats**\n\n- This chart is populated via traces, not metrics, so the numbers will not necessarily be abolute",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 8,
+              "y": 10,
+              "width": 4,
+              "height": 4
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 12,
+        "height": 15
+      }
+    },
+    {
+      "id": 3840969086320674,
+      "definition": {
+        "title": " Request Characteristics: Router -> Subgraph",
+        "background_color": "vivid_blue",
+        "show_title": true,
+        "type": "group",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 5703355397898961,
+            "definition": {
+              "title": "Response Body Size",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "formulas": [
+                    {
+                      "alias": "Sum",
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "byte_in_decimal_bytes_family"
+                        }
+                      },
+                      "formula": "query4"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "name": "query4",
+                      "data_source": "metrics",
+                      "query": "avg:http.client.response.body.size{$service, $env ,$version} by {subgraph.name}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "semantic",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ],
+              "markers": []
+            },
+            "layout": {
               "x": 0,
               "y": 0,
-              "width": 12,
-              "height": 3
+              "width": 7,
+              "height": 4
+            }
+          },
+          {
+            "id": 5212470527428142,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the total volume of response data returned by each subgraph over time. It helps identify subgraphs that are consistently returning large payloads, which can impact overall performance and client-side load times.\n\n**What to Look For:**\n\n-   **Spikes or sustained high values** from a subgraph may indicate:\n\n    -   Overfetching: unnecessary fields being resolved and returned.\n    -   Inefficient schema design: returning deeply nested or verbose structures.\n    -   Missing pagination or filtering on list-type fields.\n\n-   **Flat, low-volume subgraphs** could either be healthy or underutilized — context matters.\n\n**Actionable Insights:**\n\n-   Audit GraphQL queries hitting high-volume subgraphs.\n-   Consider schema redesigns to reduce payload size (e.g., use fragments, `@defer`, or pagination).\n-   If the size is expected (e.g., media, large objects), ensure proper compression is in place.\n\n**Caveats:**\n\n-   Values are based on the `Content-Length` header and may not reflect actual decompressed payload size.\n-   This metric tracks data size **returned by subgraphs**, not what is ultimately sent to the client by the router.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 4,
+              "width": 7,
+              "height": 1
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 15,
+        "width": 12,
+        "height": 6
+      }
+    },
+    {
+      "id": 2547398354023131,
+      "definition": {
+        "title": "Request Performance & Latency: Router -> Subgraph",
+        "background_color": "vivid_blue",
+        "show_title": true,
+        "type": "group",
+        "layout_type": "ordered",
+        "widgets": [
+          {
+            "id": 7559571845461086,
+            "definition": {
+              "title": "P95 Latency",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": false,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "p95:http.client.request.duration{$service, $env ,$version} by {subgraph.name}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "alias": "P95 Latency (Seconds)",
+                      "formula": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "semantic",
+                    "order_by": "values",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 5190503484238670,
+            "definition": {
+              "title": "Latency by GraphQL Operation",
+              "title_size": "16",
+              "title_align": "left",
+              "type": "query_table",
+              "requests": [
+                {
+                  "queries": [
+                    {
+                      "name": "query2",
+                      "data_source": "spans",
+                      "search": {
+                        "query": "$service $env $version"
+                      },
+                      "indexes": [
+                        "*"
+                      ],
+                      "group_by": [
+                        {
+                          "facet": "@graphql.operation.name",
+                          "limit": 1000,
+                          "sort": {
+                            "aggregation": "avg",
+                            "order": "desc",
+                            "metric": "@duration"
+                          },
+                          "should_exclude_missing": true
+                        }
+                      ],
+                      "compute": {
+                        "aggregation": "avg",
+                        "metric": "@duration"
+                      },
+                      "storage": "hot"
+                    }
+                  ],
+                  "response_format": "scalar",
+                  "sort": {
+                    "count": 1000,
+                    "order_by": [
+                      {
+                        "type": "formula",
+                        "index": 0,
+                        "order": "desc"
+                      }
+                    ]
+                  },
+                  "formulas": [
+                    {
+                      "cell_display_mode": "bar",
+                      "alias": "avg duration",
+                      "formula": "query2"
+                    }
+                  ]
+                }
+              ],
+              "has_search_bar": "auto"
+            },
+            "layout": {
+              "x": 6,
+              "y": 0,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 422220421274293,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the 95th percentile (P95) request duration from the Router to each subgraph.\n\n### Why It Matters\n\n-   P95 is more **resilient to outliers** than max but still reveals tail latency problems that affect real users.\n\n### What to Look For\n\n-  **Rising P95** values can indicate:\n\n    -   Backend slowness\n    -   Schema changes causing more complex queries\n    -   Increased load on subgraphs\n\n-  **Flat or low P95** suggests stable performance under current conditions.\n\n-  **Correlate with throughput** — rising latency during peak traffic may mean you’re under-provisioned.\n\n\n### Actionable Insights\n\n-   Investigate consistently high-latency subgraphs — even if they aren’t crashing, they may be degrading user experience.\n-   Compare with response body size and throughput to find potential root causes (e.g., payload bloat or traffic spikes).\n-   Check if retry or @requires patterns are contributing.\n-   Consider the use of the [@defer](https://www.apollographql.com/docs/graphos/routing/operations/defer) directive to handle fields that take a particularly long time to resolve.\n\n\n### Caveats\n\n-   P95 latency is unreliable for low-throughput subgraphs because small sample sizes let outliers disproportionately skew the metric, making it hard to distinguish real issues from statistical noise.\n-   P95 doesn’t reveal all latency issues — check the distribution chart for outliers and long tails.\n",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 4,
+              "width": 6,
+              "height": 1
+            }
+          },
+          {
+            "id": 8992800975500272,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the average request duration from the Router to each GraphQL operation for your top 1000 operations.\n\nWhy it matters\n\n-   Captures the end-to-end time it takes the Router to process and respond to a specific operation.\n-   Helps identify slow or expensive operations affecting user experience.\n\nWhat to look for\n\n-   Operations should have consistent, predictable durations over time.\n-   Rising averages may indicate schema changes, degraded subgraph performance, or increased data complexity.\n-   Watch for high-variance or long-tail operations that may benefit from optimization or caching.\n\n### Caveats\n\n-   These values are retrieved via sampling to avoid the cost of high-cardinality metrics ingestion, so they are not 100% accurate especially over small time windows",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 4,
+              "width": 6,
+              "height": 1
+            }
+          },
+          {
+            "id": 4614292295630845,
+            "definition": {
+              "title": "Subgraph Performance Profile",
+              "title_size": "16",
+              "title_align": "left",
+              "time": {},
+              "type": "scatterplot",
+              "requests": {
+                "table": {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "count:http.client.request.duration{$service, $env ,$version} by {subgraph.name}.as_count()",
+                      "aggregator": "sum"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query2",
+                      "query": "p95:http.client.request.duration{$service, $env ,$version} by {subgraph.name}",
+                      "aggregator": "max"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "alias": "Requests",
+                      "dimension": "x",
+                      "formula": "throughput(query1)"
+                    },
+                    {
+                      "dimension": "y",
+                      "alias": "P95 Latency (Seconds)",
+                      "formula": "query2"
+                    }
+                  ]
+                }
+              },
+              "xaxis": {
+                "scale": "linear",
+                "include_zero": true,
+                "min": "auto",
+                "max": "auto"
+              },
+              "yaxis": {
+                "scale": "linear",
+                "include_zero": true,
+                "min": "auto",
+                "max": "auto"
+              },
+              "color_by_groups": [
+                "subgraph.name"
+              ]
+            },
+            "layout": {
+              "x": 0,
+              "y": 5,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 6179363342034765,
+            "definition": {
+              "title": "Subgraph Performance Profile",
+              "title_size": "16",
+              "title_align": "left",
+              "time": {
+                "type": "live",
+                "unit": "week",
+                "value": 1
+              },
+              "type": "scatterplot",
+              "requests": {
+                "table": {
+                  "response_format": "scalar",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "count:http.client.request.duration{$service, $env ,$version} by {subgraph.name}.as_count()",
+                      "aggregator": "sum"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query2",
+                      "query": "p95:http.client.request.duration{$service, $env ,$version} by {subgraph.name}",
+                      "aggregator": "max"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "alias": "Requests",
+                      "dimension": "x",
+                      "formula": "throughput(query1)"
+                    },
+                    {
+                      "dimension": "y",
+                      "alias": "P95 Latency (Seconds)",
+                      "formula": "query2"
+                    }
+                  ]
+                }
+              },
+              "xaxis": {
+                "scale": "linear",
+                "include_zero": true,
+                "min": "auto",
+                "max": "auto"
+              },
+              "yaxis": {
+                "scale": "linear",
+                "include_zero": true,
+                "min": "auto",
+                "max": "auto"
+              },
+              "color_by_groups": [
+                "subgraph.name"
+              ]
+            },
+            "layout": {
+              "x": 6,
+              "y": 5,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 6615090037432379,
+            "definition": {
+              "type": "note",
+              "content": "This chart aids in assessing the performance of individual subgraphs by correlating their request handling with their response times in order to identify hotspots and bottlenecks. \n\n**What to Look For:**\n- **Top right** = _hotspot / bottleneck_\n- **Bottom left** = _healthy_\n\nGood\n-   **Bottom-Right Quadrant (High RPS & Low Latency):** Ideal scenario indicating efficient subgraphs.\n-   **Bottom-Left Quadrant (Low RPS & Low Latency):** Efficient but underutilized.\n\nWarning\n-   **Top-Left Quadrant (Low RPS & High Latency):** Underutilized and slow; potential future bottlenecks or issues if traffic increases. \n\nBad\n-   **Top-Right Quadrant (High RPS & High Latency ):** Subgraphs handling many requests with slower responses; may need optimization.\n\n**Actionable Insights:**\n\n-   **Optimize High-Latency Subgraphs:** Perform schema optimizations or improve the performance of subgraphs. Starting with ones in the top right. \n-   **Annotate Known Outliers:** Use a note widget or annotations to explain any known anomalies:\n    -  “This subgraph is intentionally slow due to external API call.”\n    -  “This one was recently scaled — latency is expected to improve.”\n\n**Caveats:**\n\n- **Axes Auto-Scale:** This scatterplot dynamically adjusts its axes based on the current data. As a result, a subgraph may appear in the top-right corner simply due to a narrow overall range — not necessarily because it has poor performance. Always interpret positions relative to other subgraphs, and remember that a top-right placement can still be acceptable if the latency and throughput are within expected bounds",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 9,
+              "width": 6,
+              "height": 1
+            }
+          },
+          {
+            "id": 1856669505570071,
+            "definition": {
+              "type": "note",
+              "content": "This chart is a companion to the scatter plot to the left, set to a fixed time window of 1 week to provide a reference point against whatever timescale you have your dashboard configured to.",
+              "background_color": "yellow",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 9,
+              "width": 6,
+              "height": 1
             }
           },
           {
@@ -414,158 +822,44 @@
                     "data_source": "metrics",
                     "name": "query1",
                     "aggregator": "avg",
-                    "query": "avg:http.server.request.duration{$service, $env ,$version}"
+                    "query": "avg:http.client.request.duration{subgraph.name:* ,$service, $env ,$version}"
                   }
                 }
               ]
             },
             "layout": {
               "x": 0,
-              "y": 3,
+              "y": 10,
               "width": 6,
-              "height": 3
+              "height": 4
             }
           },
           {
-            "id": 73435209590847,
-            "definition": {
-              "title": "Request Duration Percentiles",
-              "title_size": "16",
-              "title_align": "left",
-              "show_legend": true,
-              "legend_layout": "auto",
-              "legend_columns": [
-                "value"
-              ],
-              "type": "timeseries",
-              "requests": [
-                {
-                  "formulas": [
-                    {
-                      "alias": "p99",
-                      "number_format": {
-                        "unit": {
-                          "type": "canonical_unit",
-                          "unit_name": "second"
-                        }
-                      },
-                      "formula": "query2"
-                    },
-                    {
-                      "alias": "p95",
-                      "number_format": {
-                        "unit": {
-                          "type": "canonical_unit",
-                          "unit_name": "second"
-                        }
-                      },
-                      "formula": "query3"
-                    },
-                    {
-                      "alias": "p90",
-                      "number_format": {
-                        "unit": {
-                          "type": "canonical_unit",
-                          "unit_name": "second"
-                        }
-                      },
-                      "formula": "query4"
-                    },
-                    {
-                      "alias": "Min",
-                      "number_format": {
-                        "unit": {
-                          "type": "canonical_unit",
-                          "unit_name": "second"
-                        }
-                      },
-                      "formula": "query5"
-                    },
-                    {
-                      "alias": "Max",
-                      "number_format": {
-                        "unit": {
-                          "type": "canonical_unit",
-                          "unit_name": "second"
-                        }
-                      },
-                      "formula": "query6"
-                    }
-                  ],
-                  "queries": [
-                    {
-                      "name": "query2",
-                      "data_source": "metrics",
-                      "query": "p99:http.server.request.duration{$service, $env ,$version}"
-                    },
-                    {
-                      "name": "query3",
-                      "data_source": "metrics",
-                      "query": "p95:http.server.request.duration{$service, $env ,$version}"
-                    },
-                    {
-                      "name": "query4",
-                      "data_source": "metrics",
-                      "query": "p90:http.server.request.duration{$service, $env ,$version}"
-                    },
-                    {
-                      "name": "query5",
-                      "data_source": "metrics",
-                      "query": "min:http.server.request.duration{$service, $env ,$version}"
-                    },
-                    {
-                      "name": "query6",
-                      "data_source": "metrics",
-                      "query": "max:http.server.request.duration{$service, $env ,$version}"
-                    }
-                  ],
-                  "response_format": "timeseries",
-                  "style": {
-                    "palette": "dog_classic",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  },
-                  "display_type": "line"
-                }
-              ],
-              "yaxis": {
-                "include_zero": false,
-                "scale": "log"
-              }
-            },
-            "layout": {
-              "x": 6,
-              "y": 3,
-              "width": 6,
-              "height": 3
-            }
-          },
-          {
-            "id": 6514407841345693,
+            "id": 2538570288917588,
             "definition": {
               "type": "note",
-              "content": "This chart shows the distribution of HTTP request durations handled by the Apollo Router.\n\n-   **Metric:** [http.server.request.duration](https://opentelemetry.io/docs/specs/semconv/http/http-metrics/#metric-httpserverrequestduration) — measures how long each HTTP request takes.\n\n### What this tells you\n\n-   The shape of the distribution helps identify performance patterns:\n\n    -   A narrow peak near the left means most requests are fast.\n    -   A long tail to the right indicates some requests are slower and may require investigation.\n\n-   Sudden shifts or broadening of the distribution can indicate latency issues or backend slowdowns.\n\n### Why it matters\n\nMonitoring request duration distribution helps you:\n\n-   Understand if performance issues impact many requests or just a few outliers.\n-   Make informed decisions on where to focus optimization or debugging efforts.",
-              "background_color": "yellow",
+              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on P95 latency exceeding thresholds for critical subgraphs.\n-   Latency SLO (For High-Throughput): P95 Router → Subgraph latency should remain under 300ms\n-   Latency SLO (For Moderate-Throughput): Set threshold to (current P95 for the last week + 20%). This allows for natural variability while detecting regressions.\n",
+              "background_color": "white",
               "font_size": "14",
               "text_align": "left",
-              "vertical_align": "center",
-              "show_tick": true,
+              "vertical_align": "top",
+              "show_tick": false,
               "tick_pos": "50%",
-              "tick_edge": "top",
+              "tick_edge": "left",
               "has_padding": true
             },
             "layout": {
-              "x": 0,
-              "y": 6,
+              "x": 6,
+              "y": 10,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           },
           {
-            "id": 2631813081995925,
+            "id": 1275499059031764,
             "definition": {
               "type": "note",
-              "content": "### What the percentiles tell you\n\n-   **p90 / p95:** These percentiles represent the upper range of _typical_ request latencies.\\\n    If these values rise, it generally means a significant portion of requests are experiencing slower responses. Possible causes include:\n\n    -   A subgraph is responding more slowly than usual (e.g., due to load or inefficiency)\n    -   The Router’s query planning step is taking longer (especially with complex or highly federated queries)\n    -   Overall increased load causing processing delays\n\n-   **p99:** This is a _tail latency_ metric that reflects the slowest 1% of requests.\\\n    Spikes here often indicate rare but impactful delays, such as:\n\n    -   Intermittent subgraph performance issues or temporary timeouts\n    -   Specific heavy or complex queries that take much longer to plan or execute\n    -   Unusual overhead in middleware or Router internals affecting some requests\n\n-   **Max:** The absolute slowest observed request during the timeframe.\\\n    Isolated high max values are usually less concerning (e.g., caused by a single unusual request). However, frequent or sustained high max latencies may point to:\n\n    -   Clients issuing extremely large or repeated queries causing resource exhaustion or retries\n    -   Transient infrastructure problems (network issues, DNS delays, resource contention)\n\n-   **Min:** Represents the fastest possible response from the Router. A surprisingly high minimum usually reflects baseline overhead within the Router itself — such as:\n\n    -   Middleware or plugin execution time\n    \n    -   Query parsing, validation, or planning\n    \n    -   Routing logic that's inherently non-negligible\n\n### Caveats\n\n-   Low request volumes can skew percentiles; a single slow request distorts p99 or max.\n-   Slow subgraphs inflate Router latency here—this chart shows total request time, not internal breakdowns.\n-   Latency spikes without load increase may point to network hiccups, subgraph cold starts, or cloud platform noise outside the Router’s control.",
+              "content": "This chart visualizes the distribution of subgraph request durations over time. It helps identify how long most requests take and highlights the presence of any outliers or tail latency issues.\n\n### What to Look For\n\n-   A tight cluster around low durations suggests fast, consistent subgraph responses.\n-   A long tail or spread to the right may indicate occasional slowness or outliers.\n-   Sudden shape changes over time can highlight new regressions, changes in traffic, or schema changes.",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
@@ -576,8 +870,8 @@
               "has_padding": true
             },
             "layout": {
-              "x": 6,
-              "y": 6,
+              "x": 0,
+              "y": 14,
               "width": 6,
               "height": 1
             }
@@ -588,49 +882,69 @@
         "x": 0,
         "y": 0,
         "width": 12,
-        "height": 8,
+        "height": 16,
         "is_column_break": true
       }
     },
     {
-      "id": 7297406716732741,
+      "id": 5499564723801628,
       "definition": {
-        "title": "",
+        "title": "Top Most Queried Subgraphs: Request Duration Distributions",
         "title_size": "16",
         "title_align": "left",
-        "type": "timeseries",
-        "requests": [
-          {
-            "response_format": "timeseries",
-            "queries": [
-              {
-                "data_source": "spans",
+        "type": "split_group",
+        "source_widget_definition": {
+          "title": "",
+          "title_size": "16",
+          "title_align": "left",
+          "type": "distribution",
+          "xaxis": {
+            "scale": "linear",
+            "min": "auto",
+            "max": "auto",
+            "include_zero": true
+          },
+          "yaxis": {
+            "scale": "linear",
+            "min": "auto",
+            "max": "auto",
+            "include_zero": true
+          },
+          "requests": [
+            {
+              "request_type": "histogram",
+              "query": {
+                "data_source": "metrics",
                 "name": "query1",
-                "search": {
-                  "query": ""
-                },
-                "indexes": [],
-                "compute": {
-                  "aggregation": "count"
-                },
-                "group_by": []
+                "aggregator": "avg",
+                "query": "avg:http.client.request.duration{subgraph.name:* ,$service, $env ,$version}"
               }
-            ],
-            "style": {
-              "palette": "dog_classic",
-              "order_by": "values",
-              "line_type": "solid",
-              "line_width": "normal"
-            },
-            "display_type": "line"
+            }
+          ]
+        },
+        "split_config": {
+          "split_dimensions": [
+            {
+              "one_graph_per": "subgraph.name"
+            }
+          ],
+          "limit": 12,
+          "sort": {
+            "order": "desc",
+            "compute": {
+              "aggregation": "count",
+              "metric": "http.client.request.duration"
+            }
           }
-        ]
+        },
+        "size": "xs",
+        "has_uniform_y_axes": true
       },
       "layout": {
         "x": 0,
-        "y": 0,
-        "width": 4,
-        "height": 2
+        "y": 16,
+        "width": 12,
+        "height": 3
       }
     }
   ],
