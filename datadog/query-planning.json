@@ -279,7 +279,7 @@
               ],
               "yaxis": {
                 "include_zero": true,
-                "scale": "sqrt"
+                "scale": "linear"
               }
             },
             "layout": {

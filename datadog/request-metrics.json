@@ -482,6 +482,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -496,6 +497,12 @@
                   "formulas": [
                     {
                       "alias": "P95 Latency (Seconds)",
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
                       "formula": "query1"
                     }
                   ],
@@ -631,7 +638,6 @@
               "title": "Subgraph Performance Profile",
               "title_size": "16",
               "title_align": "left",
-              "time": {},
               "type": "scatterplot",
               "requests": {
                 "table": {
@@ -880,7 +886,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 0,
+        "y": 21,
         "width": 12,
         "height": 16,
         "is_column_break": true
@@ -942,9 +948,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 16,
+        "y": 37,
         "width": 12,
-        "height": 3
+        "height": 5
       }
     }
   ],
