@@ -195,7 +195,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -279,7 +278,7 @@
               ],
               "yaxis": {
                 "include_zero": true,
-                "scale": "sqrt"
+                "scale": "linear"
               }
             },
             "layout": {
@@ -353,7 +352,7 @@
             "id": 7402516847608650,
             "definition": {
               "type": "note",
-              "content": "Compute jobs are CPU-intensive tasks that get managed on a dedicated thread pool, inclusive of query planning tasks. Non-query-planning tasks tend to be either low-cost (in the case of query parsing) or infrequent to nonexistent (in the case of introspection resolution) and are consequently less commonly a performance pain point. Most diagnosis will be done against the query planning metrics directly, but this section is provided for informational purposes.",
+              "content": "Compute jobs are CPU-intensive tasks that get managed on a dedicated thread pool, inclusive of query planning tasks. Non-query-planning tasks tend to be either low-cost and are consequently less commonly a performance pain point. Most diagnosis will be done against the query planning metrics directly, but this section is provided for comparative purposes.",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -445,9 +444,9 @@
             }
           },
           {
-            "id": 1568178430355607,
+            "id": 2242335784104899,
             "definition": {
-              "title": "Introspection Avg Duration and Wait Time",
+              "title": "Query Planning Avg Duration and Wait Time",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
@@ -459,6 +458,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -467,12 +467,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:introspection}"
+                      "query": "avg:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_planning}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query3",
-                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value ,job.type:introspection}"
+                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_planning}"
                     }
                   ],
                   "formulas": [
@@ -481,6 +481,10 @@
                         "unit": {
                           "type": "canonical_unit",
                           "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
                         }
                       },
                       "alias": "avg execution duration",
@@ -491,6 +495,10 @@
                         "unit": {
                           "type": "canonical_unit",
                           "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
                         }
                       },
                       "alias": "avg wait time",
@@ -552,7 +560,7 @@
               ],
               "yaxis": {
                 "include_zero": true,
-                "scale": "sqrt"
+                "scale": "linear"
               }
             },
             "layout": {
@@ -577,6 +585,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -599,6 +608,10 @@
                         "unit": {
                           "type": "canonical_unit",
                           "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
                         }
                       },
                       "alias": "avg execution duration",
@@ -609,6 +622,10 @@
                         "unit": {
                           "type": "canonical_unit",
                           "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
                         }
                       },
                       "alias": "avg wait time",
@@ -670,7 +687,7 @@
               ],
               "yaxis": {
                 "include_zero": true,
-                "scale": "sqrt"
+                "scale": "linear"
               }
             },
             "layout": {
@@ -702,10 +719,10 @@
             }
           },
           {
-            "id": 4800289724652787,
+            "id": 8220638844765090,
             "definition": {
               "type": "note",
-              "content": "While we [do not recommend enabling Introspection in Production](https://www.apollographql.com/blog/why-you-should-disable-graphql-introspection-in-production), if you do have it enabled you can see the compute cost of such queries against your supergraph here.",
+              "content": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**Why it matters**\n\n-   Query planning is critical to routing — delays here increase end-to-end latency.\n-   Schema or configuration changes can unexpectedly impact planning performance.\n-   High max durations may point to specific queries performing poorly in the planner.\n\n**What to look for**\n\n-   Low, stable execution times indicate efficient planning.\n-   Spikes in max duration could signal complex or inefficient queries.\n-   Rising trends after deployments or schema changes may require investigation.\n\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices).",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
