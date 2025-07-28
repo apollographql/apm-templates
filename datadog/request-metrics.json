@@ -540,7 +540,7 @@
                           "facet": "@graphql.operation.name",
                           "limit": 1000,
                           "sort": {
-                            "aggregation": "avg",
+                            "aggregation": "pc95",
                             "order": "desc",
                             "metric": "@duration"
                           },
@@ -548,7 +548,7 @@
                         }
                       ],
                       "compute": {
-                        "aggregation": "avg",
+                        "aggregation": "pc95",
                         "metric": "@duration"
                       },
                       "storage": "hot"
@@ -568,7 +568,7 @@
                   "formulas": [
                     {
                       "cell_display_mode": "bar",
-                      "alias": "avg duration",
+                      "alias": "p95 duration",
                       "formula": "query2"
                     }
                   ]
@@ -608,7 +608,7 @@
             "id": 8992800975500272,
             "definition": {
               "type": "note",
-              "content": "This chart tracks the average request duration from the Router to each GraphQL operation for your top 1000 operations.\n\nWhy it matters\n\n-   Captures the end-to-end time it takes the Router to process and respond to a specific operation.\n-   Helps identify slow or expensive operations affecting user experience.\n\nWhat to look for\n\n-   Operations should have consistent, predictable durations over time.\n-   Rising averages may indicate schema changes, degraded subgraph performance, or increased data complexity.\n-   Watch for high-variance or long-tail operations that may benefit from optimization or caching.\n\n### Caveats\n\n-   These values are retrieved via sampling to avoid the cost of high-cardinality metrics ingestion, so they are not 100% accurate especially over small time windows",
+              "content": "This chart tracks the p95 request duration from the Router to each GraphQL operation for your top 1000 operations.\n\nWhy it matters\n\n-   Captures the end-to-end time it takes the Router to process and respond to a specific operation.\n-   Helps identify slow or expensive operations affecting user experience.\n\nWhat to look for\n\n-   Operations should have consistent, predictable durations over time.\n-   Rising p95s may indicate schema changes, degraded subgraph performance, or increased data complexity.\n-   Watch for high-variance or long-tail operations that may benefit from optimization or caching.\n\n### Caveats\n\n-   These values are retrieved via sampling to avoid the cost of high-cardinality metrics ingestion, so they are not 100% accurate especially over small time windows",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
