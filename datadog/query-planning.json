@@ -458,7 +458,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -585,7 +584,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -701,7 +699,7 @@
             "id": 5923077997925504,
             "definition": {
               "type": "note",
-              "content": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**Why it matters:**\n\n* A non-zero queue means jobs are backing up, introducing latency for any requests that depend on them.\n* Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n* Helps identify runtime saturation under load.\n\n**What to look for**\n\n* A consistently empty queue is ideal — jobs are being processed as they arrive.\n* Short spikes can be normal during brief load surges.\n* Sustained nonzero periods may require scaling CPU resources or optimizing workload.",
+              "content": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**Why it matters:**\n\n* A queue with a depth greater than 1 means jobs are backing up, introducing latency for any requests that depend on them.\n* Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n* Helps identify runtime saturation under load.\n\n**What to look for**\n\n* A queue of 0-1 is ideal — jobs are being processed as they arrive.\n* Short spikes can be normal during brief load surges.\n* Sustained periods above a depth of 1 may require scaling CPU resources or optimizing workload.",
               "background_color": "yellow",
               "font_size": "14",
               "text_align": "left",
