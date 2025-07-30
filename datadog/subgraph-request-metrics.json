@@ -170,7 +170,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -269,6 +268,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -317,8 +317,8 @@
                 }
               ],
               "yaxis": {
-                "include_zero": false,
-                "scale": "log"
+                "include_zero": true,
+                "scale": "linear"
               }
             },
             "layout": {
@@ -587,52 +587,10 @@
       },
       "layout": {
         "x": 0,
-        "y": 0,
+        "y": 16,
         "width": 12,
         "height": 8,
         "is_column_break": true
-      }
-    },
-    {
-      "id": 7297406716732741,
-      "definition": {
-        "title": "",
-        "title_size": "16",
-        "title_align": "left",
-        "show_legend": false,
-        "type": "timeseries",
-        "requests": [
-          {
-            "response_format": "timeseries",
-            "queries": [
-              {
-                "data_source": "spans",
-                "name": "query1",
-                "search": {
-                  "query": ""
-                },
-                "indexes": [],
-                "compute": {
-                  "aggregation": "count"
-                },
-                "group_by": []
-              }
-            ],
-            "style": {
-              "palette": "dog_classic",
-              "order_by": "values",
-              "line_type": "solid",
-              "line_width": "normal"
-            },
-            "display_type": "line"
-          }
-        ]
-      },
-      "layout": {
-        "x": 0,
-        "y": 0,
-        "width": 4,
-        "height": 2
       }
     }
   ],
