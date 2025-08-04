@@ -12,6 +12,27 @@
         "layout_type": "ordered",
         "widgets": [
           {
+            "id": 4766111693665422,
+            "definition": {
+              "type": "note",
+              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from router\n-   If your organization has control over all clients of your supergraph:\n    -   alert on increases in 4xx responses indicating a potential misconfiguration of one or more clients.\n    -   alert on increases in GraphQL errors indicating bad queries from one or more clients.\n-   Reliability SLO: ≥99.9% of Router responses should be 2xx and without error.\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": false,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 6
+            }
+          },
+          {
             "id": 1224218507683046,
             "definition": {
               "title": "Volume of Requests Per Status Code",
@@ -59,7 +80,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 0,
+              "y": 6,
               "width": 6,
               "height": 4
             }
@@ -108,7 +129,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 0,
+              "y": 6,
               "width": 6,
               "height": 4
             }
@@ -129,7 +150,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 4,
+              "y": 10,
               "width": 6,
               "height": 2
             }
@@ -150,30 +171,9 @@
             },
             "layout": {
               "x": 6,
-              "y": 4,
+              "y": 10,
               "width": 6,
               "height": 2
-            }
-          },
-          {
-            "id": 4766111693665422,
-            "definition": {
-              "type": "note",
-              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from router\n-   If your organization has control over all clients of your supergraph:\n    -   alert on increases in 4xx responses indicating a potential misconfiguration of one or more clients.\n    -   alert on increases in GraphQL errors indicating bad queries from one or more clients.\n-   Reliability SLO: ≥99.9% of Router responses should be 2xx and without error.",
-              "background_color": "white",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": false,
-              "tick_pos": "50%",
-              "tick_edge": "left",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 0,
-              "y": 5,
-              "width": 6,
-              "height": 3
             }
           },
           {
@@ -229,31 +229,10 @@
               ]
             },
             "layout": {
-              "x": 6,
-              "y": 5,
+              "x": 0,
+              "y": 12,
               "width": 6,
               "height": 4
-            }
-          },
-          {
-            "id": 4862267805362066,
-            "definition": {
-              "type": "note",
-              "content": "### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
-              "background_color": "white",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": false,
-              "tick_pos": "50%",
-              "tick_edge": "left",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 0,
-              "y": 8,
-              "width": 6,
-              "height": 2
             }
           },
           {
@@ -271,8 +250,8 @@
               "has_padding": true
             },
             "layout": {
-              "x": 6,
-              "y": 9,
+              "x": 0,
+              "y": 16,
               "width": 6,
               "height": 2
             }
@@ -283,7 +262,7 @@
         "x": 0,
         "y": 0,
         "width": 12,
-        "height": 1
+        "height": 19
       }
     },
     {
@@ -366,8 +345,8 @@
             "layout": {
               "x": 0,
               "y": 0,
-              "width": 5,
-              "height": 3
+              "width": 6,
+              "height": 4
             }
           },
           {
@@ -386,8 +365,8 @@
             },
             "layout": {
               "x": 0,
-              "y": 3,
-              "width": 5,
+              "y": 4,
+              "width": 6,
               "height": 2
             }
           }
@@ -395,9 +374,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 1,
+        "y": 19,
         "width": 12,
-        "height": 1
+        "height": 7
       }
     },
     {
@@ -466,7 +445,7 @@
               "x": 0,
               "y": 3,
               "width": 6,
-              "height": 3
+              "height": 4
             }
           },
           {
@@ -581,7 +560,7 @@
               "x": 6,
               "y": 3,
               "width": 6,
-              "height": 3
+              "height": 4
             }
           },
           {
@@ -600,7 +579,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 6,
+              "y": 7,
               "width": 6,
               "height": 2
             }
@@ -621,7 +600,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 6,
+              "y": 7,
               "width": 6,
               "height": 2
             }
@@ -630,9 +609,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 2,
+        "y": 26,
         "width": 12,
-        "height": 1
+        "height": 10
       }
     },
     {
@@ -644,6 +623,27 @@
         "type": "group",
         "layout_type": "ordered",
         "widgets": [
+          {
+            "id": 8928058460124150,
+            "definition": {
+              "type": "note",
+              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from any subgraph.\n-   Reliability SLO: ≥99.9% of Router→subgraph requests should be 2xx and without error.\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": false,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 5
+            }
+          },
           {
             "id": 3931875108914008,
             "definition": {
@@ -687,7 +687,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 0,
+              "y": 5,
               "width": 6,
               "height": 4
             }
@@ -736,7 +736,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 0,
+              "y": 5,
               "width": 6,
               "height": 4
             }
@@ -757,7 +757,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 4,
+              "y": 9,
               "width": 6,
               "height": 2
             }
@@ -778,7 +778,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 4,
+              "y": 9,
               "width": 6,
               "height": 2
             }
@@ -830,72 +830,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 5,
-              "width": 8,
+              "y": 11,
+              "width": 6,
               "height": 4
-            }
-          },
-          {
-            "id": 8928058460124150,
-            "definition": {
-              "type": "note",
-              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from any subgraph.\n-   Reliability SLO: ≥99.9% of Router→subgraph requests should be 2xx and without error.",
-              "background_color": "white",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": false,
-              "tick_pos": "50%",
-              "tick_edge": "left",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 8,
-              "y": 5,
-              "width": 4,
-              "height": 2
-            }
-          },
-          {
-            "id": 2347349834910780,
-            "definition": {
-              "type": "note",
-              "content": "### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
-              "background_color": "white",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": false,
-              "tick_pos": "50%",
-              "tick_edge": "left",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 8,
-              "y": 7,
-              "width": 4,
-              "height": 3
-            }
-          },
-          {
-            "id": 6943674061818587,
-            "definition": {
-              "type": "note",
-              "content": "This chart focuses specifically on non-successful(non-2xx) responses from subgraphs — grouped by subgraph and status code.\n\n**Why it matters:**\n\n-   These are the requests that failed, either due to config errors (4xx) or server-side issues (5xx).\n-   The Router isn’t failing — it’s forwarding a query that the subgraph can't fulfill.\n\n**Common causes of 4xx:**\n\n-   Schema mismatch between subgraph and Supergraph (e.g., schema drift)\n-   Missing auth headers or invalid inputs\n\n**Common causes of 5xx:**\n\n-   Crashes, timeouts, or errors in a subgraphs logic\n\n**How this impacts Router performance:**\n\n-   Frequent 5xxs inflate latency as the Router retries or collects error details.\n-   Repeated 4xxs may be harmless, but still consume Router resources and can signal client or schema issues.\n\n\n**Pro tip:**\\\nIf a subgraph frequently appears here, coordinate with its owning team to investigate error logs or validate schema compatibility.\n\n**Caveats**\n- You might see `N/A` as a status code. This means that a request was made but a response was not received. ",
-              "background_color": "gray",
-              "font_size": "12",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 0,
-              "y": 9,
-              "width": 8,
-              "height": 2
             }
           },
           {
@@ -961,10 +898,31 @@
               ]
             },
             "layout": {
-              "x": 0,
-              "y": 10,
-              "width": 8,
+              "x": 6,
+              "y": 11,
+              "width": 6,
               "height": 4
+            }
+          },
+          {
+            "id": 6943674061818587,
+            "definition": {
+              "type": "note",
+              "content": "This chart focuses specifically on non-successful(non-2xx) responses from subgraphs — grouped by subgraph and status code.\n\n**Why it matters:**\n\n-   These are the requests that failed, either due to config errors (4xx) or server-side issues (5xx).\n-   The Router isn’t failing — it’s forwarding a query that the subgraph can't fulfill.\n\n**Common causes of 4xx:**\n\n-   Schema mismatch between subgraph and Supergraph (e.g., schema drift)\n-   Missing auth headers or invalid inputs\n\n**Common causes of 5xx:**\n\n-   Crashes, timeouts, or errors in a subgraphs logic\n\n**How this impacts Router performance:**\n\n-   Frequent 5xxs inflate latency as the Router retries or collects error details.\n-   Repeated 4xxs may be harmless, but still consume Router resources and can signal client or schema issues.\n\n\n**Pro tip:**\\\nIf a subgraph frequently appears here, coordinate with its owning team to investigate error logs or validate schema compatibility.\n\n**Caveats**\n- You might see `N/A` as a status code. This means that a request was made but a response was not received. ",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 15,
+              "width": 6,
+              "height": 2
             }
           },
           {
@@ -978,13 +936,13 @@
               "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
-              "tick_edge": "left",
+              "tick_edge": "top",
               "has_padding": true
             },
             "layout": {
-              "x": 8,
-              "y": 10,
-              "width": 4,
+              "x": 6,
+              "y": 15,
+              "width": 6,
               "height": 2
             }
           }
@@ -992,9 +950,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 3,
+        "y": 36,
         "width": 12,
-        "height": 1
+        "height": 18
       }
     },
     {
@@ -1057,7 +1015,7 @@
             "layout": {
               "x": 0,
               "y": 0,
-              "width": 7,
+              "width": 6,
               "height": 4
             }
           },
@@ -1078,7 +1036,7 @@
             "layout": {
               "x": 0,
               "y": 4,
-              "width": 7,
+              "width": 6,
               "height": 2
             }
           }
@@ -1086,9 +1044,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 4,
+        "y": 54,
         "width": 12,
-        "height": 1
+        "height": 7
       }
     },
     {
@@ -1100,6 +1058,27 @@
         "type": "group",
         "layout_type": "ordered",
         "widgets": [
+          {
+            "id": 2538570288917588,
+            "definition": {
+              "type": "note",
+              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on P95 latency exceeding thresholds for critical subgraphs.\n-   Latency SLO (For High-Throughput): P95 Router → Subgraph latency should remain under 300ms\n-   Latency SLO (For Moderate-Throughput): Set threshold to (current P95 for the last week + 20%). This allows for natural variability while detecting regressions.\n",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": false,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 2
+            }
+          },
           {
             "id": 7559571845461086,
             "definition": {
@@ -1150,7 +1129,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 0,
+              "y": 2,
               "width": 6,
               "height": 4
             }
@@ -1217,7 +1196,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 0,
+              "y": 2,
               "width": 6,
               "height": 4
             }
@@ -1238,7 +1217,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 4,
+              "y": 6,
               "width": 6,
               "height": 2
             }
@@ -1259,7 +1238,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 4,
+              "y": 6,
               "width": 6,
               "height": 2
             }
@@ -1320,7 +1299,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 5,
+              "y": 8,
               "width": 6,
               "height": 4
             }
@@ -1386,7 +1365,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 5,
+              "y": 8,
               "width": 6,
               "height": 4
             }
@@ -1407,7 +1386,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 9,
+              "y": 12,
               "width": 6,
               "height": 2
             }
@@ -1428,7 +1407,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 9,
+              "y": 12,
               "width": 6,
               "height": 2
             }
@@ -1467,30 +1446,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 10,
+              "y": 14,
               "width": 6,
               "height": 4
-            }
-          },
-          {
-            "id": 2538570288917588,
-            "definition": {
-              "type": "note",
-              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on P95 latency exceeding thresholds for critical subgraphs.\n-   Latency SLO (For High-Throughput): P95 Router → Subgraph latency should remain under 300ms\n-   Latency SLO (For Moderate-Throughput): Set threshold to (current P95 for the last week + 20%). This allows for natural variability while detecting regressions.\n",
-              "background_color": "white",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": false,
-              "tick_pos": "50%",
-              "tick_edge": "left",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 6,
-              "y": 10,
-              "width": 6,
-              "height": 2
             }
           },
           {
@@ -1509,7 +1467,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 14,
+              "y": 18,
               "width": 6,
               "height": 2
             }
@@ -1518,9 +1476,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 5,
+        "y": 61,
         "width": 12,
-        "height": 1
+        "height": 21
       }
     },
     {
@@ -1579,9 +1537,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 6,
+        "y": 82,
         "width": 12,
-        "height": 1
+        "height": 5
       }
     },
     {
@@ -1916,9 +1874,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 7,
+        "y": 87,
         "width": 12,
-        "height": 1
+        "height": 8
       }
     },
     {
@@ -1934,7 +1892,7 @@
             "id": 2338005724257191,
             "definition": {
               "type": "note",
-              "content": "Whenever your router receives an incoming GraphQL operation, it generates a [query plan](https://www.apollographql.com/docs/federation/query-plans/) to determine which subgraphs it needs to query to resolve that operation. By caching previously generated query plans, your router can _skip_ generating them _again_ if a client later sends the exact same operation. This improves your router's responsiveness.\n\nMonitoring your caching provides insights into both how normal your traffic is and how well your router is able to serve those requests. Your ideal cache performance and hit rates will vary depending on your expected traffic patterns. With the in-memory cache, it will be common to see spikes of cache misses and changes in cache size when new instances are deployed, new schemas are deployed, or new config versions are deployed. During this time, the cache will be evicted and re-warmed up.\n\nThese charts are pre-populated with event overlays for schema reloads and query plan warmup events. Schema reloads will accompany an expected drop in cache record count and a spike in cache miss rate as unusable cache records are evicted. [Cache warmups](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory#cache-warm-up) will accompany a period of cache misses as new plans are deliberately hit to prime them into the cache. The router does not serve traffic on the new schema until after that precompute warmup has completed.\n\nFor context on what’s cached and why, review the in-memory caching  [documentation](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory) before interpreting the charts below.\n\n**Caveats**\n- These metrics assume that you are running an in-memory cache on your Router. \n\n- If you are using Redis for distributed caching, you will want to monitor that separately [via Datadog's agent](https://docs.datadoghq.com/integrations/redisdb/?tab=host).\n\n- If you are using Entity Caching, [separate metrics will be available](https://www.apollographql.com/docs/graphos/routing/performance/caching/entity#observability) to monitor the performance of that feature.\n\n",
+              "content": "Whenever your router receives an incoming GraphQL operation, it generates a [query plan](https://www.apollographql.com/docs/federation/query-plans/) to determine which subgraphs it needs to query to resolve that operation. By caching previously generated query plans, your router can _skip_ generating them _again_ if a client later sends the exact same operation. This improves your router's responsiveness.\n\nMonitoring your caching provides insights into both how normal your traffic is and how well your router is able to serve those requests. Your ideal cache performance and hit rates will vary depending on your expected traffic patterns. With the in-memory cache, it will be common to see spikes of cache misses and changes in cache size when new instances are deployed, new schemas are deployed, or new config versions are deployed. During this time, the cache will be evicted and re-warmed up.\n\nThese charts are pre-populated with event overlays for schema reloads and query plan warmup events. Schema reloads will accompany an expected drop in cache record count and a spike in cache miss rate as unusable cache records are evicted. [Cache warmups](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory#cache-warm-up) will accompany a period of cache misses as new plans are deliberately hit to prime them into the cache. The router does not serve traffic on the new schema until after that precompute warmup has completed.\n\nFor context on what’s cached and why, review the in-memory caching  [documentation](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory) before interpreting the charts below.\n\n**Caveats**\n- These metrics assume that you are running an in-memory cache on your Router. \n\n- If you are using Redis for distributed caching, you will want to monitor that separately [via Datadog's agent](https://docs.datadoghq.com/integrations/redisdb/?tab=host).\n\n- If you are using Entity Caching, [separate metrics will be available](https://www.apollographql.com/docs/graphos/routing/performance/caching/entity#observability) to monitor the performance of that feature.\n\n",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -1948,7 +1906,7 @@
               "x": 0,
               "y": 0,
               "width": 12,
-              "height": 3
+              "height": 5
             }
           },
           {
@@ -2097,7 +2055,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 3,
+              "y": 5,
               "width": 6,
               "height": 4
             }
@@ -2189,7 +2147,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 3,
+              "y": 5,
               "width": 6,
               "height": 4
             }
@@ -2210,7 +2168,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 7,
+              "y": 9,
               "width": 6,
               "height": 2
             }
@@ -2231,7 +2189,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 7,
+              "y": 9,
               "width": 6,
               "height": 2
             }
@@ -2284,9 +2242,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 8,
-              "width": 4,
-              "height": 3
+              "y": 11,
+              "width": 6,
+              "height": 4
             }
           },
           {
@@ -2336,10 +2294,52 @@
               }
             },
             "layout": {
-              "x": 4,
-              "y": 8,
-              "width": 4,
-              "height": 3
+              "x": 6,
+              "y": 11,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 7314147141979253,
+            "definition": {
+              "type": "note",
+              "content": "This chart shows cache record counts broken down by each cache type.\n\n**Why it matters:**\n\n* When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 15,
+              "width": 6,
+              "height": 2
+            }
+          },
+          {
+            "id": 5420652058492445,
+            "definition": {
+              "type": "note",
+              "content": "This chart shows cache misses broken down by cache type.\n\n**Why it matters:**\n\n* When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 15,
+              "width": 6,
+              "height": 2
             }
           },
           {
@@ -2397,52 +2397,10 @@
               "markers": []
             },
             "layout": {
-              "x": 8,
-              "y": 8,
-              "width": 4,
-              "height": 3
-            }
-          },
-          {
-            "id": 7314147141979253,
-            "definition": {
-              "type": "note",
-              "content": "This chart shows cache record counts broken down by each cache type.\n\n**Why it matters:**\n\n* When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail",
-              "background_color": "gray",
-              "font_size": "12",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
               "x": 0,
-              "y": 11,
-              "width": 4,
-              "height": 2
-            }
-          },
-          {
-            "id": 5420652058492445,
-            "definition": {
-              "type": "note",
-              "content": "This chart shows cache misses broken down by cache type.\n\n**Why it matters:**\n\n* When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail",
-              "background_color": "gray",
-              "font_size": "12",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 4,
-              "y": 11,
-              "width": 4,
-              "height": 2
+              "y": 17,
+              "width": 6,
+              "height": 4
             }
           },
           {
@@ -2460,9 +2418,9 @@
               "has_padding": true
             },
             "layout": {
-              "x": 8,
-              "y": 11,
-              "width": 4,
+              "x": 0,
+              "y": 21,
+              "width": 6,
               "height": 2
             }
           }
@@ -2470,9 +2428,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 8,
+        "y": 95,
         "width": 12,
-        "height": 1
+        "height": 24
       }
     },
     {
@@ -2502,7 +2460,7 @@
               "x": 0,
               "y": 0,
               "width": 12,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -2574,9 +2532,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 1,
-              "width": 4,
-              "height": 3
+              "y": 2,
+              "width": 6,
+              "height": 4
             }
           },
           {
@@ -2699,10 +2657,52 @@
               }
             },
             "layout": {
-              "x": 4,
-              "y": 1,
-              "width": 4,
-              "height": 3
+              "x": 6,
+              "y": 2,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 5923077997925504,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**Why it matters:**\n\n* A queue with a depth greater than 1 means jobs are backing up, introducing latency for any requests that depend on them.\n* Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n* Helps identify runtime saturation under load.\n\n**What to look for**\n\n* A queue of 0-1 is ideal — jobs are being processed as they arrive.\n* Short spikes can be normal during brief load surges.\n* Sustained periods above a depth of 1 may require scaling CPU resources or optimizing workload.",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 6,
+              "width": 6,
+              "height": 2
+            }
+          },
+          {
+            "id": 8220638844765090,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**Why it matters**\n\n-   Query planning is critical to routing — delays here increase end-to-end latency.\n-   Schema or configuration changes can unexpectedly impact planning performance.\n-   High max durations may point to specific queries performing poorly in the planner.\n\n**What to look for**\n\n-   Low, stable execution times indicate efficient planning.\n-   Spikes in max duration could signal complex or inefficient queries.\n-   Rising trends after deployments or schema changes may require investigation.\n\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices).",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 6,
+              "width": 6,
+              "height": 2
             }
           },
           {
@@ -2825,73 +2825,10 @@
               }
             },
             "layout": {
-              "x": 8,
-              "y": 1,
-              "width": 4,
-              "height": 3
-            }
-          },
-          {
-            "id": 5923077997925504,
-            "definition": {
-              "type": "note",
-              "content": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**Why it matters:**\n\n* A queue with a depth greater than 1 means jobs are backing up, introducing latency for any requests that depend on them.\n* Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n* Helps identify runtime saturation under load.\n\n**What to look for**\n\n* A queue of 0-1 is ideal — jobs are being processed as they arrive.\n* Short spikes can be normal during brief load surges.\n* Sustained periods above a depth of 1 may require scaling CPU resources or optimizing workload.",
-              "background_color": "gray",
-              "font_size": "12",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
               "x": 0,
-              "y": 4,
-              "width": 4,
-              "height": 2
-            }
-          },
-          {
-            "id": 8220638844765090,
-            "definition": {
-              "type": "note",
-              "content": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**Why it matters**\n\n-   Query planning is critical to routing — delays here increase end-to-end latency.\n-   Schema or configuration changes can unexpectedly impact planning performance.\n-   High max durations may point to specific queries performing poorly in the planner.\n\n**What to look for**\n\n-   Low, stable execution times indicate efficient planning.\n-   Spikes in max duration could signal complex or inefficient queries.\n-   Rising trends after deployments or schema changes may require investigation.\n\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices).",
-              "background_color": "gray",
-              "font_size": "12",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 4,
-              "y": 4,
-              "width": 4,
-              "height": 2
-            }
-          },
-          {
-            "id": 6257474700798550,
-            "definition": {
-              "type": "note",
-              "content": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns.",
-              "background_color": "gray",
-              "font_size": "12",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 8,
-              "y": 4,
-              "width": 4,
-              "height": 2
+              "y": 8,
+              "width": 6,
+              "height": 4
             }
           },
           {
@@ -2958,10 +2895,31 @@
               ]
             },
             "layout": {
+              "x": 6,
+              "y": 8,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 6257474700798550,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns.",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
               "x": 0,
-              "y": 6,
-              "width": 8,
-              "height": 3
+              "y": 12,
+              "width": 6,
+              "height": 2
             }
           },
           {
@@ -2975,13 +2933,13 @@
               "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
-              "tick_edge": "left",
+              "tick_edge": "top",
               "has_padding": true
             },
             "layout": {
-              "x": 8,
-              "y": 6,
-              "width": 4,
+              "x": 6,
+              "y": 12,
+              "width": 6,
               "height": 2
             }
           }
@@ -2989,9 +2947,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 9,
+        "y": 119,
         "width": 12,
-        "height": 1,
+        "height": 15,
         "is_column_break": true
       }
     },
@@ -3244,7 +3202,7 @@
               },
               "markers": [
                 {
-                  "label": " Example Threshold ",
+                  "label": " Example Threshold ",
                   "value": "y = 75",
                   "display_type": "error dashed"
                 }
@@ -3645,7 +3603,7 @@
               ],
               "markers": [
                 {
-                  "label": " Example Host Limit ",
+                  "label": " Example Host Limit ",
                   "value": "y = 150000000000",
                   "display_type": "error dashed"
                 }
@@ -3912,9 +3870,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 10,
+        "y": 134,
         "width": 12,
-        "height": 1
+        "height": 11
       }
     },
     {
@@ -3944,7 +3902,7 @@
               "x": 0,
               "y": 0,
               "width": 12,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -3990,8 +3948,8 @@
             },
             "layout": {
               "x": 0,
-              "y": 1,
-              "width": 4,
+              "y": 2,
+              "width": 6,
               "height": 4
             }
           },
@@ -4037,10 +3995,52 @@
               ]
             },
             "layout": {
-              "x": 4,
-              "y": 1,
-              "width": 4,
+              "x": 6,
+              "y": 2,
+              "width": 6,
               "height": 4
+            }
+          },
+          {
+            "id": 7167731681168763,
+            "definition": {
+              "type": "note",
+              "content": "This chart shows the average duration added by coprocessor invocations at each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Coprocessors introduce additional network calls — even fast ones add latency.\n-   High or rising durations can affect overall request performance.\n-   Each stage (e.g., request, supergraph, subgraph) may have different performance profiles depending on configuration and coprocessor logic.\n\n**What to look for**\n\n-   Low, stable durations suggest efficient coprocessor behavior.\n-   Spikes may indicate backend slowness, increased payload size, or external service degradation.",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 6,
+              "width": 6,
+              "height": 2
+            }
+          },
+          {
+            "id": 8612773097510573,
+            "definition": {
+              "type": "note",
+              "content": "This chart breaks down how often coprocessors are invoked at each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Helps validate where and how often your coprocessors are engaged.\n-   Useful for confirming configuration and understanding the load placed on each external service.\n-   Invocation patterns typically align with overall request volume, but may vary by routing logic or stage-specific conditions.\n\n**What to look for**\n\n-   Consistent counts per stage indicate expected behavior.\n-   Unexpected drops or surges may reflect routing changes, config issues, or stage-specific errors.",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 6,
+              "width": 6,
+              "height": 2
             }
           },
           {
@@ -4099,52 +4099,10 @@
               }
             },
             "layout": {
-              "x": 8,
-              "y": 1,
-              "width": 4,
-              "height": 4
-            }
-          },
-          {
-            "id": 7167731681168763,
-            "definition": {
-              "type": "note",
-              "content": "This chart shows the average duration added by coprocessor invocations at each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Coprocessors introduce additional network calls — even fast ones add latency.\n-   High or rising durations can affect overall request performance.\n-   Each stage (e.g., request, supergraph, subgraph) may have different performance profiles depending on configuration and coprocessor logic.\n\n**What to look for**\n\n-   Low, stable durations suggest efficient coprocessor behavior.\n-   Spikes may indicate backend slowness, increased payload size, or external service degradation.",
-              "background_color": "gray",
-              "font_size": "12",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
               "x": 0,
-              "y": 5,
-              "width": 4,
-              "height": 2
-            }
-          },
-          {
-            "id": 8612773097510573,
-            "definition": {
-              "type": "note",
-              "content": "This chart breaks down how often coprocessors are invoked at each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Helps validate where and how often your coprocessors are engaged.\n-   Useful for confirming configuration and understanding the load placed on each external service.\n-   Invocation patterns typically align with overall request volume, but may vary by routing logic or stage-specific conditions.\n\n**What to look for**\n\n-   Consistent counts per stage indicate expected behavior.\n-   Unexpected drops or surges may reflect routing changes, config issues, or stage-specific errors.",
-              "background_color": "gray",
-              "font_size": "12",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 4,
-              "y": 5,
-              "width": 4,
-              "height": 2
+              "y": 8,
+              "width": 6,
+              "height": 4
             }
           },
           {
@@ -4162,9 +4120,9 @@
               "has_padding": true
             },
             "layout": {
-              "x": 8,
-              "y": 5,
-              "width": 4,
+              "x": 0,
+              "y": 12,
+              "width": 6,
               "height": 2
             }
           }
@@ -4172,9 +4130,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 11,
+        "y": 145,
         "width": 12,
-        "height": 1
+        "height": 15
       }
     },
     {
@@ -4287,7 +4245,7 @@
               "x": 0,
               "y": 1,
               "width": 6,
-              "height": 3
+              "height": 4
             }
           },
           {
@@ -4335,7 +4293,7 @@
               "x": 6,
               "y": 1,
               "width": 6,
-              "height": 3
+              "height": 4
             }
           },
           {
@@ -4354,7 +4312,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 4,
+              "y": 5,
               "width": 6,
               "height": 2
             }
@@ -4375,7 +4333,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 4,
+              "y": 5,
               "width": 6,
               "height": 2
             }
@@ -4384,9 +4342,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 12,
+        "y": 160,
         "width": 12,
-        "height": 1
+        "height": 8
       }
     },
     {
@@ -4459,8 +4417,8 @@
             "layout": {
               "x": 0,
               "y": 1,
-              "width": 4,
-              "height": 3
+              "width": 3,
+              "height": 2
             }
           },
           {
@@ -4504,10 +4462,10 @@
               }
             },
             "layout": {
-              "x": 4,
+              "x": 3,
               "y": 1,
-              "width": 4,
-              "height": 3
+              "width": 3,
+              "height": 2
             }
           },
           {
@@ -4552,10 +4510,10 @@
               }
             },
             "layout": {
-              "x": 8,
+              "x": 6,
               "y": 1,
-              "width": 4,
-              "height": 3
+              "width": 3,
+              "height": 2
             }
           },
           {
@@ -4600,10 +4558,10 @@
               }
             },
             "layout": {
-              "x": 0,
-              "y": 4,
-              "width": 4,
-              "height": 3
+              "x": 9,
+              "y": 1,
+              "width": 3,
+              "height": 2
             }
           },
           {
@@ -4648,19 +4606,19 @@
               }
             },
             "layout": {
-              "x": 4,
-              "y": 4,
-              "width": 4,
-              "height": 3
+              "x": 0,
+              "y": 3,
+              "width": 3,
+              "height": 2
             }
           }
         ]
       },
       "layout": {
         "x": 0,
-        "y": 13,
+        "y": 168,
         "width": 12,
-        "height": 1
+        "height": 6
       }
     }
   ],
