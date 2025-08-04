@@ -5,8 +5,8 @@
     {
       "id": 8946993247458357,
       "definition": {
-        "background_color": "vivid_blue",
         "title": "Request Traffic & Health: Client → Router",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -289,8 +289,8 @@
     {
       "id": 3840969086320674,
       "definition": {
-        "background_color": "vivid_blue",
         "title": " Request Characteristics: Client → Router",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -403,8 +403,8 @@
     {
       "id": 2547398354023131,
       "definition": {
-        "background_color": "vivid_blue",
         "title": "Request Performance & Latency: Client → Router",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -638,8 +638,8 @@
     {
       "id": 2103055858802167,
       "definition": {
-        "background_color": "vivid_blue",
         "title": "Request Traffic & Health: Router → Subgraph",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -1000,8 +1000,8 @@
     {
       "id": 7372185579967424,
       "definition": {
-        "background_color": "vivid_blue",
         "title": " Request Characteristics: Router → Subgraph",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -1094,8 +1094,8 @@
     {
       "id": 1973549063927411,
       "definition": {
-        "background_color": "vivid_blue",
         "title": "Request Performance & Latency: Router → Subgraph",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -1588,7 +1588,7 @@
       "id": 1355103844861603,
       "definition": {
         "title": "Query Planning",
-        "background_color": "vivid_blue",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -1925,7 +1925,7 @@
       "id": 1015408870961857,
       "definition": {
         "title": "Cache",
-        "background_color": "vivid_blue",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -2479,7 +2479,7 @@
       "id": 3027455303862458,
       "definition": {
         "title": "Compute Jobs",
-        "background_color": "vivid_blue",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -2999,7 +2999,7 @@
       "id": 5629804781331548,
       "definition": {
         "title": "Container/Host",
-        "background_color": "vivid_blue",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -3921,7 +3921,7 @@
       "id": 7179021198358280,
       "definition": {
         "title": "Coprocessors",
-        "background_color": "vivid_blue",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -4181,7 +4181,7 @@
       "id": 4549852525386523,
       "definition": {
         "title": "Sentinel Metrics",
-        "background_color": "white",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -4393,7 +4393,7 @@
       "id": 3840462392711525,
       "definition": {
         "title": "Resource Estimator",
-        "background_color": "white",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
