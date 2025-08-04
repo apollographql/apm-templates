@@ -5,8 +5,8 @@
     {
       "id": 8946993247458357,
       "definition": {
-        "title": "Request Traffic & Health: Client -> Router",
         "background_color": "vivid_blue",
+        "title": "Request Traffic & Health: Client → Router",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -289,8 +289,8 @@
     {
       "id": 3840969086320674,
       "definition": {
-        "title": " Request Characteristics: Client -> Router",
         "background_color": "vivid_blue",
+        "title": " Request Characteristics: Client → Router",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -403,8 +403,8 @@
     {
       "id": 2547398354023131,
       "definition": {
-        "title": "Request Performance & Latency: Client -> Router",
         "background_color": "vivid_blue",
+        "title": "Request Performance & Latency: Client → Router",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -638,8 +638,8 @@
     {
       "id": 2103055858802167,
       "definition": {
-        "title": "Request Traffic & Health: Router -> Subgraph",
         "background_color": "vivid_blue",
+        "title": "Request Traffic & Health: Router → Subgraph",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -1000,8 +1000,8 @@
     {
       "id": 7372185579967424,
       "definition": {
-        "title": " Request Characteristics: Router -> Subgraph",
         "background_color": "vivid_blue",
+        "title": " Request Characteristics: Router → Subgraph",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -1094,8 +1094,8 @@
     {
       "id": 1973549063927411,
       "definition": {
-        "title": "Request Performance & Latency: Router -> Subgraph",
         "background_color": "vivid_blue",
+        "title": "Request Performance & Latency: Router → Subgraph",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
