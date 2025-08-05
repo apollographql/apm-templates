@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Datadog Dashboard Updater Script
-# This script fetches dashboard JSON from Datadog API and updates local files
+# Datadog Dashboard Uploader Script
+# This script reads local dashboard JSON files and uploads them to Datadog
 
 set -euo pipefail
 
@@ -52,105 +52,98 @@ fi
 # Datadog API base URL
 DD_API_BASE="https://api.datadoghq.com/api/v1"
 
-# Dashboard mapping: filename:dashboard_id pairs
+# Dashboard mappings: filename:dashboard_id 
+# If you want to test dashboard changes without overwriting the live dashboard, comment out the id
+# mapping and uncomment the line with no identifier. A new dashboard will be created owned by you
+# upon running the script.
 DASHBOARD_MAPPINGS=(
     "../graphos-template.json:aiz-4aa-wgr"
+   #"../graphos-template.json"
 )
 
-fetch_dashboard() {
+upload_dashboard() {
     local filename="$1"
-    local dashboard_id="$2"
-    
-    echo -e "${YELLOW}Fetching dashboard ${dashboard_id} for ${filename}...${NC}"
-    
-    # Make API request
+
+    echo -e "${YELLOW}Uploading dashboard from ${filename}...${NC}"
+
+    if [[ ! -f "$filename" ]]; then
+        echo -e "${RED}✗ File not found: $filename${NC}"
+        return 1
+    fi
+
+    local json_payload
+    json_payload=$(cat "$filename")
+
+    local dashboard_id
+    dashboard_id=$(echo "$json_payload" | jq -r '.id // empty')
+
+    local http_code
     local response
+    local method
+    local url
+
+    if [[ -n "$dashboard_id" && "$dashboard_id" != "null" ]]; then
+        # Update existing dashboard
+        method="PUT"
+        url="${DD_API_BASE}/dashboard/${dashboard_id}"
+    else
+        # Create new dashboard
+        method="POST"
+        url="${DD_API_BASE}/dashboard"
+    fi
+
     response=$(curl -s -w "\n%{http_code}" \
+        -X "$method" \
         -H "DD-API-KEY: ${DD_API_KEY}" \
         -H "DD-APPLICATION-KEY: ${DD_APP_KEY}" \
         -H "Content-Type: application/json" \
-        "${DD_API_BASE}/dashboard/${dashboard_id}")
-    
-    # Extract HTTP status code (last line) and JSON response (all lines except last)
-    # This approach works on both macOS and Linux
-    local http_code
-    local json_response
-    local temp_file
-    temp_file=$(mktemp)
-    
-    echo "$response" > "$temp_file"
-    http_code=$(tail -n1 "$temp_file")
-    json_response=$(sed '$d' "$temp_file")
-    
-    rm -f "$temp_file"
-    
-    if [[ "$http_code" -eq 200 ]]; then
-        # Extract only the fields that match browser export format
-        echo "$json_response" | jq '{
-            title: .title,
-            description: .description,
-            widgets: .widgets,
-            template_variables: .template_variables,
-            layout_type: .layout_type,
-            notify_list: .notify_list,
-            reflow_type: .reflow_type
-        }' > "$filename"
-        echo -e "${GREEN}✓ Successfully updated ${filename}${NC}"
+        -d "$json_payload" \
+        "$url")
+
+    http_code=$(echo "$response" | tail -n1)
+    response_body=$(echo "$response" | sed '$d')
+
+    if [[ "$http_code" =~ ^2 ]]; then
+        echo -e "${GREEN}✓ Successfully uploaded ${filename}${NC}"
         return 0
     else
-        echo -e "${RED}✗ Failed to fetch dashboard ${dashboard_id} (HTTP ${http_code})${NC}"
-        echo "Response: $json_response"
+        echo -e "${RED}✗ Failed to upload ${filename} (HTTP ${http_code})${NC}"
+        echo "Response: $response_body"
         return 1
     fi
 }
 
 main() {
-    echo -e "${GREEN}Starting Datadog Dashboard Update...${NC}"
-    
-    # Track success/failure
+    echo -e "${GREEN}Starting Datadog Dashboard Upload...${NC}"
     local success_count=0
     local total_count=${#DASHBOARD_MAPPINGS[@]}
-    
-    echo -e "${YELLOW}Found ${total_count} dashboards to update${NC}"
-    
-    # Fetch each dashboard
-    for mapping in "${DASHBOARD_MAPPINGS[@]}"; do
-        # Split the mapping on the colon
-        local filename="${mapping%:*}"
-        local dashboard_id="${mapping#*:}"
-        
-        if [[ -z "$filename" || -z "$dashboard_id" ]]; then
-            echo -e "${RED}✗ Invalid mapping: ${mapping}${NC}"
-            continue
-        fi
-        
-        echo -e "${YELLOW}Processing: ${filename} -> ${dashboard_id}${NC}"
-        
-        if fetch_dashboard "$filename" "$dashboard_id"; then
+
+    # Upload each dashboard
+    for filename in "${DASHBOARD_MAPPINGS[@]}"; do
+        if upload_dashboard "$filename"; then
             ((success_count++))
         fi
-        
         # Small delay to avoid rate limiting
         sleep 0.5
     done
 
     echo
-    echo -e "${GREEN}Update complete: ${success_count}/${total_count} dashboards updated successfully${NC}"
+    echo -e "${GREEN}Upload complete: ${success_count}/${total_count} dashboards uploaded successfully${NC}"
 
     if [[ $success_count -eq $total_count ]]; then
-        echo -e "${GREEN}All dashboards updated successfully!${NC}"
+        echo -e "${GREEN}All dashboards uploaded successfully!${NC}"
         exit 0
     else
-        echo -e "${RED}Some dashboards failed to update. Check the output above for details.${NC}"
+        echo -e "${RED}Some dashboards failed to upload. Check the output above for details.${NC}"
         exit 1
     fi
 }
 
 show_help() {
     cat << EOF
-Datadog Dashboard Updater Script
+Datadog Dashboard Uploader Script
 
-This script fetches dashboard JSON from Datadog API and updates local files.
+Uploads local dashboard JSON files to Datadog. If the dashboard includes an 'id', it will be updated. Otherwise, a new dashboard will be created.
 
 Usage: $0 [OPTIONS]
 
