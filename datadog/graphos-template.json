@@ -64,7 +64,7 @@
                     }
                   ],
                   "style": {
-                    "palette": "semantic",
+                    "palette": "dog_classic",
                     "order_by": "values",
                     "line_type": "solid",
                     "line_width": "normal"
@@ -676,7 +676,7 @@
                   ],
                   "response_format": "timeseries",
                   "style": {
-                    "palette": "semantic",
+                    "palette": "dog_classic",
                     "order_by": "values",
                     "line_type": "solid",
                     "line_width": "normal"
@@ -725,7 +725,7 @@
                     }
                   ],
                   "style": {
-                    "palette": "semantic",
+                    "palette": "dog_classic",
                     "order_by": "values",
                     "line_type": "solid",
                     "line_width": "normal"
@@ -816,7 +816,7 @@
                   ],
                   "response_format": "timeseries",
                   "style": {
-                    "palette": "semantic",
+                    "palette": "dog_classic",
                     "line_type": "dotted",
                     "line_width": "normal"
                   },
@@ -1003,7 +1003,7 @@
                   ],
                   "response_format": "timeseries",
                   "style": {
-                    "palette": "semantic",
+                    "palette": "dog_classic",
                     "line_type": "solid",
                     "line_width": "normal"
                   },
@@ -1118,7 +1118,7 @@
                     }
                   ],
                   "style": {
-                    "palette": "semantic",
+                    "palette": "dog_classic",
                     "order_by": "values",
                     "line_type": "solid",
                     "line_width": "normal"
@@ -3142,7 +3142,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 4
                       },
                       "alias": "avg stolen",
@@ -3151,7 +3151,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 5
                       },
                       "alias": "avg iowait",
@@ -3160,7 +3160,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 1
                       },
                       "alias": "avg system",
@@ -3169,7 +3169,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 2
                       },
                       "alias": "avg user",
@@ -3178,7 +3178,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 0
                       },
                       "alias": "avg idle",
@@ -3250,7 +3250,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 1
                       },
                       "alias": "avg cpu",
@@ -3259,7 +3259,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 1
                       },
                       "alias": "max cpu",
