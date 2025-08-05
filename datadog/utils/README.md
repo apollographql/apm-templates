@@ -6,6 +6,12 @@ The `update_dashboards.sh` script automates the process of fetching and updating
 configurations from the Datadog API. This script ensures your local dashboard JSON files stay
 synchronized with the current state of dashboards in your Datadog account.
 
+The `destructive_upload_dashboards.sh` script destructively overwrites the current Dashboard
+template with the contents of this repository. This should only be used in cases where this
+repository's content has deliberately been moved *ahead* of the template in Datadog. For example,
+after running the spell-check task in this repository, it may be desirable to upload those changes
+rather than manually going and editing its findings in Datadog.
+
 ### Setup
 
 #### Using Direnv and a Password/Secrets Manager
@@ -60,4 +66,10 @@ Run the script to update all dashboard files in this repository from the existin
 
 ```bash
 ./update_dashboards.sh
+```
+
+If you have made local changes via linting tools after syncing, upload those new changes:
+
+```bash
+./destructive_upload_dashboards.sh
 ```
