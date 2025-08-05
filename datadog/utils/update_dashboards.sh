@@ -13,7 +13,7 @@ NC='\033[0m' # No Color
 
 load_env_file() {
     local env_file="./.env"
-    
+
     if [[ -f "$env_file" ]]; then
         echo -e "${YELLOW}Loading environment variables from ${env_file}...${NC}"
         
@@ -133,10 +133,10 @@ main() {
         # Small delay to avoid rate limiting
         sleep 0.5
     done
-    
+
     echo
     echo -e "${GREEN}Update complete: ${success_count}/${total_count} dashboards updated successfully${NC}"
-    
+
     if [[ $success_count -eq $total_count ]]; then
         echo -e "${GREEN}All dashboards updated successfully!${NC}"
         exit 0
@@ -192,4 +192,4 @@ case "${1:-}" in
     *)
         main "$@"
         ;;
-esac 
+esac
