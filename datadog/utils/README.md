@@ -8,7 +8,7 @@ synchronized with the current state of dashboards in your Datadog account.
 
 The `destructive_upload_dashboards.sh` script destructively overwrites the current Dashboard
 template with the contents of this repository. This should only be used in cases where this
-repository's content has deliberately been moved *ahead* of the template in Datadog. For example,
+repository's content has deliberately been moved _ahead_ of the template in Datadog. For example,
 after running the spell-check task in this repository, it may be desirable to upload those changes
 rather than manually going and editing its findings in Datadog.
 
