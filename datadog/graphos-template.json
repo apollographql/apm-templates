@@ -5,12 +5,33 @@
     {
       "id": 8946993247458357,
       "definition": {
-        "title": "Request Traffic & Health: Client -> Router",
-        "background_color": "vivid_blue",
+        "title": "Request Traffic & Health: Client → Router",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
         "widgets": [
+          {
+            "id": 4766111693665422,
+            "definition": {
+              "type": "note",
+              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from router\n-   If your organization has control over all clients of your supergraph:\n    -   alert on increases in 4xx responses indicating a potential misconfiguration of one or more clients.\n    -   alert on increases in GraphQL errors indicating bad queries from one or more clients.\n-   Reliability SLO: ≥99.9% of Router responses should be 2xx and without error.\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": false,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 6
+            }
+          },
           {
             "id": 1224218507683046,
             "definition": {
@@ -43,7 +64,7 @@
                     }
                   ],
                   "style": {
-                    "palette": "semantic",
+                    "palette": "dog_classic",
                     "order_by": "values",
                     "line_type": "solid",
                     "line_width": "normal"
@@ -59,7 +80,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 0,
+              "y": 6,
               "width": 6,
               "height": 4
             }
@@ -108,7 +129,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 0,
+              "y": 6,
               "width": 6,
               "height": 4
             }
@@ -118,10 +139,10 @@
             "definition": {
               "type": "note",
               "content": "This chart shows the volume of requests Apollo Router is handling over time, broken down by status code.\n\n### It helps answer:\n\n-   Are most requests successful (`2xx`)?\n-   Are clients misbehaving (`4xx`)?\n-   Is the router or a subgraph failing (`5xx`)?\n\n### This metric helps spot trends and issues:\n\n-   A **spike in `5xx`** likely means something is broken downstream.\n-   A **rise in `4xx`** may signal client bugs or deprecated queries.\n-   **Changes in total volume** may reflect traffic surges or outages.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
@@ -129,9 +150,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 4,
+              "y": 10,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -139,10 +160,10 @@
             "definition": {
               "type": "note",
               "content": "This chart shows **requests per second (RPS)** hitting the Apollo Router — your clearest view into how much work the Router is doing right now.\n\n**What to look for:**\n\n-   Sudden drops? Could be outages upstream or config errors.\n-   Steady growth? Make sure latency and errors aren’t creeping up.\n-   Flatline during known busy periods? You might be hitting limits.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
@@ -150,30 +171,9 @@
             },
             "layout": {
               "x": 6,
-              "y": 4,
+              "y": 10,
               "width": 6,
-              "height": 1
-            }
-          },
-          {
-            "id": 4766111693665422,
-            "definition": {
-              "type": "note",
-              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from router\n-   If your organization has control over all clients of your supergraph:\n    -   alert on increases in 4xx responses indicating a potential misconfiguration of one or more clients.\n    -   alert on increases in GraphQL errors indicating bad queries from one or more clients.\n-   Reliability SLO: ≥99.9% of Router responses should be 2xx and without error.",
-              "background_color": "white",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": false,
-              "tick_pos": "50%",
-              "tick_edge": "left",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 0,
-              "y": 5,
-              "width": 6,
-              "height": 3
+              "height": 2
             }
           },
           {
@@ -229,31 +229,10 @@
               ]
             },
             "layout": {
-              "x": 6,
-              "y": 5,
+              "x": 0,
+              "y": 12,
               "width": 6,
               "height": 4
-            }
-          },
-          {
-            "id": 4862267805362066,
-            "definition": {
-              "type": "note",
-              "content": "### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
-              "background_color": "white",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": false,
-              "tick_pos": "50%",
-              "tick_edge": "left",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 0,
-              "y": 8,
-              "width": 6,
-              "height": 2
             }
           },
           {
@@ -261,20 +240,20 @@
             "definition": {
               "type": "note",
               "content": "This chart displays the total error rate percentage of requests handled by the Router. It includes:\n\n-   **GraphQL errors** (e.g., validation failures, resolver exceptions).\n-   **HTTP 5xx responses**, typically indicating internal or subgraph infrastructure issues.\n\nThe formula adds these two failure categories together and divides by the total request count, giving a single view into how often requests fail from the client’s perspective.\n\n***\n\n### Why It Matters\n\nUnderstanding total error rate is critical for:\n\n-   **Reliability tracking**: Errors reflect user-facing failures and service health.\n-   **Incident detection**: Elevated error rates can signal broken schemas, subgraph failures, or deploy issues.\n-   **SLO compliance**: Helps teams track whether reliability objectives (like <1% error rate) are being met.\n\n***\n\n### What to Watch Out For\n\n-   **Spikes in error rate**, especially following deploys or traffic increases.\n-   **Sustained error rates above 1–2%**, which may indicate regressions or uncaught edge cases.\n-   **Increased 5xx errors** without corresponding GraphQL errors—this may point to subgraph crashes or timeouts.\n-   **Silent drops in traffic**: If error rate decreases while request volume drops, it could signal issues upstream (e.g., client timeouts or DNS problems).",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
               "has_padding": true
             },
             "layout": {
-              "x": 6,
-              "y": 9,
+              "x": 0,
+              "y": 16,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           }
         ]
@@ -283,14 +262,14 @@
         "x": 0,
         "y": 0,
         "width": 12,
-        "height": 1
+        "height": 19
       }
     },
     {
       "id": 3840969086320674,
       "definition": {
-        "title": " Request Characteristics: Client -> Router",
-        "background_color": "vivid_blue",
+        "title": " Request Characteristics: Client → Router",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -366,8 +345,8 @@
             "layout": {
               "x": 0,
               "y": 0,
-              "width": 5,
-              "height": 3
+              "width": 6,
+              "height": 4
             }
           },
           {
@@ -375,10 +354,10 @@
             "definition": {
               "type": "note",
               "content": "This chart tracks the size of incoming HTTP request bodies over time, highlighting the largest payloads seen.\n\n### Why it matters\n\n-   **`p99`** shows typical large requests.\n-   **`max`** shows the absolute biggest — helpful for spotting outliers.\n\nLarge payloads can:\n\n-   Increase parsing/validation time.\n-   Cause memory pressure or latency spikes.\n-   Indicate misuse (e.g., file uploads, bloated mutations).\n\n### What to look for\n\n-   A stable `p99` suggests consistent request sizes.\n-   Occasional `max` spikes are okay — frequent ones may require investigation.\n-   Rising trends could signal a client change or growing inefficiency.\n\n### Caveats\n\n-   Doesn’t reflect query complexity — a small body can still be expensive.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
@@ -386,25 +365,25 @@
             },
             "layout": {
               "x": 0,
-              "y": 3,
-              "width": 5,
-              "height": 1
+              "y": 4,
+              "width": 6,
+              "height": 2
             }
           }
         ]
       },
       "layout": {
         "x": 0,
-        "y": 1,
+        "y": 19,
         "width": 12,
-        "height": 1
+        "height": 7
       }
     },
     {
       "id": 2547398354023131,
       "definition": {
-        "title": "Request Performance & Latency: Client -> Router",
-        "background_color": "vivid_blue",
+        "title": "Request Performance & Latency: Client → Router",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -466,7 +445,7 @@
               "x": 0,
               "y": 3,
               "width": 6,
-              "height": 3
+              "height": 4
             }
           },
           {
@@ -581,7 +560,7 @@
               "x": 6,
               "y": 3,
               "width": 6,
-              "height": 3
+              "height": 4
             }
           },
           {
@@ -589,10 +568,10 @@
             "definition": {
               "type": "note",
               "content": "This chart shows the distribution of HTTP request durations handled by the Apollo Router.\n\n-   **Metric:** [http.server.request.duration](https://opentelemetry.io/docs/specs/semconv/http/http-metrics/#metric-httpserverrequestduration) — measures how long each HTTP request takes.\n\n### What this tells you\n\n-   The shape of the distribution helps identify performance patterns:\n\n    -   A narrow peak near the left means most requests are fast.\n    -   A long tail to the right indicates some requests are slower and may require investigation.\n\n-   Sudden shifts or broadening of the distribution can indicate latency issues or backend slowdowns.\n\n### Why it matters\n\nMonitoring request duration distribution helps you:\n\n-   Understand if performance issues impact many requests or just a few outliers.\n-   Make informed decisions on where to focus optimization or debugging efforts.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
@@ -600,9 +579,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 6,
+              "y": 7,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -610,8 +589,8 @@
             "definition": {
               "type": "note",
               "content": "### What the percentiles tell you\n\n-   **p90 / p95:** These percentiles represent the upper range of _typical_ request latencies.\\\n    If these values rise, it generally means a significant portion of requests are experiencing slower responses. Possible causes include:\n\n    -   A subgraph is responding more slowly than usual (e.g., due to load or inefficiency)\n    -   The Router’s query planning step is taking longer (especially with complex or highly federated queries)\n    -   Overall increased load causing processing delays\n\n-   **p99:** This is a _tail latency_ metric that reflects the slowest 1% of requests.\\\n    Spikes here often indicate rare but impactful delays, such as:\n\n    -   Intermittent subgraph performance issues or temporary timeouts\n    -   Specific heavy or complex queries that take much longer to plan or execute\n    -   Unusual overhead in middleware or Router internals affecting some requests\n\n-   **Max:** The absolute slowest observed request during the timeframe.\\\n    Isolated high max values are usually less concerning (e.g., caused by a single unusual request). However, frequent or sustained high max latencies may point to:\n\n    -   Clients issuing extremely large or repeated queries causing resource exhaustion or retries\n    -   Transient infrastructure problems (network issues, DNS delays, resource contention)\n\n-   **Min:** Represents the fastest possible response from the Router. A surprisingly high minimum usually reflects baseline overhead within the Router itself — such as:\n\n    -   Middleware or plugin execution time\n    \n    -   Query parsing, validation, or planning\n    \n    -   Routing logic that's inherently non-negligible\n\n### Caveats\n\n-   Low request volumes can skew percentiles; a single slow request distorts p99 or max.\n-   Slow subgraphs inflate Router latency here—this chart shows total request time, not internal breakdowns.\n-   Latency spikes without load increase may point to network hiccups, subgraph cold starts, or cloud platform noise outside the Router’s control.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
@@ -621,29 +600,50 @@
             },
             "layout": {
               "x": 6,
-              "y": 6,
+              "y": 7,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           }
         ]
       },
       "layout": {
         "x": 0,
-        "y": 2,
+        "y": 26,
         "width": 12,
-        "height": 1
+        "height": 10
       }
     },
     {
       "id": 2103055858802167,
       "definition": {
-        "title": "Request Traffic & Health: Router -> Subgraph",
-        "background_color": "vivid_blue",
+        "title": "Request Traffic & Health: Router → Subgraph",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
         "widgets": [
+          {
+            "id": 8928058460124150,
+            "definition": {
+              "type": "note",
+              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from any subgraph.\n-   Reliability SLO: ≥99.9% of Router→subgraph requests should be 2xx and without error.\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": false,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 5
+            }
+          },
           {
             "id": 3931875108914008,
             "definition": {
@@ -676,7 +676,7 @@
                   ],
                   "response_format": "timeseries",
                   "style": {
-                    "palette": "semantic",
+                    "palette": "dog_classic",
                     "order_by": "values",
                     "line_type": "solid",
                     "line_width": "normal"
@@ -687,7 +687,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 0,
+              "y": 5,
               "width": 6,
               "height": 4
             }
@@ -725,7 +725,7 @@
                     }
                   ],
                   "style": {
-                    "palette": "semantic",
+                    "palette": "dog_classic",
                     "order_by": "values",
                     "line_type": "solid",
                     "line_width": "normal"
@@ -736,7 +736,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 0,
+              "y": 5,
               "width": 6,
               "height": 4
             }
@@ -746,8 +746,8 @@
             "definition": {
               "type": "note",
               "content": "This chart shows the volume of outgoing HTTP requests from the Router to subgraphs, broken down by HTTP status code and subgraph.\n\n**Why it matters:**\n\n-   Tracks overall subgraph traffic.\n\nWhat to look for:\n\n-   High volume of `2xx` is normal and healthy.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
@@ -757,9 +757,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 4,
+              "y": 9,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -767,10 +767,10 @@
             "definition": {
               "type": "note",
               "content": "This chart shows how many requests per second (RPS) each subgraph is handling. It's useful for understanding traffic distribution across your federated architecture and identifying which subgraphs are the busiest.\n\n**What to Look For:**\n\n-   **Consistently high RPS** on a subgraph may indicate:\n\n    -   It supports popular or frequently queried fields.\n    -   It could become a performance bottleneck if not properly scaled or optimized.\n\n-   **Sudden spikes** can signal usage surges or potential issues downstream (e.g., retry storms).\n\n-   **Low RPS subgraphs** might be underutilized or intentionally lightweight.\n\n**Actionable Insights:**\n\n-   Ensure high-throughput subgraphs are well-instrumented and autoscaled where possible.\n-   Investigate traffic spikes for correlation with client activity or backend issues.\n-   Cross-reference with latency charts to catch early signs of degradation under load.\n\n**Caveats:**\n\n-   This reflects traffic from the Router to each subgraph, not necessarily user-facing load.\n-   Subgraphs handling many small, fast requests may show high RPS but minimal latency or load — context is key.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
@@ -778,9 +778,9 @@
             },
             "layout": {
               "x": 6,
-              "y": 4,
+              "y": 9,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -816,7 +816,7 @@
                   ],
                   "response_format": "timeseries",
                   "style": {
-                    "palette": "semantic",
+                    "palette": "dog_classic",
                     "line_type": "dotted",
                     "line_width": "normal"
                   },
@@ -830,72 +830,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 5,
-              "width": 8,
+              "y": 11,
+              "width": 6,
               "height": 4
-            }
-          },
-          {
-            "id": 8928058460124150,
-            "definition": {
-              "type": "note",
-              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from any subgraph.\n-   Reliability SLO: ≥99.9% of Router→subgraph requests should be 2xx and without error.",
-              "background_color": "white",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": false,
-              "tick_pos": "50%",
-              "tick_edge": "left",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 8,
-              "y": 5,
-              "width": 4,
-              "height": 2
-            }
-          },
-          {
-            "id": 2347349834910780,
-            "definition": {
-              "type": "note",
-              "content": "### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
-              "background_color": "white",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": false,
-              "tick_pos": "50%",
-              "tick_edge": "left",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 8,
-              "y": 7,
-              "width": 4,
-              "height": 3
-            }
-          },
-          {
-            "id": 6943674061818587,
-            "definition": {
-              "type": "note",
-              "content": "This chart focuses specifically on non-successful(non-2xx) responses from subgraphs — grouped by subgraph and status code.\n\n**Why it matters:**\n\n-   These are the requests that failed, either due to config errors (4xx) or server-side issues (5xx).\n-   The Router isn’t failing — it’s forwarding a query that the subgraph can't fulfill.\n\n**Common causes of 4xx:**\n\n-   Schema mismatch between subgraph and Supergraph (e.g., schema drift)\n-   Missing auth headers or invalid inputs\n\n**Common causes of 5xx:**\n\n-   Crashes, timeouts, or errors in a subgraphs logic\n\n**How this impacts Router performance:**\n\n-   Frequent 5xxs inflate latency as the Router retries or collects error details.\n-   Repeated 4xxs may be harmless, but still consume Router resources and can signal client or schema issues.\n\n\n**Pro tip:**\\\nIf a subgraph frequently appears here, coordinate with its owning team to investigate error logs or validate schema compatibility.\n\n**Caveats**\n- You might see `N/A` as a status code. This means that a request was made but a response was not received. ",
-              "background_color": "yellow",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 0,
-              "y": 9,
-              "width": 8,
-              "height": 1
             }
           },
           {
@@ -961,10 +898,31 @@
               ]
             },
             "layout": {
-              "x": 0,
-              "y": 10,
-              "width": 8,
+              "x": 6,
+              "y": 11,
+              "width": 6,
               "height": 4
+            }
+          },
+          {
+            "id": 6943674061818587,
+            "definition": {
+              "type": "note",
+              "content": "This chart focuses specifically on non-successful(non-2xx) responses from subgraphs — grouped by subgraph and status code.\n\n**Why it matters:**\n\n-   These are the requests that failed, either due to config errors (4xx) or server-side issues (5xx).\n-   The Router isn’t failing — it’s forwarding a query that the subgraph can't fulfill.\n\n**Common causes of 4xx:**\n\n-   Schema mismatch between subgraph and Supergraph (e.g., schema drift)\n-   Missing auth headers or invalid inputs\n\n**Common causes of 5xx:**\n\n-   Crashes, timeouts, or errors in a subgraphs logic\n\n**How this impacts Router performance:**\n\n-   Frequent 5xxs inflate latency as the Router retries or collects error details.\n-   Repeated 4xxs may be harmless, but still consume Router resources and can signal client or schema issues.\n\n\n**Pro tip:**\\\nIf a subgraph frequently appears here, coordinate with its owning team to investigate error logs or validate schema compatibility.\n\n**Caveats**\n- You might see `N/A` as a status code. This means that a request was made but a response was not received. ",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 15,
+              "width": 6,
+              "height": 2
             }
           },
           {
@@ -972,36 +930,36 @@
             "definition": {
               "type": "note",
               "content": "This chart focuses specifically on GraphQL errors from subgraphs — grouped by query operation name.\n\n**Why it matters:**\n\n-   These are the requests that reported back a 2xx response, but with errors within the actual GraphQL response.\n-   These do not directly impact router performance, but can be an indicator of incorrect logic on your client or subgraph side.\n\n**Caveats**\n\n- This chart is populated via traces, not metrics, so the numbers will not necessarily be absolute",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
-              "tick_edge": "left",
+              "tick_edge": "top",
               "has_padding": true
             },
             "layout": {
-              "x": 8,
-              "y": 10,
-              "width": 4,
-              "height": 4
+              "x": 6,
+              "y": 15,
+              "width": 6,
+              "height": 2
             }
           }
         ]
       },
       "layout": {
         "x": 0,
-        "y": 3,
+        "y": 36,
         "width": 12,
-        "height": 1
+        "height": 18
       }
     },
     {
       "id": 7372185579967424,
       "definition": {
-        "title": " Request Characteristics: Router -> Subgraph",
-        "background_color": "vivid_blue",
+        "title": " Request Characteristics: Router → Subgraph",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -1045,7 +1003,7 @@
                   ],
                   "response_format": "timeseries",
                   "style": {
-                    "palette": "semantic",
+                    "palette": "dog_classic",
                     "line_type": "solid",
                     "line_width": "normal"
                   },
@@ -1057,7 +1015,7 @@
             "layout": {
               "x": 0,
               "y": 0,
-              "width": 7,
+              "width": 6,
               "height": 4
             }
           },
@@ -1066,8 +1024,8 @@
             "definition": {
               "type": "note",
               "content": "This chart tracks the total volume of response data returned by each subgraph over time. It helps identify subgraphs that are consistently returning large payloads, which can impact overall performance and client-side load times.\n\n**What to Look For:**\n\n-   **Spikes or sustained high values** from a subgraph may indicate:\n\n    -   Overfetching: unnecessary fields being resolved and returned.\n    -   Inefficient schema design: returning deeply nested or verbose structures.\n    -   Missing pagination or filtering on list-type fields.\n\n-   **Flat, low-volume subgraphs** could either be healthy or underutilized — context matters.\n\n**Actionable Insights:**\n\n-   Audit GraphQL queries hitting high-volume subgraphs.\n-   Consider schema redesigns to reduce payload size (e.g., use fragments, `@defer`, or pagination).\n-   If the size is expected (e.g., media, large objects), ensure proper compression is in place.\n\n**Caveats:**\n\n-   Values are based on the `Content-Length` header and may not reflect actual decompressed payload size.\n-   This metric tracks data size **returned by subgraphs**, not what is ultimately sent to the client by the router.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
@@ -1078,28 +1036,49 @@
             "layout": {
               "x": 0,
               "y": 4,
-              "width": 7,
-              "height": 1
+              "width": 6,
+              "height": 2
             }
           }
         ]
       },
       "layout": {
         "x": 0,
-        "y": 4,
+        "y": 54,
         "width": 12,
-        "height": 1
+        "height": 7
       }
     },
     {
       "id": 1973549063927411,
       "definition": {
-        "title": "Request Performance & Latency: Router -> Subgraph",
-        "background_color": "vivid_blue",
+        "title": "Request Performance & Latency: Router → Subgraph",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
         "widgets": [
+          {
+            "id": 2538570288917588,
+            "definition": {
+              "type": "note",
+              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on P95 latency exceeding thresholds for critical subgraphs.\n-   Latency SLO (For High-Throughput): P95 Router → Subgraph latency should remain under 300ms\n-   Latency SLO (For Moderate-Throughput): Set threshold to (current P95 for the last week + 20%). This allows for natural variability while detecting regressions.\n",
+              "background_color": "white",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": false,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 2
+            }
+          },
           {
             "id": 7559571845461086,
             "definition": {
@@ -1139,7 +1118,7 @@
                     }
                   ],
                   "style": {
-                    "palette": "semantic",
+                    "palette": "dog_classic",
                     "order_by": "values",
                     "line_type": "solid",
                     "line_width": "normal"
@@ -1150,7 +1129,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 0,
+              "y": 2,
               "width": 6,
               "height": 4
             }
@@ -1217,7 +1196,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 0,
+              "y": 2,
               "width": 6,
               "height": 4
             }
@@ -1227,8 +1206,8 @@
             "definition": {
               "type": "note",
               "content": "This chart tracks the 95th percentile (P95) request duration from the Router to each subgraph.\n\n### Why It Matters\n\n-   P95 is more **resilient to outliers** than max but still reveals tail latency problems that affect real users.\n\n### What to Look For\n\n-  **Rising P95** values can indicate:\n\n    -   Backend slowness\n    -   Schema changes causing more complex queries\n    -   Increased load on subgraphs\n\n-  **Flat or low P95** suggests stable performance under current conditions.\n\n-  **Correlate with throughput** — rising latency during peak traffic may mean you’re under-provisioned.\n\n\n### Actionable Insights\n\n-   Investigate consistently high-latency subgraphs — even if they aren’t crashing, they may be degrading user experience.\n-   Compare with response body size and throughput to find potential root causes (e.g., payload bloat or traffic spikes).\n-   Check if retry or @requires patterns are contributing.\n-   Consider the use of the [@defer](https://www.apollographql.com/docs/graphos/routing/operations/defer) directive to handle fields that take a particularly long time to resolve.\n\n\n### Caveats\n\n-   P95 latency is unreliable for low-throughput subgraphs because small sample sizes let outliers disproportionately skew the metric, making it hard to distinguish real issues from statistical noise.\n-   P95 doesn’t reveal all latency issues — check the distribution chart for outliers and long tails.\n",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
@@ -1238,9 +1217,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 4,
+              "y": 6,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -1248,8 +1227,8 @@
             "definition": {
               "type": "note",
               "content": "This chart tracks the p95 request duration from the Router to each GraphQL operation for your top 1000 operations.\n\nWhy it matters\n\n-   Captures the end-to-end time it takes the Router to process and respond to a specific operation.\n-   Helps identify slow or expensive operations affecting user experience.\n\nWhat to look for\n\n-   Operations should have consistent, predictable durations over time.\n-   Rising p95s may indicate schema changes, degraded subgraph performance, or increased data complexity.\n-   Watch for high-variance or long-tail operations that may benefit from optimization or caching.\n\n### Caveats\n\n-   These values are retrieved via sampling to avoid the cost of high-cardinality metrics ingestion, so they are not 100% accurate especially over small time windows",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
@@ -1259,9 +1238,9 @@
             },
             "layout": {
               "x": 6,
-              "y": 4,
+              "y": 6,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -1320,7 +1299,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 5,
+              "y": 8,
               "width": 6,
               "height": 4
             }
@@ -1386,7 +1365,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 5,
+              "y": 8,
               "width": 6,
               "height": 4
             }
@@ -1396,8 +1375,8 @@
             "definition": {
               "type": "note",
               "content": "This chart aids in assessing the performance of individual subgraphs by correlating their request handling with their response times in order to identify hotspots and bottlenecks. \n\n**What to Look For:**\n- **Top right** = _hotspot / bottleneck_\n- **Bottom left** = _healthy_\n\nGood\n-   **Bottom-Right Quadrant (High RPS & Low Latency):** Ideal scenario indicating efficient subgraphs.\n-   **Bottom-Left Quadrant (Low RPS & Low Latency):** Efficient but underutilized.\n\nWarning\n-   **Top-Left Quadrant (Low RPS & High Latency):** Underutilized and slow; potential future bottlenecks or issues if traffic increases. \n\nBad\n-   **Top-Right Quadrant (High RPS & High Latency ):** Subgraphs handling many requests with slower responses; may need optimization.\n\n**Actionable Insights:**\n\n-   **Optimize High-Latency Subgraphs:** Perform schema optimizations or improve the performance of subgraphs. Starting with ones in the top right. \n-   **Annotate Known Outliers:** Use a note widget or annotations to explain any known anomalies:\n    -  “This subgraph is intentionally slow due to external API call.”\n    -  “This one was recently scaled — latency is expected to improve.”\n\n**Caveats:**\n\n- **Axes Auto-Scale:** This scatterplot dynamically adjusts its axes based on the current data. As a result, a subgraph may appear in the top-right corner simply due to a narrow overall range — not necessarily because it has poor performance. Always interpret positions relative to other subgraphs, and remember that a top-right placement can still be acceptable if the latency and throughput are within expected bounds",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
@@ -1407,9 +1386,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 9,
+              "y": 12,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -1417,8 +1396,8 @@
             "definition": {
               "type": "note",
               "content": "This chart is a companion to the scatter plot to the left, set to a fixed time window of 1 week to provide a reference point against whatever timescale you have your dashboard configured to.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
@@ -1428,9 +1407,9 @@
             },
             "layout": {
               "x": 6,
-              "y": 9,
+              "y": 12,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -1467,30 +1446,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 10,
+              "y": 14,
               "width": 6,
               "height": 4
-            }
-          },
-          {
-            "id": 2538570288917588,
-            "definition": {
-              "type": "note",
-              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on P95 latency exceeding thresholds for critical subgraphs.\n-   Latency SLO (For High-Throughput): P95 Router → Subgraph latency should remain under 300ms\n-   Latency SLO (For Moderate-Throughput): Set threshold to (current P95 for the last week + 20%). This allows for natural variability while detecting regressions.\n",
-              "background_color": "white",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": false,
-              "tick_pos": "50%",
-              "tick_edge": "left",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 6,
-              "y": 10,
-              "width": 6,
-              "height": 2
             }
           },
           {
@@ -1498,8 +1456,8 @@
             "definition": {
               "type": "note",
               "content": "This chart visualizes the distribution of subgraph request durations over time. It helps identify how long most requests take and highlights the presence of any outliers or tail latency issues.\n\n### What to Look For\n\n-   A tight cluster around low durations suggests fast, consistent subgraph responses.\n-   A long tail or spread to the right may indicate occasional slowness or outliers.\n-   Sudden shape changes over time can highlight new regressions, changes in traffic, or schema changes.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
@@ -1509,18 +1467,18 @@
             },
             "layout": {
               "x": 0,
-              "y": 14,
+              "y": 18,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           }
         ]
       },
       "layout": {
         "x": 0,
-        "y": 5,
+        "y": 61,
         "width": 12,
-        "height": 1
+        "height": 21
       }
     },
     {
@@ -1579,16 +1537,16 @@
       },
       "layout": {
         "x": 0,
-        "y": 6,
+        "y": 82,
         "width": 12,
-        "height": 1
+        "height": 5
       }
     },
     {
       "id": 1355103844861603,
       "definition": {
         "title": "Query Planning",
-        "background_color": "vivid_blue",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -1875,10 +1833,10 @@
             "definition": {
               "type": "note",
               "content": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**Why it matters**\n\n-   Query planning is critical to routing — delays here increase end-to-end latency.\n-   Schema or configuration changes can unexpectedly impact planning performance.\n-   High max durations may point to specific queries performing poorly in the planner.\n\n**What to look for**\n\n-   Low, stable execution times indicate efficient planning.\n-   Spikes in max duration could signal complex or inefficient queries.\n-   Rising trends after deployments or schema changes may require investigation.\n\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices).",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
@@ -1896,10 +1854,10 @@
             "definition": {
               "type": "note",
               "content": "This chart shows how many query plans are evaluated before selecting the optimal one for a request.\n\n**Why it matters**\n-   Fewer evaluated plans mean faster query planning and consequently lower CPU usage and response latency.\n\n**What to look for**\n\n-   An average near 1 is ideal — it means the planner is doing the minimal possible work per request.\n-   Occasional spikes in max are expected, but frequent or rising values may indicate overly complex queries.\n-   Sustained increases above 1 could suggest a need to revisit schema design or client queries.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
@@ -1916,16 +1874,16 @@
       },
       "layout": {
         "x": 0,
-        "y": 7,
+        "y": 87,
         "width": 12,
-        "height": 1
+        "height": 8
       }
     },
     {
       "id": 1015408870961857,
       "definition": {
         "title": "Cache",
-        "background_color": "vivid_blue",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -1934,7 +1892,7 @@
             "id": 2338005724257191,
             "definition": {
               "type": "note",
-              "content": "Whenever your router receives an incoming GraphQL operation, it generates a [query plan](https://www.apollographql.com/docs/federation/query-plans/) to determine which subgraphs it needs to query to resolve that operation. By caching previously generated query plans, your router can _skip_ generating them _again_ if a client later sends the exact same operation. This improves your router's responsiveness.\n\nMonitoring your caching provides insights into both how normal your traffic is and how well your router is able to serve those requests. Your ideal cache performance and hit rates will vary depending on your expected traffic patterns. With the in-memory cache, it will be common to see spikes of cache misses and changes in cache size when new instances are deployed, new schemas are deployed, or new config versions are deployed. During this time, the cache will be evicted and re-warmed up.\n\nThese charts are pre-populated with event overlays for schema reloads and query plan warmup events. Schema reloads will accompany an expected drop in cache record count and a spike in cache miss rate as unusable cache records are evicted. [Cache warmups](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory#cache-warm-up) will accompany a period of cache misses as new plans are deliberately hit to prime them into the cache. The router does not serve traffic on the new schema until after that precompute warmup has completed.\n\nFor context on what’s cached and why, review the in-memory caching  [documentation](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory) before interpreting the charts below.\n\n**Caveats**\n- These metrics assume that you are running an in-memory cache on your Router. \n\n- If you are using Redis for distributed caching, you will want to monitor that separately [via Datadog's agent](https://docs.datadoghq.com/integrations/redisdb/?tab=host).\n\n- If you are using Entity Caching, [separate metrics will be available](https://www.apollographql.com/docs/graphos/routing/performance/caching/entity#observability) to monitor the performance of that feature.\n\n",
+              "content": "Whenever your router receives an incoming GraphQL operation, it generates a [query plan](https://www.apollographql.com/docs/federation/query-plans/) to determine which subgraphs it needs to query to resolve that operation. By caching previously generated query plans, your router can _skip_ generating them _again_ if a client later sends the exact same operation. This improves your router's responsiveness.\n\nMonitoring your caching provides insights into both how normal your traffic is and how well your router is able to serve those requests. Your ideal cache performance and hit rates will vary depending on your expected traffic patterns. With the in-memory cache, it will be common to see spikes of cache misses and changes in cache size when new instances are deployed, new schemas are deployed, or new config versions are deployed. During this time, the cache will be evicted and re-warmed up.\n\nThese charts are pre-populated with event overlays for schema reloads and query plan warmup events. Schema reloads will accompany an expected drop in cache record count and a spike in cache miss rate as unusable cache records are evicted. [Cache warmups](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory#cache-warm-up) will accompany a period of cache misses as new plans are deliberately hit to prime them into the cache. The router does not serve traffic on the new schema until after that precompute warmup has completed.\n\nFor context on what’s cached and why, review the in-memory caching  [documentation](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory) before interpreting the charts below.\n\n**Caveats**\n- These metrics assume that you are running an in-memory cache on your Router. \n\n- If you are using Redis for distributed caching, you will want to monitor that separately [via Datadog's agent](https://docs.datadoghq.com/integrations/redisdb/?tab=host).\n\n- If you are using Entity Caching, [separate metrics will be available](https://www.apollographql.com/docs/graphos/routing/performance/caching/entity#observability) to monitor the performance of that feature.\n\n",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -1948,7 +1906,7 @@
               "x": 0,
               "y": 0,
               "width": 12,
-              "height": 3
+              "height": 5
             }
           },
           {
@@ -2097,7 +2055,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 3,
+              "y": 5,
               "width": 6,
               "height": 4
             }
@@ -2189,7 +2147,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 3,
+              "y": 5,
               "width": 6,
               "height": 4
             }
@@ -2199,10 +2157,10 @@
             "definition": {
               "type": "note",
               "content": "This chart shows an aggregate view across all cache types of your record counts and how many cache misses are happening. This is a lower-cardinality aggregate view of all the other charts in this section, specifically for correlating events between them.\n\n**Why it matters:**\n\n* Your cache sizes impact the memory footprint of your runtime\n* Your cache miss counts represent costlier requests to your runtime\n\n**What to look for:**\n* Drops in record counts that are *not* correlated to schema reloads or new instance deployments\n* Spikes in cache misses that are *not* correlated to a drop in record count\n* Spikes in cache misses that *do* correlate to a significant drop in cache hit percentage",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
@@ -2210,9 +2168,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 7,
+              "y": 9,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -2220,10 +2178,10 @@
             "definition": {
               "type": "note",
               "content": "This chart breaks down the number of records in the cache of each of your runtime instances.\n\n**Why it matters:**\n\n* If your traffic isn't well-distributed across your instances, some caches will lag behind in growth rate\n* If you have an instance go into an unhealthy state, you may see the anomaly represented here\n\n**What to look for:**\n* An instance or instances that have an anomalous count of records without a corresponding deployment or schema change\n* An instance or instances that are growing at a different rate than the others without a corresponding deployment\n\n**Caveat:**\n\nGrouping by `host`, `pod_name`, and `container_id` may cause fragmented data if these tags aren’t consistent or unique in your setup. Update the group-by fields to whatever works best in your environment for accurate results.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
@@ -2231,9 +2189,9 @@
             },
             "layout": {
               "x": 6,
-              "y": 7,
+              "y": 9,
               "width": 6,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -2284,9 +2242,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 8,
-              "width": 4,
-              "height": 3
+              "y": 11,
+              "width": 6,
+              "height": 4
             }
           },
           {
@@ -2336,10 +2294,52 @@
               }
             },
             "layout": {
-              "x": 4,
-              "y": 8,
-              "width": 4,
-              "height": 3
+              "x": 6,
+              "y": 11,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 7314147141979253,
+            "definition": {
+              "type": "note",
+              "content": "This chart shows cache record counts broken down by each cache type.\n\n**Why it matters:**\n\n* When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 15,
+              "width": 6,
+              "height": 2
+            }
+          },
+          {
+            "id": 5420652058492445,
+            "definition": {
+              "type": "note",
+              "content": "This chart shows cache misses broken down by cache type.\n\n**Why it matters:**\n\n* When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 15,
+              "width": 6,
+              "height": 2
             }
           },
           {
@@ -2397,52 +2397,10 @@
               "markers": []
             },
             "layout": {
-              "x": 8,
-              "y": 8,
-              "width": 4,
-              "height": 3
-            }
-          },
-          {
-            "id": 7314147141979253,
-            "definition": {
-              "type": "note",
-              "content": "This chart shows cache record counts broken down by each cache type.\n\n**Why it matters:**\n\n* When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail",
-              "background_color": "yellow",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "center",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
               "x": 0,
-              "y": 11,
-              "width": 4,
-              "height": 1
-            }
-          },
-          {
-            "id": 5420652058492445,
-            "definition": {
-              "type": "note",
-              "content": "This chart shows cache misses broken down by cache type.\n\n**Why it matters:**\n\n* When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail",
-              "background_color": "yellow",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "center",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 4,
-              "y": 11,
-              "width": 4,
-              "height": 1
+              "y": 17,
+              "width": 6,
+              "height": 4
             }
           },
           {
@@ -2450,36 +2408,36 @@
             "definition": {
               "type": "note",
               "content": "This chart shows cache hit rate broken down by each individual running instance of your runtime.\n\n**Why it matters:**\n\n* When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail\n\n**Caveat:**\n\nGrouping by `host`, `pod_name`, and `container_id` may cause fragmented data if these tags aren’t consistent or unique in your setup. Update the group-by fields to whatever works best in your environment for accurate results.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
               "has_padding": true
             },
             "layout": {
-              "x": 8,
-              "y": 11,
-              "width": 4,
-              "height": 1
+              "x": 0,
+              "y": 21,
+              "width": 6,
+              "height": 2
             }
           }
         ]
       },
       "layout": {
         "x": 0,
-        "y": 8,
+        "y": 95,
         "width": 12,
-        "height": 1
+        "height": 24
       }
     },
     {
       "id": 3027455303862458,
       "definition": {
         "title": "Compute Jobs",
-        "background_color": "vivid_blue",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -2502,7 +2460,7 @@
               "x": 0,
               "y": 0,
               "width": 12,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -2574,9 +2532,9 @@
             },
             "layout": {
               "x": 0,
-              "y": 1,
-              "width": 4,
-              "height": 3
+              "y": 2,
+              "width": 6,
+              "height": 4
             }
           },
           {
@@ -2699,10 +2657,52 @@
               }
             },
             "layout": {
-              "x": 4,
-              "y": 1,
-              "width": 4,
-              "height": 3
+              "x": 6,
+              "y": 2,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 5923077997925504,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**Why it matters:**\n\n* A queue with a depth greater than 1 means jobs are backing up, introducing latency for any requests that depend on them.\n* Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n* Helps identify runtime saturation under load.\n\n**What to look for**\n\n* A queue of 0-1 is ideal — jobs are being processed as they arrive.\n* Short spikes can be normal during brief load surges.\n* Sustained periods above a depth of 1 may require scaling CPU resources or optimizing workload.",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 6,
+              "width": 6,
+              "height": 2
+            }
+          },
+          {
+            "id": 8220638844765090,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**Why it matters**\n\n-   Query planning is critical to routing — delays here increase end-to-end latency.\n-   Schema or configuration changes can unexpectedly impact planning performance.\n-   High max durations may point to specific queries performing poorly in the planner.\n\n**What to look for**\n\n-   Low, stable execution times indicate efficient planning.\n-   Spikes in max duration could signal complex or inefficient queries.\n-   Rising trends after deployments or schema changes may require investigation.\n\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices).",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 6,
+              "width": 6,
+              "height": 2
             }
           },
           {
@@ -2825,73 +2825,10 @@
               }
             },
             "layout": {
-              "x": 8,
-              "y": 1,
-              "width": 4,
-              "height": 3
-            }
-          },
-          {
-            "id": 5923077997925504,
-            "definition": {
-              "type": "note",
-              "content": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**Why it matters:**\n\n* A queue with a depth greater than 1 means jobs are backing up, introducing latency for any requests that depend on them.\n* Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n* Helps identify runtime saturation under load.\n\n**What to look for**\n\n* A queue of 0-1 is ideal — jobs are being processed as they arrive.\n* Short spikes can be normal during brief load surges.\n* Sustained periods above a depth of 1 may require scaling CPU resources or optimizing workload.",
-              "background_color": "yellow",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "center",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
               "x": 0,
-              "y": 4,
-              "width": 4,
-              "height": 2
-            }
-          },
-          {
-            "id": 8220638844765090,
-            "definition": {
-              "type": "note",
-              "content": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**Why it matters**\n\n-   Query planning is critical to routing — delays here increase end-to-end latency.\n-   Schema or configuration changes can unexpectedly impact planning performance.\n-   High max durations may point to specific queries performing poorly in the planner.\n\n**What to look for**\n\n-   Low, stable execution times indicate efficient planning.\n-   Spikes in max duration could signal complex or inefficient queries.\n-   Rising trends after deployments or schema changes may require investigation.\n\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices).",
-              "background_color": "yellow",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "center",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 4,
-              "y": 4,
-              "width": 4,
-              "height": 2
-            }
-          },
-          {
-            "id": 6257474700798550,
-            "definition": {
-              "type": "note",
-              "content": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns.",
-              "background_color": "yellow",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "center",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 8,
-              "y": 4,
-              "width": 4,
-              "height": 2
+              "y": 8,
+              "width": 6,
+              "height": 4
             }
           },
           {
@@ -2958,10 +2895,31 @@
               ]
             },
             "layout": {
+              "x": 6,
+              "y": 8,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 6257474700798550,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns.",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
               "x": 0,
-              "y": 6,
-              "width": 8,
-              "height": 3
+              "y": 12,
+              "width": 6,
+              "height": 2
             }
           },
           {
@@ -2969,29 +2927,29 @@
             "definition": {
               "type": "note",
               "content": "This chart shows the total number of compute jobs actively running in your runtime, broken down by success or failure status.\n\n**Why it matters**\n-   Failed jobs may indicate internal issues, misconfigurations, or upstream errors.\n-   Monitoring execution volume helps assess load and throughput.\n\n**What to look for**\n\n-   A steady level of `executed_ok` jobs.\n-   Any presence of failed job types (`executed_error`, `rejected_queue_full`, etc.).",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
-              "tick_edge": "left",
+              "tick_edge": "top",
               "has_padding": true
             },
             "layout": {
-              "x": 8,
-              "y": 6,
-              "width": 4,
-              "height": 3
+              "x": 6,
+              "y": 12,
+              "width": 6,
+              "height": 2
             }
           }
         ]
       },
       "layout": {
         "x": 0,
-        "y": 9,
+        "y": 119,
         "width": 12,
-        "height": 1,
+        "height": 15,
         "is_column_break": true
       }
     },
@@ -2999,7 +2957,7 @@
       "id": 5629804781331548,
       "definition": {
         "title": "Container/Host",
-        "background_color": "vivid_blue",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -3184,7 +3142,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 4
                       },
                       "alias": "avg stolen",
@@ -3193,7 +3151,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 5
                       },
                       "alias": "avg iowait",
@@ -3202,7 +3160,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 1
                       },
                       "alias": "avg system",
@@ -3211,7 +3169,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 2
                       },
                       "alias": "avg user",
@@ -3220,7 +3178,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 0
                       },
                       "alias": "avg idle",
@@ -3244,7 +3202,7 @@
               },
               "markers": [
                 {
-                  "label": " Example Threshold ",
+                  "label": " Example Threshold ",
                   "value": "y = 75",
                   "display_type": "error dashed"
                 }
@@ -3292,7 +3250,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 1
                       },
                       "alias": "avg cpu",
@@ -3301,7 +3259,7 @@
                     {
                       "number_format": {},
                       "style": {
-                        "palette": "classic",
+                        "palette": "dog_classic",
                         "palette_index": 1
                       },
                       "alias": "max cpu",
@@ -3645,7 +3603,7 @@
               ],
               "markers": [
                 {
-                  "label": " Example Host Limit ",
+                  "label": " Example Host Limit ",
                   "value": "y = 150000000000",
                   "display_type": "error dashed"
                 }
@@ -3829,8 +3787,8 @@
             "definition": {
               "type": "note",
               "content": "These charts draw their threshold marker dynamically based on the limits specified in Kubernetes for memory and CPU. If your runtime is deployed across heterogeneous container configurations for those values, the dynamic thresholds will display both the min and the max values.\n\nFor more details on available Kubernetes metrics, see the full [documentation on the Datadog Kubernetes collector](https://docs.datadoghq.com/containers/kubernetes/data_collected/).",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
@@ -3842,7 +3800,7 @@
               "x": 0,
               "y": 8,
               "width": 3,
-              "height": 4
+              "height": 2
             }
           },
           {
@@ -3850,8 +3808,8 @@
             "definition": {
               "type": "note",
               "content": "The memory chart draws its threshold marker dynamically based on the available memory on your hosts. If your runtime is deployed across heterogeneous hosts, the threshold will display both the min and the max values.\n\nFor more details on available host metrics, see datadog's [documentation on the OTEL collectors hostmetrics reciever](https://docs.datadoghq.com/opentelemetry/integrations/host_metrics/?tab=host).",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
@@ -3863,7 +3821,7 @@
               "x": 3,
               "y": 8,
               "width": 3,
-              "height": 4
+              "height": 2
             }
           },
           {
@@ -3871,8 +3829,8 @@
             "definition": {
               "type": "note",
               "content": "These charts draw their threshold marker dynamically based on the limits specified in Docker for memory and CPU. If your runtime is deployed across heterogeneous container configurations for those values, the threshold will display both the min and the max values.\n\nFor more details on available Docker metrics via the Datadog Docker Agent, see the full [documentation on the Datadog Docker Agent](https://docs.datadoghq.com/containers/docker).",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
@@ -3884,7 +3842,7 @@
               "x": 6,
               "y": 8,
               "width": 3,
-              "height": 4
+              "height": 2
             }
           },
           {
@@ -3892,8 +3850,8 @@
             "definition": {
               "type": "note",
               "content": "These charts draw their threshold marker dynamically based on the limits specified in Docker for memory and CPU. If your runtime is deployed across heterogeneous container configurations for those values, the threshold will display both the min and the max values.\n\nFor more details on available Docker metrics via the OTEL collector, see Datadog's [documentation on the OTEL collector Docker/stats receiver](https://docs.datadoghq.com/opentelemetry/integrations/docker_metrics).",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
               "vertical_align": "top",
               "show_tick": true,
@@ -3905,23 +3863,23 @@
               "x": 9,
               "y": 8,
               "width": 3,
-              "height": 4
+              "height": 2
             }
           }
         ]
       },
       "layout": {
         "x": 0,
-        "y": 10,
+        "y": 134,
         "width": 12,
-        "height": 1
+        "height": 11
       }
     },
     {
       "id": 7179021198358280,
       "definition": {
         "title": "Coprocessors",
-        "background_color": "vivid_blue",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -3944,7 +3902,7 @@
               "x": 0,
               "y": 0,
               "width": 12,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -3990,8 +3948,8 @@
             },
             "layout": {
               "x": 0,
-              "y": 1,
-              "width": 4,
+              "y": 2,
+              "width": 6,
               "height": 4
             }
           },
@@ -4037,10 +3995,52 @@
               ]
             },
             "layout": {
-              "x": 4,
-              "y": 1,
-              "width": 4,
+              "x": 6,
+              "y": 2,
+              "width": 6,
               "height": 4
+            }
+          },
+          {
+            "id": 7167731681168763,
+            "definition": {
+              "type": "note",
+              "content": "This chart shows the average duration added by coprocessor invocations at each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Coprocessors introduce additional network calls — even fast ones add latency.\n-   High or rising durations can affect overall request performance.\n-   Each stage (e.g., request, supergraph, subgraph) may have different performance profiles depending on configuration and coprocessor logic.\n\n**What to look for**\n\n-   Low, stable durations suggest efficient coprocessor behavior.\n-   Spikes may indicate backend slowness, increased payload size, or external service degradation.",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 6,
+              "width": 6,
+              "height": 2
+            }
+          },
+          {
+            "id": 8612773097510573,
+            "definition": {
+              "type": "note",
+              "content": "This chart breaks down how often coprocessors are invoked at each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Helps validate where and how often your coprocessors are engaged.\n-   Useful for confirming configuration and understanding the load placed on each external service.\n-   Invocation patterns typically align with overall request volume, but may vary by routing logic or stage-specific conditions.\n\n**What to look for**\n\n-   Consistent counts per stage indicate expected behavior.\n-   Unexpected drops or surges may reflect routing changes, config issues, or stage-specific errors.",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 6,
+              "width": 6,
+              "height": 2
             }
           },
           {
@@ -4099,52 +4099,10 @@
               }
             },
             "layout": {
-              "x": 8,
-              "y": 1,
-              "width": 4,
-              "height": 4
-            }
-          },
-          {
-            "id": 7167731681168763,
-            "definition": {
-              "type": "note",
-              "content": "This chart shows the average duration added by coprocessor invocations at each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Coprocessors introduce additional network calls — even fast ones add latency.\n-   High or rising durations can affect overall request performance.\n-   Each stage (e.g., request, supergraph, subgraph) may have different performance profiles depending on configuration and coprocessor logic.\n\n**What to look for**\n\n-   Low, stable durations suggest efficient coprocessor behavior.\n-   Spikes may indicate backend slowness, increased payload size, or external service degradation.",
-              "background_color": "yellow",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "center",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
               "x": 0,
-              "y": 5,
-              "width": 4,
-              "height": 2
-            }
-          },
-          {
-            "id": 8612773097510573,
-            "definition": {
-              "type": "note",
-              "content": "This chart breaks down how often coprocessors are invoked at each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Helps validate where and how often your coprocessors are engaged.\n-   Useful for confirming configuration and understanding the load placed on each external service.\n-   Invocation patterns typically align with overall request volume, but may vary by routing logic or stage-specific conditions.\n\n**What to look for**\n\n-   Consistent counts per stage indicate expected behavior.\n-   Unexpected drops or surges may reflect routing changes, config issues, or stage-specific errors.",
-              "background_color": "yellow",
-              "font_size": "14",
-              "text_align": "left",
-              "vertical_align": "center",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 4,
-              "y": 5,
-              "width": 4,
-              "height": 2
+              "y": 8,
+              "width": 6,
+              "height": 4
             }
           },
           {
@@ -4152,19 +4110,19 @@
             "definition": {
               "type": "note",
               "content": "This chart tracks the success rate of coprocessor invocations across each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Coprocessors are on the critical path — failures here can short-circuit requests before they reach subgraphs.\n-   A drop in success rate will correlate with elevated error responses at the supergraph level.\n-   Helps isolate external causes of failure when subgraphs appear healthy.\n\n**What to look for**\n\n-   A consistent 100% success rate is expected for stable, production-grade coprocessors.\n-   Any dip may signal availability issues, timeouts, or bugs in coprocessor logic.\n-   If supergraph error rates rise while subgraphs remain unaffected, investigate this metric as a potential root cause.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
               "has_padding": true
             },
             "layout": {
-              "x": 8,
-              "y": 5,
-              "width": 4,
+              "x": 0,
+              "y": 12,
+              "width": 6,
               "height": 2
             }
           }
@@ -4172,16 +4130,16 @@
       },
       "layout": {
         "x": 0,
-        "y": 11,
+        "y": 145,
         "width": 12,
-        "height": 1
+        "height": 15
       }
     },
     {
       "id": 4549852525386523,
       "definition": {
         "title": "Sentinel Metrics",
-        "background_color": "white",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -4287,7 +4245,7 @@
               "x": 0,
               "y": 1,
               "width": 6,
-              "height": 3
+              "height": 4
             }
           },
           {
@@ -4335,7 +4293,7 @@
               "x": 6,
               "y": 1,
               "width": 6,
-              "height": 3
+              "height": 4
             }
           },
           {
@@ -4343,10 +4301,10 @@
             "definition": {
               "type": "note",
               "content": "[Uplink is used to retrieve your GraphOS license (where applicable) and published schemas from Apollo](https://www.apollographql.com/docs/graphos/routing/uplink). If Uplink has an outage or incident, your license or schema pulls may fail, and this metric can give you a warning when that is the reason.",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
@@ -4354,7 +4312,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 4,
+              "y": 5,
               "width": 6,
               "height": 2
             }
@@ -4364,10 +4322,10 @@
             "definition": {
               "type": "note",
               "content": "This graph can help you track the rollout of schema changes across your fleet as a supplemental indicator beyond the query planning cache metrics. We also highly recommend adding markers for new deployments based on your CI system's integration with Datadog where appropriate so that you can correlate those with any incidents as well.\n\nTo learn more about launches and what constitutes a new one, see [the documentation](https://www.apollographql.com/docs/graphos/platform/schema-management/delivery/launch).",
-              "background_color": "yellow",
-              "font_size": "14",
+              "background_color": "gray",
+              "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
+              "vertical_align": "top",
               "show_tick": true,
               "tick_pos": "50%",
               "tick_edge": "top",
@@ -4375,7 +4333,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 4,
+              "y": 5,
               "width": 6,
               "height": 2
             }
@@ -4384,16 +4342,16 @@
       },
       "layout": {
         "x": 0,
-        "y": 12,
+        "y": 160,
         "width": 12,
-        "height": 1
+        "height": 8
       }
     },
     {
       "id": 3840462392711525,
       "definition": {
         "title": "Resource Estimator",
-        "background_color": "white",
+        "background_color": "gray",
         "show_title": true,
         "type": "group",
         "layout_type": "ordered",
@@ -4459,8 +4417,8 @@
             "layout": {
               "x": 0,
               "y": 1,
-              "width": 4,
-              "height": 3
+              "width": 3,
+              "height": 2
             }
           },
           {
@@ -4504,10 +4462,10 @@
               }
             },
             "layout": {
-              "x": 4,
+              "x": 3,
               "y": 1,
-              "width": 4,
-              "height": 3
+              "width": 3,
+              "height": 2
             }
           },
           {
@@ -4552,10 +4510,10 @@
               }
             },
             "layout": {
-              "x": 8,
+              "x": 6,
               "y": 1,
-              "width": 4,
-              "height": 3
+              "width": 3,
+              "height": 2
             }
           },
           {
@@ -4600,10 +4558,10 @@
               }
             },
             "layout": {
-              "x": 0,
-              "y": 4,
-              "width": 4,
-              "height": 3
+              "x": 9,
+              "y": 1,
+              "width": 3,
+              "height": 2
             }
           },
           {
@@ -4648,19 +4606,19 @@
               }
             },
             "layout": {
-              "x": 4,
-              "y": 4,
-              "width": 4,
-              "height": 3
+              "x": 0,
+              "y": 3,
+              "width": 3,
+              "height": 2
             }
           }
         ]
       },
       "layout": {
         "x": 0,
-        "y": 13,
+        "y": 168,
         "width": 12,
-        "height": 1
+        "height": 6
       }
     }
   ],
