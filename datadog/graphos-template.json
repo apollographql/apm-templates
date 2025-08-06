@@ -3807,7 +3807,7 @@
             "id": 2580801244854878,
             "definition": {
               "type": "note",
-              "content": "The memory chart draws its threshold marker dynamically based on the available memory on your hosts. If your runtime is deployed across heterogeneous hosts, the threshold will display both the min and the max values.\n\nFor more details on available host metrics, see datadog's [documentation on the OTEL collectors hostmetrics reciever](https://docs.datadoghq.com/opentelemetry/integrations/host_metrics/?tab=host).",
+              "content": "The memory chart draws its threshold marker dynamically based on the available memory on your hosts. If your runtime is deployed across heterogeneous hosts, the threshold will display both the min and the max values.\n\nFor more details on available host metrics, see datadog's [documentation on the OTEL collectors hostmetrics receiver](https://docs.datadoghq.com/opentelemetry/integrations/host_metrics/?tab=host).",
               "background_color": "gray",
               "font_size": "12",
               "text_align": "left",
@@ -3888,7 +3888,7 @@
             "id": 2752267629213285,
             "definition": {
               "type": "note",
-              "content": "If you incorporate [coprocessors](https://www.apollographql.com/docs/graphos/routing/customization/coprocessor) into your runtime, these metrics will be emitted. They indicate basic health and performance impact of the coprocessors on your request lifecycle. In order to correlate any issues we highly recommend you add your own instrumentation to this section to include any health and performance metrics specific to the coprocessors you run and their own request lifecyle.",
+              "content": "If you incorporate [coprocessors](https://www.apollographql.com/docs/graphos/routing/customization/coprocessor) into your runtime, these metrics will be emitted. They indicate basic health and performance impact of the coprocessors on your request lifecycle. In order to correlate any issues we highly recommend you add your own instrumentation to this section to include any health and performance metrics specific to the coprocessors you run and their own request lifecycle.",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
