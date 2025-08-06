@@ -1587,6 +1587,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -1600,16 +1601,21 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "max:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
+                      "query": "p95:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query3",
-                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
+                      "query": "max:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query4",
+                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query5",
                       "query": "max:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
                     }
                   ],
@@ -1631,7 +1637,7 @@
                           "unit_name": "second"
                         }
                       },
-                      "alias": "max execution duration",
+                      "alias": "p95 execution duration",
                       "formula": "query1"
                     },
                     {
@@ -1641,7 +1647,7 @@
                           "unit_name": "second"
                         }
                       },
-                      "alias": "avg wait time",
+                      "alias": "max execution duration",
                       "formula": "query3"
                     },
                     {
@@ -1651,8 +1657,18 @@
                           "unit_name": "second"
                         }
                       },
-                      "alias": "max wait time",
+                      "alias": "avg wait time",
                       "formula": "query4"
+                    },
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      },
+                      "alias": "max wait time",
+                      "formula": "query5"
                     }
                   ],
                   "style": {
@@ -2464,6 +2480,378 @@
             }
           },
           {
+            "id": 2242335784104899,
+            "definition": {
+              "title": "Query Planning Duration Percentiles and Wait Time",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "time": {},
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "p50:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_planning}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query3",
+                      "query": "p95:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_planning}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query2",
+                      "query": "p99:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_planning}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query4",
+                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_planning}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
+                        }
+                      },
+                      "alias": "p50 execution duration",
+                      "formula": "query1"
+                    },
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
+                        }
+                      },
+                      "alias": "p95 execution duration",
+                      "formula": "query3"
+                    },
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
+                        }
+                      },
+                      "alias": "p99 execution duration",
+                      "formula": "query2"
+                    },
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
+                        }
+                      },
+                      "alias": "avg wait time",
+                      "formula": "query4"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "tags",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "schema reload",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "cache warmup",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear"
+              }
+            },
+            "layout": {
+              "x": 0,
+              "y": 2,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 6504562094582051,
+            "definition": {
+              "title": "Query Parsing Duration Percentiles and Wait Time",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "time": {},
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "p50:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_parsing}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query3",
+                      "query": "p95:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_parsing}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query2",
+                      "query": "p99:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_parsing}"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "query4",
+                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_parsing}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
+                        }
+                      },
+                      "alias": "p50 execution duration",
+                      "formula": "query1"
+                    },
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
+                        }
+                      },
+                      "alias": "p95 execution duration",
+                      "formula": "query3"
+                    },
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
+                        }
+                      },
+                      "alias": "p99 execution duration",
+                      "formula": "query2"
+                    },
+                    {
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        },
+                        "unit_scale": {
+                          "type": "canonical_unit",
+                          "unit_name": "millisecond"
+                        }
+                      },
+                      "alias": "avg wait time",
+                      "formula": "query4"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "tags",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "schema reload",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                },
+                {
+                  "formulas": [
+                    {
+                      "alias": "cache warmup",
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "palette": "gray",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "overlay"
+                }
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear"
+              }
+            },
+            "layout": {
+              "x": 6,
+              "y": 2,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 8220638844765090,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**Why it matters**\n\n-   Query planning is critical to routing — delays here increase end-to-end latency.\n-   Schema or configuration changes can unexpectedly impact planning performance.\n-   High max durations may point to specific queries performing poorly in the planner.\n\n**What to look for**\n\n-   Low, stable execution times indicate efficient planning.\n-   Spikes in max duration could signal complex or inefficient queries.\n-   Rising trends after deployments or schema changes may require investigation.\n\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices).",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 6,
+              "width": 6,
+              "height": 2
+            }
+          },
+          {
+            "id": 6257474700798550,
+            "definition": {
+              "type": "note",
+              "content": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns.",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 6,
+              "width": 6,
+              "height": 2
+            }
+          },
+          {
             "id": 2646683015980845,
             "definition": {
               "title": "Queued Jobs",
@@ -2529,300 +2917,6 @@
                   "display_type": "overlay"
                 }
               ]
-            },
-            "layout": {
-              "x": 0,
-              "y": 2,
-              "width": 6,
-              "height": 4
-            }
-          },
-          {
-            "id": 2242335784104899,
-            "definition": {
-              "title": "Query Planning Avg Duration and Wait Time",
-              "title_size": "16",
-              "title_align": "left",
-              "show_legend": true,
-              "legend_layout": "auto",
-              "legend_columns": [
-                "avg",
-                "min",
-                "max",
-                "value",
-                "sum"
-              ],
-              "type": "timeseries",
-              "requests": [
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "query1",
-                      "query": "avg:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_planning}"
-                    },
-                    {
-                      "data_source": "metrics",
-                      "name": "query3",
-                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_planning}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "number_format": {
-                        "unit": {
-                          "type": "canonical_unit",
-                          "unit_name": "second"
-                        },
-                        "unit_scale": {
-                          "type": "canonical_unit",
-                          "unit_name": "millisecond"
-                        }
-                      },
-                      "alias": "avg execution duration",
-                      "formula": "query1"
-                    },
-                    {
-                      "number_format": {
-                        "unit": {
-                          "type": "canonical_unit",
-                          "unit_name": "second"
-                        },
-                        "unit_scale": {
-                          "type": "canonical_unit",
-                          "unit_name": "millisecond"
-                        }
-                      },
-                      "alias": "avg wait time",
-                      "formula": "query3"
-                    }
-                  ],
-                  "style": {
-                    "palette": "dog_classic",
-                    "order_by": "tags",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  },
-                  "display_type": "line"
-                },
-                {
-                  "formulas": [
-                    {
-                      "alias": "schema reload",
-                      "formula": "query1"
-                    }
-                  ],
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
-                    }
-                  ],
-                  "response_format": "timeseries",
-                  "style": {
-                    "palette": "gray",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  },
-                  "display_type": "overlay"
-                },
-                {
-                  "formulas": [
-                    {
-                      "alias": "cache warmup",
-                      "formula": "query1"
-                    }
-                  ],
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
-                    }
-                  ],
-                  "response_format": "timeseries",
-                  "style": {
-                    "palette": "gray",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  },
-                  "display_type": "overlay"
-                }
-              ],
-              "yaxis": {
-                "include_zero": true,
-                "scale": "linear"
-              }
-            },
-            "layout": {
-              "x": 6,
-              "y": 2,
-              "width": 6,
-              "height": 4
-            }
-          },
-          {
-            "id": 5923077997925504,
-            "definition": {
-              "type": "note",
-              "content": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**Why it matters:**\n\n* A queue with a depth greater than 1 means jobs are backing up, introducing latency for any requests that depend on them.\n* Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n* Helps identify runtime saturation under load.\n\n**What to look for**\n\n* A queue of 0-1 is ideal — jobs are being processed as they arrive.\n* Short spikes can be normal during brief load surges.\n* Sustained periods above a depth of 1 may require scaling CPU resources or optimizing workload.",
-              "background_color": "gray",
-              "font_size": "12",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 0,
-              "y": 6,
-              "width": 6,
-              "height": 2
-            }
-          },
-          {
-            "id": 8220638844765090,
-            "definition": {
-              "type": "note",
-              "content": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**Why it matters**\n\n-   Query planning is critical to routing — delays here increase end-to-end latency.\n-   Schema or configuration changes can unexpectedly impact planning performance.\n-   High max durations may point to specific queries performing poorly in the planner.\n\n**What to look for**\n\n-   Low, stable execution times indicate efficient planning.\n-   Spikes in max duration could signal complex or inefficient queries.\n-   Rising trends after deployments or schema changes may require investigation.\n\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices).",
-              "background_color": "gray",
-              "font_size": "12",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 6,
-              "y": 6,
-              "width": 6,
-              "height": 2
-            }
-          },
-          {
-            "id": 6504562094582051,
-            "definition": {
-              "title": "Query Parsing Avg Duration and Wait Time",
-              "title_size": "16",
-              "title_align": "left",
-              "show_legend": true,
-              "legend_layout": "auto",
-              "legend_columns": [
-                "avg",
-                "min",
-                "max",
-                "value",
-                "sum"
-              ],
-              "type": "timeseries",
-              "requests": [
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "query1",
-                      "query": "avg:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_parsing}"
-                    },
-                    {
-                      "data_source": "metrics",
-                      "name": "query3",
-                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value ,job.type:query_parsing}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "number_format": {
-                        "unit": {
-                          "type": "canonical_unit",
-                          "unit_name": "second"
-                        },
-                        "unit_scale": {
-                          "type": "canonical_unit",
-                          "unit_name": "millisecond"
-                        }
-                      },
-                      "alias": "avg execution duration",
-                      "formula": "query1"
-                    },
-                    {
-                      "number_format": {
-                        "unit": {
-                          "type": "canonical_unit",
-                          "unit_name": "second"
-                        },
-                        "unit_scale": {
-                          "type": "canonical_unit",
-                          "unit_name": "millisecond"
-                        }
-                      },
-                      "alias": "avg wait time",
-                      "formula": "query3"
-                    }
-                  ],
-                  "style": {
-                    "palette": "dog_classic",
-                    "order_by": "tags",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  },
-                  "display_type": "line"
-                },
-                {
-                  "formulas": [
-                    {
-                      "alias": "schema reload",
-                      "formula": "query1"
-                    }
-                  ],
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
-                    }
-                  ],
-                  "response_format": "timeseries",
-                  "style": {
-                    "palette": "gray",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  },
-                  "display_type": "overlay"
-                },
-                {
-                  "formulas": [
-                    {
-                      "alias": "cache warmup",
-                      "formula": "query1"
-                    }
-                  ],
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
-                    }
-                  ],
-                  "response_format": "timeseries",
-                  "style": {
-                    "palette": "gray",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  },
-                  "display_type": "overlay"
-                }
-              ],
-              "yaxis": {
-                "include_zero": true,
-                "scale": "linear"
-              }
             },
             "layout": {
               "x": 0,
@@ -2902,10 +2996,10 @@
             }
           },
           {
-            "id": 6257474700798550,
+            "id": 5923077997925504,
             "definition": {
               "type": "note",
-              "content": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns.",
+              "content": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**Why it matters:**\n\n* A queue with a depth greater than 1 means jobs are backing up, introducing latency for any requests that depend on them.\n* Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n* Helps identify runtime saturation under load.\n\n**What to look for**\n\n* A queue of 0-1 is ideal — jobs are being processed as they arrive.\n* Short spikes can be normal during brief load surges.\n* Sustained periods above a depth of 1 may require scaling CPU resources or optimizing workload.",
               "background_color": "gray",
               "font_size": "12",
               "text_align": "left",
