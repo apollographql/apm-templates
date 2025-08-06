@@ -138,7 +138,7 @@
             "id": 8270570877484838,
             "definition": {
               "type": "note",
-              "content": "This chart shows the volume of requests Apollo Router is handling over time, broken down by status code.\n\n### It helps answer:\n\n-   Are most requests successful (`2xx`)?\n-   Are clients misbehaving (`4xx`)?\n-   Is the router or a subgraph failing (`5xx`)?\n\n### This metric helps spot trends and issues:\n\n-   A **spike in `5xx`** likely means something is broken downstream.\n-   A **rise in `4xx`** may signal client bugs or deprecated queries.\n-   **Changes in total volume** may reflect traffic surges or outages.",
+              "content": "This chart shows the volume of requests Apollo Router is handling over time, broken down by status code.\n\n**What to look for**\n\n- Are most requests successful (`2xx`)?\n- Are clients misbehaving (`4xx`)?\n- Is the router or a subgraph failing (`5xx`)?\n\n**Why it matters**\n\n- An increase in  `4xx` errors may indicate client bugs or attempts to invoke deprecated queries.\n- A spike in `5xx` errors likely indicates that something is broken downstream.\n- Changes in total volume may reflect traffic surges or outages.",
               "background_color": "gray",
               "font_size": "12",
               "text_align": "left",
@@ -159,7 +159,7 @@
             "id": 7248723417019108,
             "definition": {
               "type": "note",
-              "content": "This chart shows **requests per second (RPS)** hitting the Apollo Router — your clearest view into how much work the Router is doing right now.\n\n**What to look for:**\n\n-   Sudden drops? Could be outages upstream or config errors.\n-   Steady growth? Make sure latency and errors aren’t creeping up.\n-   Flatline during known busy periods? You might be hitting limits.",
+              "content": "This chart shows requests per second (RPS) hitting the Apollo Router. This is your clearest view into how much work the Router is doing right now.\n\n**What to look for**\n\n- A sudden drop may indicate client outages or configuration errors.\n- A flat line during known busy periods may indicate that you are hitting throttling limits.",
               "background_color": "gray",
               "font_size": "12",
               "text_align": "left",
@@ -191,6 +191,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -204,7 +205,7 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "count:http.server.request.duration{graphql.errors:*,$service,$env,$version}.as_count()"
+                      "query": "count:http.server.request.duration{$service,$env,$version, graphql.errors:true}.as_count()"
                     },
                     {
                       "name": "query2",
