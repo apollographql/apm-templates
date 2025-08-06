@@ -63,8 +63,13 @@ DASHBOARD_MAPPINGS=(
 
 upload_dashboard() {
     local filename="$1"
+    local dashboard_id="$2"
 
-    echo -e "${YELLOW}Uploading dashboard from ${filename}...${NC}"
+    if [[ -z "$dashboard_id" ]]; then
+        echo -e "${YELLOW}Creating new dashboard from ${filename}...${NC}"
+    else
+        echo -e "${YELLOW}Updating existing dashboard ${dashboard_id} from ${filename}...${NC}"
+    fi
 
     if [[ ! -f "$filename" ]]; then
         echo -e "${RED}✗ File not found: $filename${NC}"
@@ -73,9 +78,6 @@ upload_dashboard() {
 
     local json_payload
     json_payload=$(cat "$filename")
-
-    local dashboard_id
-    dashboard_id=$(echo "$json_payload" | jq -r '.id // empty')
 
     local http_code
     local response
@@ -119,10 +121,32 @@ main() {
     local total_count=${#DASHBOARD_MAPPINGS[@]}
 
     # Upload each dashboard
-    for filename in "${DASHBOARD_MAPPINGS[@]}"; do
-        if upload_dashboard "$filename"; then
+    for mapping in "${DASHBOARD_MAPPINGS[@]}"; do
+        # Split the mapping on the colon
+        local filename="${mapping%:*}"
+        local dashboard_id="${mapping#*:}"
+
+        if [[ -z "$filename" ]]; then
+            echo -e "${RED}✗ Invalid mapping: ${mapping}${NC}"
+            continue
+        fi
+
+        # Since Bash's substring extraction will produce the full string with no match
+        # this covers the case where no colon was present and therefore we have no ID
+        if [[ "$filename" == "$dashboard_id" ]]; then
+           dashboard_id=""
+        fi
+
+        if [[ -z "$dashboard_id" ]]; then
+           echo -e "${YELLOW}Processing: ${filename}${NC}"
+        else
+           echo -e "${YELLOW}Processing: ${filename} -> ${dashboard_id}${NC}"
+        fi
+
+        if upload_dashboard "$filename" "$dashboard_id"; then
             ((success_count++))
         fi
+
         # Small delay to avoid rate limiting
         sleep 0.5
     done
