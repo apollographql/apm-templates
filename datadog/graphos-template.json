@@ -15,7 +15,7 @@
             "id": 4766111693665422,
             "definition": {
               "type": "note",
-              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from router\n-   If your organization has control over all clients of your supergraph:\n    -   alert on increases in 4xx responses indicating a potential misconfiguration of one or more clients.\n    -   alert on increases in GraphQL errors indicating bad queries from one or more clients.\n-   Reliability SLO: ≥99.9% of Router responses should be 2xx and without error.\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
+              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from router\n-   If your organization has control over all clients of your supergraph:\n    -   alert on increases in 4xx responses indicating a potential misconfiguration of one or more clients.\n    -   alert on increases in GraphQL errors indicating bad queries from one or more clients.\n-   Reliability SLO: ≥99.9% of Router responses should be 2xx and without error.\n-   Metric health: unexpected zero or missing metrics indicate a potential networking or telemetry misconfiguration\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -191,7 +191,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -590,7 +589,6 @@
             "definition": {
               "type": "note",
               "content": "**How to interpret percentiles**\n\n- p90 / p95 — these percentiles represent the upper range of typical request latencies. If these values rise, it generally means a significant portion of requests are experiencing slower responses. Possible causes include:\n\n  - A subgraph is responding more slowly than usual (e.g., due to load or inefficiency)\n  - The Router’s query planning step is taking longer (especially with complex or highly federated queries)\n  - Overall increased load causing processing delays\n\n- p99 — this is a tail latency metric that reflects the slowest 1% of requests. Spikes here often indicate rare but impactful delays, such as:\n\n  - Intermittent subgraph performance issues or temporary timeouts\n  - Specific heavy or complex queries that take much longer to plan or execute\n  - Unusual overhead in middleware or Router internals affecting some requests\n\n- Max — the absolute slowest observed request during the timeframe. Isolated high max values are usually less concerning (e.g., caused by a single unusual request). However, frequent or sustained high max latencies may point to:\n\n  - Clients issuing extremely large or repeated queries causing resource exhaustion or retries\n  - Transient infrastructure problems (network issues, DNS delays, resource contention)\n\n- Min — represents the fastest possible response from the Router. A surprisingly high minimum usually reflects baseline overhead within the Router itself — such as:\n\n  - Middleware or plugin execution time\n  - Query parsing, validation, or planning\n  - Routing logic that's inherently non-negligible\n\n**Caveats**\n\n- Low request volumes can skew percentiles; a single slow request distorts p99 or max.\n- Slow subgraphs inflate Router latency here—this chart shows total request time, not internal breakdowns.\n- Latency spikes without load increase may point to network hiccups, subgraph cold starts, or cloud platform noise outside the Router’s control.",
-
               "background_color": "gray",
               "font_size": "12",
               "text_align": "left",
@@ -717,13 +715,13 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.client.request.duration{$service, $env ,$version} by {subgraph.name}.as_count()"
+                      "query": "sum:http.client.request.duration.count{$service, $env ,$version} by {subgraph.name}.as_rate()"
                     }
                   ],
                   "formulas": [
                     {
                       "alias": "Requests per second",
-                      "formula": "anomalies(throughput(query1), 'basic', 4)"
+                      "formula": "anomalies(query1, 'basic', 4)"
                     }
                   ],
                   "style": {
@@ -1589,7 +1587,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -2496,7 +2493,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -2661,7 +2657,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -2812,7 +2807,7 @@
             }
           },
           {
-            "id": 8220638844765090,
+            "id": 6257474700798550,
             "definition": {
               "type": "note",
               "content": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**What to look for**\n\n- Low, stable execution times indicate efficient planning.\n- Spikes in max duration could signal complex or inefficient queries.\n- Rising trends after deployments or schema changes may require investigation.\n\n**Why it matters**\n\n- Query planning is critical to routing — delays here increase end-to-end latency.\n- Schema or configuration changes can unexpectedly impact planning performance.\n- High max durations may point to specific queries performing poorly in the planner.\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices).",
@@ -2833,7 +2828,7 @@
             }
           },
           {
-            "id": 6257474700798550,
+            "id": 5923077997925504,
             "definition": {
               "type": "note",
               "content": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns.",
@@ -2998,7 +2993,7 @@
             }
           },
           {
-            "id": 5923077997925504,
+            "id": 8220638844765090,
             "definition": {
               "type": "note",
               "content": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**What to look for**\n\n- A queue of 0-1 is ideal — jobs are being processed as they arrive.\n- Short spikes can be normal during brief load surges.\n- Sustained periods above a depth of 1 may require scaling CPU resources or optimizing workload.\n\n**Why it matters**\n\n- A queue with a depth greater than 1 means jobs are backing up, introducing latency for any requests that depend on them.\n- Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n- Helps identify runtime saturation under load.",
@@ -3062,7 +3057,7 @@
             "id": 1060056504123377,
             "definition": {
               "type": "note",
-              "content": "Monitoring the resource consumption of your execution environment is essential to ensuring that your runtime can perform as desired.\n\nWe recommend monitoring for and ensuring that your average CPU usage does not exceed 80% load, to leave available overhead for expensive spikes such as schema reloads.\n\nYou can use the [router resource estimator](https://www.apollographql.com/docs/graphos/routing/self-hosted/resource-estimator) to determine what your memory thresholds and allocations should be.\n\nBelow are some example charts of how to plot this data in various deployment environments. They are parameterized using Datadog's [unified service tagging](https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging). You may also find it useful to break out your charts by instance or host ID to identify individually misbehaving instances.",
+              "content": "Monitoring the resource consumption of your execution environment is essential to ensuring that your runtime can perform as desired.\n\nWe recommend monitoring for and ensuring that your average CPU usage does not exceed 80% load, to leave available overhead for expensive spikes such as schema reloads. You may also find it useful to break out your charts by instance or host ID to identify individually misbehaving instances.\n\nYou can use the [router resource estimator](https://www.apollographql.com/docs/graphos/routing/self-hosted/resource-estimator) to determine what your memory thresholds and allocations should be.\n\nBelow are some example charts of how to plot this data in various deployment environments. They are parameterized using Datadog's [unified service tagging](https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging).",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
