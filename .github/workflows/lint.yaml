@@ -13,14 +13,14 @@ jobs:
     name: Spell check using the typos-cli crate
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: crate-ci/typos@v1.35.1
 
   lint-markdown:
     name: Lint Markdown files with dprint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       # The action takes too long to build if we install all the tools in the repo
       # This deletes the full mise.toml and instead installs dprint only
     - run: rm -f .config/mise/mise.toml
