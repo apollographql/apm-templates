@@ -101,7 +101,7 @@ telemetry:
       #    - HTTP Server metrics: https://opentelemetry.io/docs/specs/semconv/http/http-metrics/#http-server
       #    - HTTP Client metrics: https://opentelemetry.io/docs/specs/semconv/http/http-metrics/#http-client
     instruments: # https://www.apollographql.com/docs/graphos/routing/observability/telemetry/instrumentation/instruments
-      default_attribute_requirement_level: required # change to "recommended" for more data https://www.apollographql.com/docs/graphos/routing/observability/telemetry/instrumentation/instruments#default_requirement_level
+      default_requirement_level: required # change to "recommended" for more data https://www.apollographql.com/docs/graphos/routing/observability/telemetry/instrumentation/instruments#default_requirement_level
       
       router:
         http.server.request.duration: # https://opentelemetry.io/docs/specs/semconv/http/http-metrics/#metric-httpserverrequestduration
