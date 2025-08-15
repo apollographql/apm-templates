@@ -1,40 +1,44 @@
 # Datadog Dashboard Template
 
-This folder contains a ready-to-import Datadog dashboard template for Apollo GraphOS Router v2 along with a recommended Router telemetry configuration that powers the widgets in the dashboard.
+This folder contains a ready-to-import Datadog dashboard template for Apollo GraphOS Router v2 along
+with a recommended Router telemetry configuration that powers the widgets in the dashboard.
 
 ## Prerequisites
+
 - Datadog account with permissions to import dashboards
 - Router telemetry data is flowing to Datadog:
   - Datadog OpenTelemetry (OTLP) integration enabled in Datadog
-  - Apollo Router v2 running with telemetry exporters set up to export traces and metrics to an OTLP endpoint.
-  - Datadog Agent or OTel-Collector set up to receive traces and metrics from the Router and send to Datadog.
+  - Apollo Router v2 running with telemetry exporters set up to export traces and metrics to an OTLP
+    endpoint.
+  - Datadog Agent or OTel-Collector set up to receive traces and metrics from the Router and send to
+    Datadog.
 - Access to edit your Router config (router.yaml) to add telemetry instrumentation
 
-
 ## Best practices
+
 - Use the dashboard as a starting point for your own customizations.
-- Keep an eye on cardinality; avoid highly dynamic attributes on metrics when possible. We have done this by default in the router telemetry config below.
+- Keep an eye on cardinality; avoid highly dynamic attributes on metrics when possible. We have done
+  this by default in the router telemetry config below.
 - Implement trace sampling if you have a large traffic volume.
 
 ## Import the dashboard into Datadog (recommended first)
 
 1. Sign in to Datadog
 2. Open the file [graphos-template.json](./graphos-template.json), copy all contents
-2. In Datadog UI navigate to Dashboards > New Dashboard > Create a Dashboard w/ any name
-4. Paste the JSON into the dashboard by simply clicking in an empty space on the newly created dashboard and (`Cmd+V` or `Ctrl+V`) and then confirm
+3. In Datadog UI navigate to Dashboards > New Dashboard > Create a Dashboard w/ any name
+4. Paste the JSON into the dashboard by simply clicking in an empty space on the newly created
+   dashboard and (`Cmd+V` or `Ctrl+V`) and then confirm
 5. The dashboard will appear under your Dashboards list
-
 
 ## Apollo Router v2 telemetry configuration
 
-After you import the dashboard, apply the telemetry configuration below to your Apollo Router (router.yaml) so that all dashboard widgets populate with data.
+After you import the dashboard, apply the telemetry configuration below to your Apollo Router
+(router.yaml) so that all dashboard widgets populate with data.
 
 - If you already have telemetry configured, merge these settings into your existing file.
 - Prefer the simplest path? Replace your telemetry section with the one below.
 
-
 ```yaml
-
 telemetry:
   instrumentation:
     # OTel span attributes you will see:
@@ -129,16 +133,16 @@ telemetry:
           attributes:
             connector.source.name: true
             subgraph.name: true
-
-
 ```
 
 ## Next steps
+
 - Confirm data is flowing by opening the imported dashboard in Datadog.
 - If some widgets remain empty, verify that:
   - Router is running v2 and telemetry is enabled
   - Traces and metrics reach Datadog
-  - Attributes used by the dashboard (e.g., otel.name, graphql.errors, subgraph.name) exist in your spans/metrics
-  - You are filtering by the correct service name, env, and version in the dashboard. 
+  - Attributes used by the dashboard (e.g., otel.name, graphql.errors, subgraph.name) exist in your
+    spans/metrics
+  - You are filtering by the correct service name, env, and version in the dashboard.
 
 If you find issues or have suggestions, please open a pull request or issue in this repository.
