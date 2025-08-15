@@ -53,7 +53,7 @@ telemetry:
           otel.name: router
           operation.name: "router"
           resource.name:
-            request_method: true # or replace with <operation_name : string> to see the operation name of the graphql request in the APM UI but be weary of trace metrics. This could result in high cardinality metrics on the resource_name attribute. ex: avg:trace.router{*} by {resource_name}
+            request_method: true # or replace with <operation_name : string> to see the operation name of the graphql request in the APM UI but be wary of trace metrics. This could result in high cardinality metrics on the resource_name attribute. ex: avg:trace.router{*} by {resource_name}
 
       supergraph: # Apollo specific attribute options: https://www.apollographql.com/docs/graphos/routing/observability/telemetry/instrumentation/standard-attributes#supergraph
         attributes:
