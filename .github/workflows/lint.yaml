@@ -24,7 +24,7 @@ jobs:
       # The action takes too long to build if we install all the tools in the repo
       # This deletes the full mise.toml and instead installs dprint only
     - run: rm -f .config/mise/mise.toml
-    - uses: jdx/mise-action@v2
+    - uses: jdx/mise-action@v3
       with:
         mise_toml: |
           [tools]
