@@ -1193,64 +1193,36 @@
             }
           },
           {
-            "id": 2881604383736506,
+            "id": 7867354547639656,
             "definition": {
-              "title": "Latency by GraphQL Operation",
+              "title": "Request Duration Distribution",
               "title_size": "16",
               "title_align": "left",
-              "type": "query_table",
+              "show_legend": true,
+              "type": "distribution",
+              "xaxis": {
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto",
+                "include_zero": true
+              },
+              "yaxis": {
+                "scale": "linear",
+                "min": "auto",
+                "max": "auto",
+                "include_zero": true
+              },
               "requests": [
                 {
-                  "queries": [
-                    {
-                      "name": "query2",
-                      "data_source": "spans",
-                      "search": {
-                        "query": "$service $env $version"
-                      },
-                      "indexes": [
-                        "*"
-                      ],
-                      "group_by": [
-                        {
-                          "facet": "@graphql.operation.name",
-                          "limit": 1000,
-                          "sort": {
-                            "aggregation": "pc95",
-                            "order": "desc",
-                            "metric": "@duration"
-                          },
-                          "should_exclude_missing": true
-                        }
-                      ],
-                      "compute": {
-                        "aggregation": "pc95",
-                        "metric": "@duration"
-                      },
-                      "storage": "hot"
-                    }
-                  ],
-                  "response_format": "scalar",
-                  "sort": {
-                    "count": 1000,
-                    "order_by": [
-                      {
-                        "type": "formula",
-                        "index": 0,
-                        "order": "desc"
-                      }
-                    ]
-                  },
-                  "formulas": [
-                    {
-                      "cell_display_mode": "bar",
-                      "alias": "p95 duration",
-                      "formula": "query2"
-                    }
-                  ]
+                  "request_type": "histogram",
+                  "query": {
+                    "data_source": "metrics",
+                    "name": "query1",
+                    "aggregator": "avg",
+                    "query": "avg:http.client.request.duration{subgraph.name:*,$service,$env,$version}"
+                  }
                 }
-              ],
-              "has_search_bar": "auto"
+              ]
             },
             "layout": {
               "x": 6,
@@ -1281,10 +1253,10 @@
             }
           },
           {
-            "id": 1124464206331570,
+            "id": 3281217598321122,
             "definition": {
               "type": "note",
-              "content": "This chart tracks the p95 request duration from the Router to each GraphQL operation for your top 1000 operations.\n\n**What to look for**\n\n- Operations should have consistent, predictable durations over time.\n- Rising p95s may indicate schema changes, degraded subgraph performance, or increased data complexity.\n- Watch for high-variance or long-tail operations that may benefit from optimization or caching.\n\n**Why it matters**\n\n- Captures the end-to-end time it takes the Router to process and respond to a specific operation.\n- Helps identify slow or expensive operations affecting user experience.\n\n**Caveats**\n\n- These values are retrieved via sampling to avoid the cost of high-cardinality metrics ingestion, so they are not 100% accurate especially over small time windows.",
+              "content": "This chart shows the distribution of backend request durations over time. It helps identify how long most requests take and highlights the presence of any outliers or tail latency issues.\n\n**What to look for**\n\n- A tight cluster around low durations suggests fast, consistent subgraph responses.\n- A long tail or spread to the right may indicate occasional slowness or outliers.\n- Sudden shape changes over time can highlight new regressions, changes in traffic, or schema changes.",
               "background_color": "gray",
               "font_size": "12",
               "text_align": "left",
@@ -1596,66 +1568,6 @@
               "width": 6,
               "height": 2
             }
-          },
-          {
-            "id": 7867354547639656,
-            "definition": {
-              "title": "Request Duration Distribution",
-              "title_size": "16",
-              "title_align": "left",
-              "show_legend": true,
-              "type": "distribution",
-              "xaxis": {
-                "scale": "linear",
-                "min": "auto",
-                "max": "auto",
-                "include_zero": true
-              },
-              "yaxis": {
-                "scale": "linear",
-                "min": "auto",
-                "max": "auto",
-                "include_zero": true
-              },
-              "requests": [
-                {
-                  "request_type": "histogram",
-                  "query": {
-                    "data_source": "metrics",
-                    "name": "query1",
-                    "aggregator": "avg",
-                    "query": "avg:http.client.request.duration{subgraph.name:*,$service,$env,$version}"
-                  }
-                }
-              ]
-            },
-            "layout": {
-              "x": 0,
-              "y": 18,
-              "width": 6,
-              "height": 4
-            }
-          },
-          {
-            "id": 3281217598321122,
-            "definition": {
-              "type": "note",
-              "content": "This chart shows the distribution of backend request durations over time. It helps identify how long most requests take and highlights the presence of any outliers or tail latency issues.\n\n**What to look for**\n\n- A tight cluster around low durations suggests fast, consistent subgraph responses.\n- A long tail or spread to the right may indicate occasional slowness or outliers.\n- Sudden shape changes over time can highlight new regressions, changes in traffic, or schema changes.",
-              "background_color": "gray",
-              "font_size": "12",
-              "text_align": "left",
-              "vertical_align": "top",
-              "show_tick": true,
-              "tick_pos": "50%",
-              "tick_edge": "top",
-              "has_padding": true
-            },
-            "layout": {
-              "x": 0,
-              "y": 22,
-              "width": 6,
-              "height": 2
-            }
           }
         ]
       },
@@ -1663,7 +1575,7 @@
         "x": 0,
         "y": 61,
         "width": 12,
-        "height": 25
+        "height": 19
       }
     },
     {
@@ -1722,7 +1634,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 86,
+        "y": 80,
         "width": 12,
         "height": 5
       }
@@ -1783,7 +1695,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 91,
+        "y": 85,
         "width": 12,
         "height": 3
       }
@@ -2135,7 +2047,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 94,
+        "y": 88,
         "width": 12,
         "height": 8
       }
@@ -2689,7 +2601,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 102,
+        "y": 96,
         "width": 12,
         "height": 24
       }
@@ -3284,7 +3196,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 126,
+        "y": 120,
         "width": 12,
         "height": 15,
         "is_column_break": true
@@ -4207,7 +4119,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 141,
+        "y": 135,
         "width": 12,
         "height": 11
       }
@@ -4467,7 +4379,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 152,
+        "y": 146,
         "width": 12,
         "height": 15
       }
@@ -4600,7 +4512,6 @@
                 "value",
                 "sum"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -4680,7 +4591,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 167,
+        "y": 161,
         "width": 12,
         "height": 8
       }
@@ -4954,7 +4865,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 175,
+        "y": 169,
         "width": 12,
         "height": 6
       }
