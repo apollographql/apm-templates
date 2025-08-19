@@ -878,6 +878,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -887,7 +888,7 @@
                       "name": "query1",
                       "data_source": "spans",
                       "search": {
-                        "query": "$service $env $version status:error"
+                        "query": "$service $env $version status:error operation_name:supergraph"
                       },
                       "indexes": [
                         "*"
