@@ -204,7 +204,7 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "count:http.server.request.duration{$service,$env,$version, graphql.errors:true}.as_count()"
+                      "query": "count:http.server.request.duration{$service,$env,$version,graphql.errors:true}.as_count()"
                     },
                     {
                       "name": "query2",
@@ -766,12 +766,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.client.request.duration{$service,$env,$version ,!connector.source.name:*} by {http.response.status_code,subgraph.name}.as_count()"
+                      "query": "count:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {http.response.status_code,subgraph.name}.as_count()"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "count:http.client.request.duration{$service,$env,$version ,connector.source.name:*} by {http.response.status_code,subgraph.name,connector.source.name}.as_count()"
+                      "query": "count:http.client.request.duration{$service,$env,$version,connector.source.name:*} by {http.response.status_code,subgraph.name,connector.source.name}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -815,12 +815,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:http.client.request.duration.count{$service,$env,$version ,!connector.source.name:*} by {subgraph.name}.as_rate()"
+                      "query": "sum:http.client.request.duration.count{$service,$env,$version,!connector.source.name:*} by {subgraph.name}.as_rate()"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "sum:http.client.request.duration.count{$service,$env,$version ,connector.source.name:*} by {subgraph.name,connector.source.name}.as_rate()"
+                      "query": "sum:http.client.request.duration.count{$service,$env,$version,connector.source.name:*} by {subgraph.name,connector.source.name}.as_rate()"
                     }
                   ],
                   "formulas": [
@@ -922,12 +922,12 @@
                   ],
                   "queries": [
                     {
-                      "query": "count:http.client.request.duration{subgraph.name:*,!http.response.status_code:2* , $service,$env,$version ,!connector.source.name:*} by {subgraph.name,http.response.status_code}.as_count()",
+                      "query": "count:http.client.request.duration{subgraph.name:*,!http.response.status_code:2*,$service,$env,$version,!connector.source.name:*} by {subgraph.name,http.response.status_code}.as_count()",
                       "data_source": "metrics",
                       "name": "query1"
                     },
                     {
-                      "query": "count:http.client.request.duration{subgraph.name:*,!http.response.status_code:2* , $service,$env,$version ,connector.source.name:*} by {subgraph.name,http.response.status_code,connector.source.name}.as_count()",
+                      "query": "count:http.client.request.duration{subgraph.name:*,!http.response.status_code:2*,$service,$env,$version,connector.source.name:*} by {subgraph.name,http.response.status_code,connector.source.name}.as_count()",
                       "data_source": "metrics",
                       "name": "query2"
                     }
@@ -1036,12 +1036,12 @@
                     {
                       "name": "query4",
                       "data_source": "metrics",
-                      "query": "avg:http.client.response.body.size{$service,$env,$version , !connector.source.name:*} by {subgraph.name}.as_count()"
+                      "query": "avg:http.client.response.body.size{$service,$env,$version,!connector.source.name:*} by {subgraph.name}.as_count()"
                     },
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "avg:http.client.response.body.size{$service,$env,$version , connector.source.name:*} by {subgraph.name,connector.source.name}.as_count()"
+                      "query": "avg:http.client.response.body.size{$service,$env,$version,connector.source.name:*} by {subgraph.name,connector.source.name}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -1145,12 +1145,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "p95:http.client.request.duration{$service,$env,$version , !connector.source.name:*} by {subgraph.name}"
+                      "query": "p95:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {subgraph.name}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "p95:http.client.request.duration{$service,$env,$version , connector.source.name:*} by {subgraph.name,connector.source.name}"
+                      "query": "p95:http.client.request.duration{$service,$env,$version,connector.source.name:*} by {subgraph.name,connector.source.name}"
                     }
                   ],
                   "formulas": [
@@ -1220,7 +1220,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:http.client.request.duration{$service,$env,$version , !connector.source.name:*, graphql.errors:true} by {subgraph.name}.as_count()"
+                      "query": "sum:http.client.request.duration{$service,$env,$version,!connector.source.name:*, graphql.errors:true} by {subgraph.name}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -1297,13 +1297,13 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.client.request.duration{$service,$env,$version ,!connector.source.name:*} by {subgraph.name}.as_count()",
+                      "query": "count:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {subgraph.name}.as_count()",
                       "aggregator": "sum"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "p95:http.client.request.duration{$service,$env,$version ,!connector.source.name:*} by {subgraph.name}",
+                      "query": "p95:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {subgraph.name}",
                       "aggregator": "max"
                     }
                   ],
@@ -1363,13 +1363,13 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.client.request.duration{$service,$env,$version ,!connector.source.name:*} by {subgraph.name}.as_count()",
+                      "query": "count:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {subgraph.name}.as_count()",
                       "aggregator": "sum"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "p95:http.client.request.duration{$service,$env,$version ,!connector.source.name:*} by {subgraph.name}",
+                      "query": "p95:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {subgraph.name}",
                       "aggregator": "max"
                     }
                   ],
@@ -1424,13 +1424,13 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.client.request.duration{$service,$env ,$version,connector.source.name:*} by {connector.source.name,subgraph.name}.as_count()",
+                      "query": "count:http.client.request.duration{$service,$env,$version,connector.source.name:*} by {connector.source.name,subgraph.name}.as_count()",
                       "aggregator": "sum"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "p95:http.client.request.duration{$service,$env,$version ,connector.source.name:*} by {connector.source.name,subgraph.name}",
+                      "query": "p95:http.client.request.duration{$service,$env,$version,connector.source.name:*} by {connector.source.name,subgraph.name}",
                       "aggregator": "max"
                     }
                   ],
@@ -1496,7 +1496,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "p95:http.client.request.duration{$service,$env ,$version ,connector.source.name:*} by {subgraph.name,connector.source.name}",
+                      "query": "p95:http.client.request.duration{$service,$env,$version,connector.source.name:*} by {subgraph.name,connector.source.name}",
                       "aggregator": "max"
                     }
                   ],
@@ -1679,7 +1679,7 @@
                 "data_source": "metrics",
                 "name": "query1",
                 "aggregator": "avg",
-                "query": "avg:http.client.request.duration{subgraph.name:*,$service,$env,$version ,!connector.source.name:*}"
+                "query": "avg:http.client.request.duration{subgraph.name:*,$service,$env,$version,!connector.source.name:*}"
               }
             }
           ]
@@ -1740,7 +1740,7 @@
                 "data_source": "metrics",
                 "name": "query1",
                 "aggregator": "avg",
-                "query": "avg:http.client.request.duration{$service,$env,$version, connector.source.name:*}"
+                "query": "avg:http.client.request.duration{$service,$env,$version,connector.source.name:*}"
               }
             }
           ]
@@ -1823,27 +1823,27 @@
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "avg:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value ,job.type:query_planning}"
+                      "query": "avg:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "p95:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
+                      "query": "p95:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query3",
-                      "query": "max:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
+                      "query": "max:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query4",
-                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
+                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{$service,$env,$version,job.type:query_planning}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query5",
-                      "query": "max:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value , job.type:query_planning}"
+                      "query": "max:apollo.router.compute_jobs.queue.wait.duration{$service,$env,$version,job.type:query_planning}"
                     }
                   ],
                   "formulas": [
@@ -1917,7 +1917,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -1939,7 +1939,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.query_planning.warmup.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -1986,12 +1986,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "avg:apollo.router.query_planning.plan.evaluated_plans{$service, $env, $version}"
+                      "query": "avg:apollo.router.query_planning.plan.evaluated_plans{$service,$env, $version}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "max:apollo.router.query_planning.plan.evaluated_plans{$service, $env, $version}"
+                      "query": "max:apollo.router.query_planning.plan.evaluated_plans{$service,$env, $version}"
                     }
                   ],
                   "formulas": [
@@ -2025,7 +2025,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2047,7 +2047,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.query_planning.warmup.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2175,7 +2175,7 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "sum:apollo.router.cache.miss.time.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.cache.miss.time.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -2199,7 +2199,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "avg:apollo.router.cache.size{service:$service.value,env:$env.value,version:$version.value}"
+                      "query": "avg:apollo.router.cache.size{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -2222,12 +2222,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "sum:apollo.router.cache.hit.time.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.cache.hit.time.count{$service,$env,$version}.as_count()"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.cache.miss.time.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.cache.miss.time.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -2254,7 +2254,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.query_planning.warmup.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2276,7 +2276,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2326,7 +2326,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:apollo.router.cache.size{service:$service.value,env:$env.value,version:$version.value} by {host,pod_name,container_id}"
+                      "query": "avg:apollo.router.cache.size{$service,$env,$version} by {host,pod_name,container_id}"
                     }
                   ],
                   "formulas": [
@@ -2353,7 +2353,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.query_planning.warmup.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2375,7 +2375,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2460,7 +2460,7 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "sum:apollo.router.cache.size{service:$service.value,env:$env.value,version:$version.value} by {kind,version}"
+                      "query": "sum:apollo.router.cache.size{$service,$env,$version} by {kind,version}"
                     }
                   ],
                   "formulas": [
@@ -2513,7 +2513,7 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "sum:apollo.router.cache.miss.time.count{service:$service.value,env:$env.value,version:$version.value} by {kind,version}.as_count()"
+                      "query": "sum:apollo.router.cache.miss.time.count{$service,$env,$version} by {kind,version}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -2608,12 +2608,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "sum:apollo.router.cache.hit.time.count{service:$service.value,env:$env.value,version:$version.value} by {host,pod_name,container_id}.as_count()"
+                      "query": "sum:apollo.router.cache.hit.time.count{$service,$env,$version} by {host,pod_name,container_id}.as_count()"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.cache.miss.time.count{service:$service.value,env:$env.value,version:$version.value} by {host,pod_name,container_id}.as_count()"
+                      "query": "sum:apollo.router.cache.miss.time.count{$service,$env,$version} by {host,pod_name,container_id}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -2729,22 +2729,22 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "p50:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_planning}"
+                      "query": "p50:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query3",
-                      "query": "p95:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_planning}"
+                      "query": "p95:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "p99:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_planning}"
+                      "query": "p99:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_planning}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query4",
-                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_planning}"
+                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{$service,$env,$version,job.type:query_planning}"
                     }
                   ],
                   "formulas": [
@@ -2824,7 +2824,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2846,7 +2846,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.query_planning.warmup.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2893,22 +2893,22 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "p50:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_parsing}"
+                      "query": "p50:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_parsing}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query3",
-                      "query": "p95:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_parsing}"
+                      "query": "p95:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_parsing}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "p99:apollo.router.compute_jobs.execution.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_parsing}"
+                      "query": "p99:apollo.router.compute_jobs.execution.duration{$service,$env,$version,job.type:query_parsing}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query4",
-                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{service:$service.value,env:$env.value,version:$version.value, job.type:query_parsing}"
+                      "query": "avg:apollo.router.compute_jobs.queue.wait.duration{$service,$env,$version,job.type:query_parsing}"
                     }
                   ],
                   "formulas": [
@@ -2988,7 +2988,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -3010,7 +3010,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.query_planning.warmup.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -3099,7 +3099,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.compute_jobs.queued{service:$service.value,env:$env.value,version:$version.value}"
+                      "query": "sum:apollo.router.compute_jobs.queued{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3130,7 +3130,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -3173,7 +3173,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:apollo.router.compute_jobs.duration{service:$service.value,env:$env.value,version:$version.value} by {job.outcome}.as_count()"
+                      "query": "count:apollo.router.compute_jobs.duration{$service,$env,$version} by {job.outcome}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -3200,7 +3200,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{service:$service.value,env:$env.value,version:$version.value}.as_count()"
+                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
                     }
                   ],
                   "response_format": "timeseries",
@@ -3325,12 +3325,12 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "avg:kubernetes.cpu.usage.total{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:kubernetes.cpu.usage.total{$service,$env,$version}"
                     },
                     {
                       "name": "query2",
                       "data_source": "metrics",
-                      "query": "max:kubernetes.cpu.usage.total{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "max:kubernetes.cpu.usage.total{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3360,12 +3360,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "max:kubernetes.cpu.limits{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "max:kubernetes.cpu.limits{$service,$env,$version}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "min:kubernetes.cpu.limits{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "min:kubernetes.cpu.limits{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3434,27 +3434,27 @@
                     {
                       "name": "query2",
                       "data_source": "metrics",
-                      "query": "avg:system.cpu.stolen{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:system.cpu.stolen{$service,$env,$version}"
                     },
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "avg:system.cpu.iowait{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:system.cpu.iowait{$service,$env,$version}"
                     },
                     {
                       "name": "query3",
                       "data_source": "metrics",
-                      "query": "avg:system.cpu.system{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:system.cpu.system{$service,$env,$version}"
                     },
                     {
                       "name": "query4",
                       "data_source": "metrics",
-                      "query": "avg:system.cpu.user{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:system.cpu.user{$service,$env,$version}"
                     },
                     {
                       "name": "query5",
                       "data_source": "metrics",
-                      "query": "avg:system.cpu.idle{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:system.cpu.idle{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3557,12 +3557,12 @@
                     {
                       "name": "query3",
                       "data_source": "metrics",
-                      "query": "avg:docker.cpu.usage{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:docker.cpu.usage{$service,$env,$version}"
                     },
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "max:docker.cpu.usage{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "max:docker.cpu.usage{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3599,7 +3599,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "avg:docker.cpu.limit{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:docker.cpu.limit{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3654,12 +3654,12 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "avg:container.cpu.usage.total{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:container.cpu.usage.total{$service,$env,$version}"
                     },
                     {
                       "name": "query2",
                       "data_source": "metrics",
-                      "query": "max:container.cpu.usage.total{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "max:container.cpu.usage.total{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3688,12 +3688,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "min:container.cpu.limit{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "min:container.cpu.limit{$service,$env,$version}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "max:container.cpu.limit{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "max:container.cpu.limit{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3760,12 +3760,12 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "avg:kubernetes.memory.usage{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:kubernetes.memory.usage{$service,$env,$version}"
                     },
                     {
                       "name": "query2",
                       "data_source": "metrics",
-                      "query": "max:kubernetes.memory.usage{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "max:kubernetes.memory.usage{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3794,12 +3794,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "min:kubernetes.memory.limits{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "min:kubernetes.memory.limits{$service,$env,$version}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "max:kubernetes.memory.limits{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "max:kubernetes.memory.limits{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3860,12 +3860,12 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "avg:system.mem.used{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:system.mem.used{$service,$env,$version}"
                     },
                     {
                       "name": "query2",
                       "data_source": "metrics",
-                      "query": "max:system.mem.used{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "max:system.mem.used{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3894,12 +3894,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "min:system.mem.total{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "min:system.mem.total{$service,$env,$version}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "max:system.mem.total{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "max:system.mem.total{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3958,12 +3958,12 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "avg:docker.mem.in_use{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:docker.mem.in_use{$service,$env,$version}"
                     },
                     {
                       "name": "query2",
                       "data_source": "metrics",
-                      "query": "max:docker.mem.in_use{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "max:docker.mem.in_use{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -3992,7 +3992,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "avg:docker.mem.limit{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:docker.mem.limit{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -4041,12 +4041,12 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "avg:container.memory.usage.total{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:container.memory.usage.total{$service,$env,$version}"
                     },
                     {
                       "name": "query2",
                       "data_source": "metrics",
-                      "query": "max:container.memory.usage.total{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "max:container.memory.usage.total{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -4075,7 +4075,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "avg:container.memory.usage.limit{service:$service.value ,env:$env.value ,version:$version.value}"
+                      "query": "avg:container.memory.usage.limit{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -4247,7 +4247,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:apollo.router.operations.coprocessor.duration{service:$service.value,env:$env.value,version:$version.value} by {coprocessor.stage}"
+                      "query": "avg:apollo.router.operations.coprocessor.duration{$service,$env,$version} by {coprocessor.stage}"
                     }
                   ],
                   "formulas": [
@@ -4295,7 +4295,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "sum:apollo.router.operations.coprocessor{service:$service.value,env:$env.value,version:$version.value} by {coprocessor.stage}.as_count()"
+                      "query": "sum:apollo.router.operations.coprocessor{$service,$env,$version} by {coprocessor.stage}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -4385,12 +4385,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "sum:apollo.router.operations.coprocessor{service:$service.value,env:$env.value,version:$version.value, coprocessor.succeeded:true} by {coprocessor.stage}.as_count()"
+                      "query": "sum:apollo.router.operations.coprocessor{$service,$env,$version,coprocessor.succeeded:true} by {coprocessor.stage}.as_count()"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.operations.coprocessor{service:$service.value,env:$env.value,version:$version.value} by {coprocessor.stage}.as_count()"
+                      "query": "sum:apollo.router.operations.coprocessor{$service,$env,$version} by {coprocessor.stage}.as_count()"
                     }
                   ],
                   "formulas": [
@@ -4507,7 +4507,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:apollo.router.uplink.fetch.duration.seconds{service:$service.value , env:$env.value, version:$version.value}"
+                      "query": "avg:apollo.router.uplink.fetch.duration.seconds{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -4531,12 +4531,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.lifecycle.license{service:$service.value , env:$env.value, version:$version.value ,license.state:licensed}"
+                      "query": "sum:apollo.router.lifecycle.license{$service,$env,$version,license.state:licensed}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "sum:apollo.router.lifecycle.license{service:$service.value , env:$env.value, version:$version.value}"
+                      "query": "sum:apollo.router.lifecycle.license{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -4590,7 +4590,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:apollo.router.open_connections{service:$service.value , env:$env.value , version:$version.value} by {schema.id,launch.id}"
+                      "query": "avg:apollo.router.open_connections{$service,$env,$version} by {schema.id,launch.id}"
                     }
                   ],
                   "formulas": [
@@ -4720,7 +4720,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.server.request.duration{service:$service.value}.as_rate()",
+                      "query": "count:http.server.request.duration{$service,$env,$version}.as_rate()",
                       "aggregator": "avg"
                     }
                   ],
@@ -4764,7 +4764,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "count:http.server.request.duration{service:$service.value}.as_rate()",
+                      "query": "count:http.server.request.duration{$service,$env,$version}.as_rate()",
                       "aggregator": "max"
                     }
                   ],
@@ -4815,7 +4815,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:http.client.request.duration{service:$service.value , subgraph.name:*}",
+                      "query": "avg:http.client.request.duration{$service,$env,$version,subgraph.name:*}",
                       "aggregator": "avg"
                     }
                   ],
@@ -4863,7 +4863,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:http.client.request.body.size{service:$service.value}",
+                      "query": "avg:http.client.request.body.size{$service,$env,$version}",
                       "aggregator": "avg"
                     }
                   ],
@@ -4911,7 +4911,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:http.client.response.body.size{service:$service.value}",
+                      "query": "avg:http.client.response.body.size{$service,$env,$version}",
                       "aggregator": "avg"
                     }
                   ],
