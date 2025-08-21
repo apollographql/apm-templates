@@ -77,7 +77,7 @@ upload_dashboard() {
     fi
 
     local json_payload
-    json_payload=$(cat "$filename")
+    json_payload=$(cat "$filename" | jq '. += {"tags": ["team:runtime-readiness"]}')
 
     local http_code
     local response
