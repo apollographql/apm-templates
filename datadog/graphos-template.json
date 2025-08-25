@@ -39,13 +39,11 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
               "type": "timeseries",
               "requests": [
@@ -242,13 +240,11 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
               "type": "timeseries",
               "requests": [
@@ -545,9 +541,11 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
-                "value"
+                "avg",
+                "min",
+                "max"
               ],
               "type": "timeseries",
               "requests": [
@@ -797,15 +795,12 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "horizontal",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -842,8 +837,8 @@
                 }
               ],
               "yaxis": {
-                "include_zero": true,
-                "scale": "linear"
+                "include_zero": false,
+                "scale": "log"
               }
             },
             "layout": {
@@ -1002,13 +997,11 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
               "type": "timeseries",
               "requests": [
@@ -1056,6 +1049,10 @@
                   "display_type": "line"
                 }
               ],
+              "yaxis": {
+                "include_zero": false,
+                "scale": "log"
+              },
               "markers": []
             },
             "layout": {
@@ -1206,9 +1203,7 @@
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
               "type": "timeseries",
               "requests": [
@@ -1810,13 +1805,11 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
               "type": "timeseries",
               "requests": [
@@ -1973,13 +1966,11 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
               "type": "timeseries",
               "requests": [
@@ -2000,12 +1991,12 @@
                   "formulas": [
                     {
                       "number_format": {},
-                      "alias": "average evaluated",
+                      "alias": "average",
                       "formula": "anomalies(query2, 'basic', 2)"
                     },
                     {
                       "number_format": {},
-                      "alias": "max evaluated",
+                      "alias": "max",
                       "formula": "query1"
                     }
                   ],
@@ -2162,13 +2153,11 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
               "type": "timeseries",
               "requests": [
@@ -2312,14 +2301,12 @@
               "title": "Record Counts by Instance",
               "title_size": "16",
               "title_align": "left",
-              "show_legend": false,
-              "legend_layout": "auto",
+              "show_legend": true,
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
               "type": "timeseries",
               "requests": [
@@ -2446,14 +2433,12 @@
               "title": "Record Counts by Type",
               "title_size": "16",
               "title_align": "left",
-              "show_legend": false,
-              "legend_layout": "auto",
+              "show_legend": true,
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
               "type": "timeseries",
               "requests": [
@@ -2499,14 +2484,12 @@
               "title": "Misses by Type",
               "title_size": "16",
               "title_align": "left",
-              "show_legend": false,
-              "legend_layout": "auto",
+              "show_legend": true,
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
               "type": "timeseries",
               "requests": [
@@ -2716,14 +2699,13 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -2880,14 +2862,13 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -3160,14 +3141,13 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -3269,7 +3249,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 126,
+        "y": 0,
         "width": 12,
         "height": 15,
         "is_column_break": true
@@ -4192,7 +4172,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 141,
+        "y": 15,
         "width": 12,
         "height": 11
       }
@@ -4234,14 +4214,13 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -4282,14 +4261,13 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -4372,14 +4350,13 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -4452,7 +4429,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 152,
+        "y": 26,
         "width": 12,
         "height": 15
       }
@@ -4577,14 +4554,13 @@
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
-              "legend_layout": "auto",
+              "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -4664,7 +4640,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 167,
+        "y": 41,
         "width": 12,
         "height": 8
       }
@@ -4938,7 +4914,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 175,
+        "y": 49,
         "width": 12,
         "height": 6
       }
