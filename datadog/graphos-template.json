@@ -740,14 +740,12 @@
               "title": "Http Requests by Status Code",
               "title_size": "16",
               "title_align": "left",
-              "show_legend": false,
+              "show_legend": true,
               "legend_layout": "vertical",
               "legend_columns": [
                 "avg",
                 "min",
-                "max",
-                "value",
-                "sum"
+                "max"
               ],
               "type": "timeseries",
               "requests": [
@@ -798,8 +796,8 @@
               "title": "Throughput (Requests per Second)",
               "title_size": "16",
               "title_align": "left",
-              "show_legend": false,
-              "legend_layout": "auto",
+              "show_legend": true,
+              "legend_layout": "horizontal",
               "legend_columns": [
                 "avg",
                 "min",
@@ -807,6 +805,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -815,12 +814,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:http.client.request.duration.count{$service,$env,$version,!connector.source.name:*} by {subgraph.name}.as_rate()"
+                      "query": "count:http.client.request.duration{$service,$env,$version,!connector.source.name:*} by {subgraph.name}.as_rate()"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query2",
-                      "query": "sum:http.client.request.duration.count{$service,$env,$version,connector.source.name:*} by {subgraph.name,connector.source.name}.as_rate()"
+                      "query": "count:http.client.request.duration{$service,$env,$version,connector.source.name:*} by {subgraph.name,connector.source.name}.as_rate()"
                     }
                   ],
                   "formulas": [
@@ -841,7 +840,11 @@
                   },
                   "display_type": "line"
                 }
-              ]
+              ],
+              "yaxis": {
+                "include_zero": true,
+                "scale": "linear"
+              }
             },
             "layout": {
               "x": 6,
@@ -1917,7 +1920,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -1939,7 +1942,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2025,7 +2028,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2047,7 +2050,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2175,7 +2178,7 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "sum:apollo.router.cache.miss.time.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.cache.miss.time{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -2222,12 +2225,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "sum:apollo.router.cache.hit.time.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.cache.hit.time{$service,$env,$version}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.cache.miss.time.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.cache.miss.time{$service,$env,$version}"
                     }
                   ],
                   "formulas": [
@@ -2254,7 +2257,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2276,7 +2279,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2353,7 +2356,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2375,7 +2378,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2513,7 +2516,7 @@
                     {
                       "name": "query1",
                       "data_source": "metrics",
-                      "query": "sum:apollo.router.cache.miss.time.count{$service,$env,$version} by {kind,version}.as_count()"
+                      "query": "count:apollo.router.cache.miss.time{$service,$env,$version} by {kind,version}"
                     }
                   ],
                   "formulas": [
@@ -2608,12 +2611,12 @@
                     {
                       "data_source": "metrics",
                       "name": "query0",
-                      "query": "sum:apollo.router.cache.hit.time.count{$service,$env,$version} by {host,pod_name,container_id}.as_count()"
+                      "query": "count:apollo.router.cache.hit.time{$service,$env,$version} by {host,pod_name,container_id}"
                     },
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.cache.miss.time.count{$service,$env,$version} by {host,pod_name,container_id}.as_count()"
+                      "query": "count:apollo.router.cache.miss.time{$service,$env,$version} by {host,pod_name,container_id}"
                     }
                   ],
                   "formulas": [
@@ -2824,7 +2827,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2846,7 +2849,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -2988,7 +2991,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -3010,7 +3013,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.query_planning.warmup.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.query_planning.warmup.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -3130,7 +3133,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
@@ -3200,7 +3203,7 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "sum:apollo.router.schema.load.duration.count{$service,$env,$version}.as_count()"
+                      "query": "count:apollo.router.schema.load.duration{$service,$env,$version}"
                     }
                   ],
                   "response_format": "timeseries",
