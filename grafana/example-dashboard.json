@@ -37,7 +37,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Example Router Dashboard\n\nThis is a sample [Apollo Router](https://router.apollo.dev) dashboard for Grafana that includes necessary metrics for the monitoring of a sucessful supergraph.\n\nThis is not fully complete, and each section should be vetted to ensure it meets your needs for your specific requirements. We've also added sections that can be removed as needed if the feature or data is not applicable, as well as sections where dpeloyment-specific visualizations should be added.",
+        "content": "# Example Router Dashboard\n\nThis is a sample [Apollo Router](https://router.apollo.dev) dashboard for Grafana that includes necessary metrics for the monitoring of a successful supergraph.\n\nThis is not fully complete, and each section should be vetted to ensure it meets your needs for your specific requirements. We've also added sections that can be removed as needed if the feature or data is not applicable, as well as sections where dpeloyment-specific visualizations should be added.",
         "mode": "markdown"
       },
       "pluginVersion": "10.1.1",
@@ -1444,7 +1444,7 @@
               "showLineNumbers": false,
               "showMiniMap": false
             },
-            "content": "This would ideally be a measurement of CPU usage per router instance.\n\nThis chart should also include upper and lower bounds for memory utilization, helping visualize both under- and over-provisioning at a glance, especially at a pod level. \n\nThis can help diagnose (for exmaple) Kubernetes resource limit issues, or instances acting abnormally.",
+            "content": "This would ideally be a measurement of CPU usage per router instance.\n\nThis chart should also include upper and lower bounds for memory utilization, helping visualize both under- and over-provisioning at a glance, especially at a pod level. \n\nThis can help diagnose (for example) Kubernetes resource limit issues, or instances acting abnormally.",
             "mode": "markdown"
           },
           "pluginVersion": "10.1.1",
@@ -1465,7 +1465,7 @@
               "showLineNumbers": false,
               "showMiniMap": false
             },
-            "content": "This would ideally be a measurement of memory usage per router instance.\n\nThis chart should also include upper and lower bounds for memory utilization, helping visualize both under- and over-provisioning at a glance, especially at a pod level. \n\nThis can help diagnose (for exmaple) Kubernetes resource limit issues, or instances acting abnormally.",
+            "content": "This would ideally be a measurement of memory usage per router instance.\n\nThis chart should also include upper and lower bounds for memory utilization, helping visualize both under- and over-provisioning at a glance, especially at a pod level. \n\nThis can help diagnose (for example) Kubernetes resource limit issues, or instances acting abnormally.",
             "mode": "markdown"
           },
           "pluginVersion": "10.1.1",
@@ -2792,7 +2792,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Examlpe Router Dashboard",
+  "title": "Example Router Dashboard",
   "uid": "apollo-router-dashboard",
   "version": 1,
   "weekStart": ""
