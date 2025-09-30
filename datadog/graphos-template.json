@@ -15,7 +15,7 @@
             "id": 4766111693665422,
             "definition": {
               "type": "note",
-              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from router\n-   If your organization has control over all clients of your supergraph:\n    -   alert on increases in 4xx responses indicating a potential misconfiguration of one or more clients.\n    -   alert on increases in GraphQL errors indicating bad queries from one or more clients.\n-   Reliability SLO: ≥99.9% of Router responses should be 2xx and without error.\n-   Metric health: unexpected zero or missing metrics indicate a potential networking or telemetry misconfiguration\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
+              "content": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from router\n-   If your organization has control over all clients of your supergraph:\n    -   alert on increases in 4xx responses indicating a potential misconfiguration of one or more clients.\n    -   alert on increases in GraphQL errors indicating bad queries from one or more clients.\n-   Reliability SLO: ≥99.9% of Router responses should be 2xx and without error.\n-   Metric health: unexpected zero or missing metrics indicate a potential networking or telemetry misconfiguration\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -45,6 +45,7 @@
                 "min",
                 "max"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -715,7 +716,7 @@
             "id": 7620227107978219,
             "definition": {
               "type": "note",
-              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from any subgraph or connector source.\n-   Reliability SLO: ≥99.9% of Router→backend requests should be 2xx and without error.\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
+              "content": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from any subgraph or connector source.\n-   Reliability SLO: ≥99.9% of Router→backend requests should be 2xx and without error.\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -1105,7 +1106,7 @@
             "id": 7643975368534787,
             "definition": {
               "type": "note",
-              "content": "**Recommended SLOs & Alerts:**\n\n-   Alert on P95 latency exceeding thresholds for critical subgraphs.\n-   Latency SLO (For High-Throughput): P95 Router → Subgraph latency should remain under 300ms\n-   Latency SLO (For Moderate-Throughput): Set threshold to (current P95 for the last week + 20%). This allows for natural variability while detecting regressions.\n",
+              "content": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on P95 latency exceeding thresholds for critical subgraphs.\n-   Latency SLO (For High-Throughput): P95 Router → Subgraph latency should remain under 300ms\n-   Latency SLO (For Moderate-Throughput): Set threshold to (current P95 for the last week + 20%). This allows for natural variability while detecting regressions.\n",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -1795,7 +1796,7 @@
               "x": 0,
               "y": 0,
               "width": 12,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -1954,7 +1955,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 1,
+              "y": 2,
               "width": 6,
               "height": 4
             }
@@ -2060,7 +2061,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 1,
+              "y": 2,
               "width": 6,
               "height": 4
             }
@@ -2081,7 +2082,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 5,
+              "y": 6,
               "width": 6,
               "height": 2
             }
@@ -2102,7 +2103,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 5,
+              "y": 6,
               "width": 6,
               "height": 2
             }
@@ -2113,7 +2114,7 @@
         "x": 0,
         "y": 94,
         "width": 12,
-        "height": 8
+        "height": 9
       }
     },
     {
@@ -2657,7 +2658,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 102,
+        "y": 103,
         "width": 12,
         "height": 24
       }
@@ -2705,7 +2706,6 @@
                 "min",
                 "max"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -2868,7 +2868,6 @@
                 "min",
                 "max"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -3147,7 +3146,6 @@
                 "min",
                 "max"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -3249,7 +3247,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 0,
+        "y": 127,
         "width": 12,
         "height": 15,
         "is_column_break": true
@@ -4172,7 +4170,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 15,
+        "y": 142,
         "width": 12,
         "height": 11
       }
@@ -4220,7 +4218,6 @@
                 "min",
                 "max"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -4267,7 +4264,6 @@
                 "min",
                 "max"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -4356,7 +4352,6 @@
                 "min",
                 "max"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -4429,7 +4424,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 26,
+        "y": 153,
         "width": 12,
         "height": 15
       }
@@ -4560,7 +4555,6 @@
                 "min",
                 "max"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -4640,7 +4634,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 41,
+        "y": 168,
         "width": 12,
         "height": 8
       }
@@ -4658,7 +4652,7 @@
             "id": 917215964447150,
             "definition": {
               "type": "note",
-              "content": "This section provides all of the metrics necessary to fill out the [resource estimator](https://www.apollographql.com/docs/graphos/routing/self-hosted/resource-estimator) when determining what resources you need to allocate to your runtime deployment in order to handle your traffic patterns. This section is worth revisiting periodically to ensure that your allocations are still correct.",
+              "content": "This section provides all of the metrics necessary to fill out the [resource estimator](https://www.apollographql.com/docs/graphos/routing/self-hosted/resource-estimator) when determining what resources you need to allocate to your runtime deployment in order to handle your traffic patterns. This section is worth revisiting periodically to ensure that your allocations are still correct.\n\n**Known Issues**\n* Client request size is not populated by the router at this time",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -4672,7 +4666,7 @@
               "x": 0,
               "y": 0,
               "width": 12,
-              "height": 1
+              "height": 2
             }
           },
           {
@@ -4714,7 +4708,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 1,
+              "y": 2,
               "width": 3,
               "height": 2
             }
@@ -4761,7 +4755,7 @@
             },
             "layout": {
               "x": 3,
-              "y": 1,
+              "y": 2,
               "width": 3,
               "height": 2
             }
@@ -4809,7 +4803,7 @@
             },
             "layout": {
               "x": 6,
-              "y": 1,
+              "y": 2,
               "width": 3,
               "height": 2
             }
@@ -4857,7 +4851,7 @@
             },
             "layout": {
               "x": 9,
-              "y": 1,
+              "y": 2,
               "width": 3,
               "height": 2
             }
@@ -4905,7 +4899,7 @@
             },
             "layout": {
               "x": 0,
-              "y": 3,
+              "y": 4,
               "width": 3,
               "height": 2
             }
@@ -4914,9 +4908,9 @@
       },
       "layout": {
         "x": 0,
-        "y": 49,
+        "y": 176,
         "width": 12,
-        "height": 6
+        "height": 7
       }
     }
   ],
