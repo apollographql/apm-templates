@@ -37,7 +37,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "# Example Router Dashboard\n\nThis is a sample [Apollo Router](https://router.apollo.dev) dashboard for Grafana that includes necessary metrics for the monitoring of a successful supergraph.\n\nThis is not fully complete, and each section should be vetted to ensure it meets your needs for your specific requirements. We've also added sections that can be removed as needed if the feature or data is not applicable, as well as sections where dpeloyment-specific visualizations should be added.",
+        "content": "# Example Router Dashboard\n\nThis is a sample [Apollo Router](https://router.apollo.dev) dashboard for Grafana that includes necessary metrics for the monitoring of a successful supergraph.\n\nThis is not fully complete, and each section should be vetted to ensure it meets your needs for your specific requirements. We've also added sections that can be removed as needed if the feature or data is not applicable, as well as sections where deployment-specific visualizations should be added.",
         "mode": "markdown"
       },
       "pluginVersion": "10.1.1",
