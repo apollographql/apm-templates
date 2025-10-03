@@ -45,7 +45,6 @@
                 "min",
                 "max"
               ],
-              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -4911,6 +4910,25 @@
         "y": 176,
         "width": 12,
         "height": 7
+      }
+    },
+    {
+      "id": 647653130200787,
+      "definition": {
+        "type": "image",
+        "url": "https://storage.googleapis.com/apollo-apm-templates-pageload-assets/1x1.png",
+        "url_dark_theme": "https://storage.googleapis.com/apollo-apm-templates-pageload-assets/1x1.png",
+        "sizing": "none",
+        "has_background": true,
+        "has_border": false,
+        "vertical_align": "center",
+        "horizontal_align": "center"
+      },
+      "layout": {
+        "x": 11,
+        "y": 0,
+        "width": 1,
+        "height": 1
       }
     }
   ],
