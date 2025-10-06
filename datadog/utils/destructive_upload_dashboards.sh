@@ -77,7 +77,9 @@ upload_dashboard() {
     fi
 
     local json_payload
-    json_payload=$(cat "$filename" | jq '. += {"tags": ["team:runtime-readiness"]}')
+    json_payload=$(cat "$filename" | \
+     jq '. += {"tags": ["team:runtime-readiness"]} |
+        del(.widgets[] | select(.definition.url == "https://storage.googleapis.com/apollo-apm-templates-pageload-assets/1x1.png"))')
 
     local http_code
     local response
