@@ -6,24 +6,25 @@
 ![example dashboard preview](./dashboard-preview.png)
 
 This repository contains a [JSON file](./example-dashboard.json) containing an example
-[New Relic](https://newrelic.com/oss/newrelic/) dashboard for reference or use with the Apollo Router.
+[New Relic](https://newrelic.com/oss/newrelic/) dashboard for reference or use with the Apollo
+Router.
 
 ## Dashboard Pages
 
 The dashboard includes the following pages:
 
-| Page | Description | Screenshot |
-|------|-------------|------------|
-| Overview | High-level health metrics and request rates | [View](./screenshots/01-overview.png) |
-| Infrastructure | CPU, memory, and system resource monitoring | [View](./screenshots/02-infrastructure.png) |
-| Sentinel Metrics | SLOs, health scores, and alert recommendations | [View](./screenshots/03-sentinel-metrics.png) |
-| Request Characteristics | Body sizes and error pattern analysis | [View](./screenshots/04-request-characteristics.png) |
-| Request Performance | Detailed breakdown by subgraph, operation, and connector | [View](./screenshots/05-request-performance.png) |
-| Coprocessors | Coprocessor latency and success metrics | [View](./screenshots/06-coprocessors.png) |
-| Resources | System-level resource monitoring | [View](./screenshots/07-resources.png) |
-| Query Planning & Cache | Query planning performance, caching, and compute jobs | [View](./screenshots/08-query-planning-cache.png) |
-| Entity Caching | Entity cache hit rates and performance | [View](./screenshots/09-entity-caching.png) |
-| Uplink | Schema fetching and uplink health | [View](./screenshots/10-uplink.png) |
+| Page                    | Description                                              | Screenshot                                           |
+| ----------------------- | -------------------------------------------------------- | ---------------------------------------------------- |
+| Overview                | High-level health metrics and request rates              | [View](./screenshots/01-overview.png)                |
+| Infrastructure          | CPU, memory, and system resource monitoring              | [View](./screenshots/02-infrastructure.png)          |
+| Sentinel Metrics        | SLOs, health scores, and alert recommendations           | [View](./screenshots/03-sentinel-metrics.png)        |
+| Request Characteristics | Body sizes and error pattern analysis                    | [View](./screenshots/04-request-characteristics.png) |
+| Request Performance     | Detailed breakdown by subgraph, operation, and connector | [View](./screenshots/05-request-performance.png)     |
+| Coprocessors            | Coprocessor latency and success metrics                  | [View](./screenshots/06-coprocessors.png)            |
+| Resources               | System-level resource monitoring                         | [View](./screenshots/07-resources.png)               |
+| Query Planning & Cache  | Query planning performance, caching, and compute jobs    | [View](./screenshots/08-query-planning-cache.png)    |
+| Entity Caching          | Entity cache hit rates and performance                   | [View](./screenshots/09-entity-caching.png)          |
+| Uplink                  | Schema fetching and uplink health                        | [View](./screenshots/10-uplink.png)                  |
 
 **The code in this repository is experimental and has been provided for reference purposes only.
 Community feedback is welcome but this project may not be supported in the same way that
@@ -42,7 +43,9 @@ This dashboard requires:
 
 - New Relic
 
-This dashboard also leverages the following telemetry configuration for the router, similar to [the configuration](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/apm-guides/datadog/router-instrumentation#complete-configuration) required for the Datadog template:
+This dashboard also leverages the following telemetry configuration for the router, similar to
+[the configuration](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/apm-guides/datadog/router-instrumentation#complete-configuration)
+required for the Datadog template:
 
 ```yaml
 telemetry:
@@ -107,7 +110,9 @@ telemetry:
 
 ## Usage
 
-Before importing into New Relic, in the `example-dashboard.json`, you must search and replace all of the `[<YOUR-ACCOUNT-ID>]` with `[1234567]`, or a longer list of ID's `[1234567,2345678,3456789]` if you need to pull data from multiple New Relic accounts simultaneously.
+Before importing into New Relic, in the `example-dashboard.json`, you must search and replace all of
+the `[<YOUR-ACCOUNT-ID>]` with `[1234567]`, or a longer list of ID's `[1234567,2345678,3456789]` if
+you need to pull data from multiple New Relic accounts simultaneously.
 
 Once you've made this adjustment, you can import into New Relic in one of two ways:
 
