@@ -1,0 +1,2479 @@
+{
+    "name": "GraphOS Runtime Dashboard Template",
+    "description": "Comprehensive monitoring dashboard for Apollo GraphOS Router with infrastructure monitoring, caching metrics, request performance, coprocessor tracking, and SLO recommendations",
+    "permissions": "PUBLIC_READ_WRITE",
+    "pages": [
+        {
+            "name": "Overview",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 6,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# GraphOS Runtime Dashboard Template\n\nThis dashboard provides comprehensive monitoring for your Apollo GraphOS Router deployment.\n\n**Feature Set:**\n- Full infrastructure monitoring (CPU, memory, system resources)\n- Request/Response body size monitoring\n- Non-2xx error isolation and analysis\n- Comprehensive SLO recommendations and alert guidelines\n- Sentinel Metrics for health tracking\n- Enhanced caching metrics and query planning insights\n- Compute jobs monitoring\n- Connector source support\n- P99 latency tracking\n- Extensive documentation and best practices throughout\n\n**Dashboard Organization:**\n1. **Overview**: High-level health metrics\n2. **Infrastructure**: CPU, memory, and system resources  \n3. **Sentinel Metrics**: SLOs, health scores, and alert recommendations\n4. **Request Characteristics**: Body sizes and error patterns\n5. **Request Performance**: Detailed breakdown by subgraph, operation, and connector\n6. **Coprocessors**: Coprocessor latency and success metrics\n7. **Resources**: System-level resource monitoring\n8. **Query Planning & Cache**: Query planning performance, caching, and compute jobs\n9. **Entity Caching**: Entity cache hit rates\n10. **Uplink**: Schema fetching and uplink health\n\nCustomize each section for your specific requirements."
+                    }
+                },
+                {
+                    "title": "",
+                    "layout": {
+                        "column": 7,
+                        "row": 1,
+                        "width": 6,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Helpful Links & Resources\n\n**Your Infrastructure:**\n- [Apollo Studio](https://studio.apollographql.com) - Your GraphOS dashboard\n- [Logging Dashboard] - Add link to your logging solution\n- [Incident Runbooks] - Add link to your runbook\n- [Service Status Page] - Add link to your status page\n\n**Apollo Resources:**\n- [Router Documentation](https://www.apollographql.com/docs/router/)\n- [Performance Tuning Guide](https://www.apollographql.com/docs/router/configuration/overview)\n- [Metrics Reference](https://www.apollographql.com/docs/router/configuration/telemetry/instrumentation/standard-instruments)\n- [Caching Guide](https://www.apollographql.com/docs/router/configuration/in-memory-caching)\n\n**Best Practices:**\n1. Review this dashboard weekly for trends\n2. Correlate metrics with deployment events\n3. Set up alerts for critical thresholds\n4. Maintain runbooks for common issues\n5. Regular load testing to validate capacity"
+                    }
+                },
+                {
+                    "title": "Router Request Rate",
+                    "layout": {
+                        "column": 1,
+                        "row": 3,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true,
+                            "position": "bottom"
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT rate(count(`http.server.request.duration`),1 minute) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "units": {
+                            "unit": "REQUESTS_PER_SECOND"
+                        },
+                        "yAxisLeft": {
+                            "zero": false
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Router Request Latency",
+                    "layout": {
+                        "column": 7,
+                        "row": 3,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": true,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": true
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`http.server.request.duration`, 50, 75, 90, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) TIMESERIES 1 minute"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "tooltip": {
+                            "mode": "all"
+                        },
+                        "yAxisLeft": {
+                            "zero": false
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "GraphQL Request Error Rate",
+                    "layout": {
+                        "column": 1,
+                        "row": 6,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "FROM Metric \nSELECT filter(rate(count(http.server.request.duration), 1 minute), WHERE graphql_errors = 'true')\n       / rate(count(http.server.request.duration), 1 minute)\n       AS fraction_with_errors\nTIMESERIES 1 minute"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Error Codes",
+                    "layout": {
+                        "column": 7,
+                        "row": 6,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT rate(count(`apollo.router.graphql_error`),1 minute) FROM Metric WHERE `service.name` IN ({{service_name}}) FACET code"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                },
+                {
+                    "title": "GraphQL Errors by Operation Name (Placeholder)",
+                    "layout": {
+                        "column": 1,
+                        "row": 9,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# GraphQL Errors by Operation\n\n**Note:** This requires operation-level instrumentation which may increase cardinality.\n\n**Recommended Query (if instrumented):**\n```\nSELECT count(*)\nFROM Metric\nWHERE metricName = 'apollo.router.graphql_error'\n  AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}})\n  AND graphql.operation.name IS NOT NULL\nFACET graphql.operation.name\nLIMIT 20\n```\n\n**What this shows:**\n- Which GraphQL operations are most error-prone\n- Patterns in client query issues\n- Operations that may need schema improvements\n\n**Why it matters:**\n- Prioritize fixing operations affecting the most users\n- Identify problematic query patterns\n- Guide schema evolution decisions"
+                    }
+                },
+                {
+                    "title": "Request Latency with P99",
+                    "layout": {
+                        "column": 7,
+                        "row": 9,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`http.server.request.duration`, 50, 75, 90, 95, 99) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": false
+                        }
+                    }
+                },
+                {
+                    "title": "Dashboard Information",
+                    "layout": {
+                        "column": 1,
+                        "row": 12,
+                        "width": 12,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "---\n\n**Dashboard:** GraphOS Runtime Dashboard Template | **Last Updated:** 2025\n\nThis dashboard is based on the Apollo Router monitoring best practices. For questions or improvements, consult your DevOps or SRE team.\n\n**Customization checklist:**\n- [ ] Update service_name variable to match your deployment\n- [ ] Configure alerts based on SLO recommendations\n- [ ] Update infrastructure metric queries for your environment (Kubernetes/Docker/VMs)\n- [ ] Add links to your logging and incident management tools\n- [ ] Review and adjust thresholds for your traffic patterns\n- [ ] Enable operation-level metrics if cardinality is acceptable\n- [ ] Set up synthetic monitoring for critical operations"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Infrastructure",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "Infrastructure Health Overview",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 12,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Infrastructure Monitoring\n\nThis page provides comprehensive infrastructure monitoring for your Apollo Router deployment. Monitor CPU, memory, and instance-level metrics to ensure optimal performance.\n\n**What to look for:**\n- CPU usage consistently above 80% may indicate need for scaling\n- Memory growth may indicate memory leaks or cache bloat\n- Instance count changes correlate with autoscaling events\n\n**Why it matters:**\n- Resource constraints directly impact latency and error rates\n- Early detection of resource issues prevents customer-facing incidents"
+                    }
+                },
+                {
+                    "title": "Average CPU Utilization",
+                    "layout": {
+                        "column": 1,
+                        "row": 3,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(process.runtime.cpu.utilization) * 100 FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "units": {
+                            "unit": "PERCENTAGE"
+                        }
+                    }
+                },
+                {
+                    "title": "Average Memory Usage",
+                    "layout": {
+                        "column": 7,
+                        "row": 3,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(process.runtime.memory.usage) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "units": {
+                            "unit": "BYTES"
+                        }
+                    }
+                },
+                {
+                    "title": "CPU Usage Per Instance",
+                    "layout": {
+                        "column": 1,
+                        "row": 6,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(process.runtime.cpu.utilization) * 100 FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET host TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "units": {
+                            "unit": "PERCENTAGE"
+                        }
+                    }
+                },
+                {
+                    "title": "Memory Usage Per Instance",
+                    "layout": {
+                        "column": 7,
+                        "row": 6,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(process.runtime.memory.usage) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET host TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Sentinel Metrics",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "Sentinel Metrics Overview",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 12,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Sentinel Metrics & Health Tracking\n\nThis page tracks high-level health indicators and deployment lifecycle metrics.\n\n**What are Sentinel Metrics?**\nSentinel metrics are key indicators that provide early warning of system health degradation. They aggregate multiple signals into actionable alerts.\n\n**Recommended SLOs:**\n1. **Reliability SLO**: \u226599.9% of requests should be 2xx without GraphQL errors\n2. **Latency SLO**: P95 latency should remain under 300ms for high-throughput systems\n3. **Availability SLO**: Router should be reachable 99.95% of the time\n\n**Throughput Categories:**\n- **Low** (<10 RPM): Metrics may be unreliable, use logs and traces\n- **Moderate** (10-100 RPM): Enough for trends, use conservative thresholds\n- **High** (>100 RPM): Suitable for real-time alerting and strict SLOs"
+                    }
+                },
+                {
+                    "title": "Overall Health Score (Manual Calculation Required)",
+                    "layout": {
+                        "column": 1,
+                        "row": 4,
+                        "width": 4,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentage(count(*), WHERE http.response.status_code LIKE '2%' AND (graphql_errors IS NULL OR graphql_errors != 'true')) as 'Health Score %' FROM Metric WHERE metricName = 'http.server.request.duration' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}})"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "criticalThreshold": 99.0,
+                            "warningThreshold": 99.5
+                        }
+                    }
+                },
+                {
+                    "title": "Request Success Rate (SLO Target: 99.9%)",
+                    "layout": {
+                        "column": 5,
+                        "row": 4,
+                        "width": 4,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentage(count(*), WHERE http.response.status_code LIKE '2%') as 'Success Rate %' FROM Metric WHERE metricName = 'http.server.request.duration' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": false
+                        }
+                    }
+                },
+                {
+                    "title": "P95 Latency SLO Compliance",
+                    "layout": {
+                        "column": 9,
+                        "row": 4,
+                        "width": 4,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`http.server.request.duration`, 95) * 1000 as 'P95 Latency (ms)' FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": false
+                        }
+                    }
+                },
+                {
+                    "title": "Schema Rollout Tracking",
+                    "layout": {
+                        "column": 1,
+                        "row": 7,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT count(`apollo.router.schema.load.duration`) as 'Schema Loads' FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Schema Load Duration",
+                    "layout": {
+                        "column": 7,
+                        "row": 7,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`apollo.router.schema.load.duration`, 95, 99) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Alert Recommendations",
+                    "layout": {
+                        "column": 1,
+                        "row": 10,
+                        "width": 12,
+                        "height": 4
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Recommended Alerts & SLOs\n\n## Critical Alerts (Page Immediately)\n1. **5xx Error Rate Spike**\n   - Condition: 5xx errors > 1% for 5 minutes\n   - Why: Indicates router or subgraph failures affecting users\n   \n2. **P95 Latency Degradation**\n   - Condition: P95 > 300ms for 10 minutes (high throughput)\n   - Why: User experience is degrading significantly\n\n3. **Health Score Drop**\n   - Condition: Success rate < 99% for 5 minutes\n   - Why: Multiple failure modes may be active\n\n## Warning Alerts (Investigate Soon)\n1. **4xx Error Rate Increase**\n   - Condition: 4xx errors > 5% for 15 minutes\n   - Why: May indicate client misconfiguration or API changes\n\n2. **CPU Utilization High**\n   - Condition: CPU > 80% for 10 minutes\n   - Why: May lead to latency increases or capacity issues\n\n3. **Cache Hit Rate Drop**\n   - Condition: Query plan cache hit rate < 70% for 15 minutes\n   - Why: Indicates inefficient caching or traffic pattern changes\n\n## SLO Recommendations\n\n**For Production Environments:**\n- Availability: 99.95% uptime\n- Success Rate: 99.9% of requests return 2xx without errors\n- Latency: P95 < 300ms, P99 < 1000ms\n- Error Budget: 0.1% monthly (43 minutes downtime)\n\n**For Moderate Throughput:**\n- Use longer time windows (15-30 minutes)\n- Set thresholds at current baseline + 20%\n- Focus on trends over absolute values\n\n**Monitoring Best Practices:**\n1. Set up synthetic monitoring for critical operations\n2. Enable distributed tracing for debugging\n3. Correlate metrics with deployment events\n4. Review SLOs monthly and adjust based on actual traffic patterns"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Request Characteristics",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "Request & Response Characteristics",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 12,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Request & Response Body Size Monitoring\n\n**What to look for:**\n- Large request bodies may indicate overly complex queries or potential abuse\n- Large response bodies can impact network performance and client-side processing\n- Sudden changes in body sizes may correlate with schema or client changes\n\n**Why it matters:**\n- Body size directly impacts network latency and bandwidth costs\n- Helps identify queries that may benefit from pagination or field limiting\n- Can detect potential DoS attacks or misconfigured clients"
+                    }
+                },
+                {
+                    "title": "Request Body Size (p95, p99, max)",
+                    "layout": {
+                        "column": 1,
+                        "row": 3,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`http.server.request.body.size`, 95, 99) as 'bytes', max(`http.server.request.body.size`) as 'max bytes' FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": false
+                        },
+                        "units": {
+                            "unit": "BYTES"
+                        }
+                    }
+                },
+                {
+                    "title": "Response Body Size (p95, p99, max)",
+                    "layout": {
+                        "column": 7,
+                        "row": 3,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`http.server.response.body.size`, 95, 99) as 'bytes', max(`http.server.response.body.size`) as 'max bytes' FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": false
+                        },
+                        "units": {
+                            "unit": "BYTES"
+                        }
+                    }
+                },
+                {
+                    "title": "Request Body Size Distribution (Placeholder)",
+                    "layout": {
+                        "column": 1,
+                        "row": 6,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Request Body Size Distribution\n\n**Note:** New Relic does not natively support histogram distribution widgets like Datadog. To analyze distribution:\n\n1. Use percentile queries (p50, p75, p90, p95, p99) to understand the spread\n2. Export data and visualize in external tools\n3. Use histogram buckets if you're collecting them\n\n**Recommended Query:**\n```\nSELECT histogram(`http.server.request.body.size`, 10, 20)\nFROM Metric\nWHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}})\n```\n\nThis will show the distribution of request sizes, helping identify:\n- Normal operating ranges\n- Outliers and anomalies\n- Patterns over time"
+                    }
+                },
+                {
+                    "title": "Response Body Size Distribution (Placeholder)",
+                    "layout": {
+                        "column": 7,
+                        "row": 6,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Response Body Size Distribution\n\n**Note:** New Relic does not natively support histogram distribution widgets like Datadog.\n\n**Recommended Query:**\n```\nSELECT histogram(`http.server.response.body.size`, 10, 20)\nFROM Metric\nWHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}})\n```\n\nAnalyze response body size patterns to:\n- Identify overfetching in GraphQL queries\n- Detect queries returning excessive data\n- Optimize schema design for efficiency"
+                    }
+                },
+                {
+                    "title": "Non-2xx HTTP Responses Isolated",
+                    "layout": {
+                        "column": 1,
+                        "row": 9,
+                        "width": 12,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT rate(count(`http.server.request.duration`), 1 MINUTE) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) AND http.response.status_code NOT LIKE '2%' FACET http.response.status_code TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Understanding Non-2xx Responses",
+                    "layout": {
+                        "column": 1,
+                        "row": 12,
+                        "width": 12,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Non-2xx Error Isolation\n\n**What to look for:**\n- **4xx errors**: Client-side issues (bad requests, authentication failures, not found)\n  - 400: Malformed GraphQL queries\n  - 401/403: Authentication/authorization failures\n  - 404: Endpoint not found\n- **5xx errors**: Server-side issues (router or subgraph failures)\n  - 500: Internal server error\n  - 502/503: Subgraph unavailable or timing out\n  - 504: Gateway timeout\n\n**Why it matters:**\n- 4xx errors may indicate client bugs or malicious activity\n- 5xx errors directly impact user experience and SLO compliance\n- Isolating non-2xx responses helps prioritize incident response\n- Trending analysis reveals patterns in error types"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Request Performance",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Operation Request Metrics\n\n**What to look for:**\n- Operations with high request rates\n- Operations with high latency\n- Operations causing errors\n- Unusual operation patterns\n\n**Why it matters:**\n- Identifies which GraphQL operations are most critical to performance\n- Helps prioritize optimization efforts\n- Reveals client behavior patterns\n\n**Cardinality Warning:**\nIf enabling per-operation metrics, be aware:\n- Each unique operation name creates a new metric series\n- This increases cardinality and may affect APM tool costs\n- Consider sampling or filtering for high-value operations only\n\n**Recommended approach:**\nMonitor operations using traces (lower cost) and only promote specific operations to metrics-based monitoring if they're business-critical."
+                    }
+                },
+                {
+                    "title": "Request Rate by Status Code",
+                    "layout": {
+                        "column": 7,
+                        "row": 1,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT rate(count(`http.server.request.duration`), 1 MINUTE) FROM Metric FACET http.response.status_code LIMIT 100 TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Request Rate by Subgraph",
+                    "layout": {
+                        "column": 1,
+                        "row": 4,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT rate(count(`http.client.request.duration`), 1 MINUTE) FROM Metric WHERE NOT ((subgraph.name = '')) FACET subgraph.name LIMIT 100 TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Latency (p95) by Subgraph",
+                    "layout": {
+                        "column": 7,
+                        "row": 4,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`http.client.request.duration`, 95) FROM Metric FACET subgraph.name LIMIT 100 TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Subgraph Error Rate",
+                    "layout": {
+                        "column": 1,
+                        "row": 7,
+                        "width": 4,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT rate(count(`http.client.request.duration`), 1 MINUTE) FROM Metric WHERE (NOT ((subgraph.name = '')) AND (graphql.errors = 'true')) FACET subgraph.name LIMIT 100 TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Request Rate by Connector Source",
+                    "layout": {
+                        "column": 1,
+                        "row": 10,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT rate(count(`http.client.request.duration`), 1 MINUTE) FROM Metric WHERE connector.source.name IS NOT NULL FACET connector.source.name LIMIT 100 TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Latency (p95) by Connector Source",
+                    "layout": {
+                        "column": 7,
+                        "row": 10,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`http.client.request.duration`, 95) FROM Metric WHERE connector.source.name IS NOT NULL FACET connector.source.name LIMIT 100 TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Subgraph Performance Profile (RPS vs P95 Latency)",
+                    "layout": {
+                        "column": 1,
+                        "row": 13,
+                        "width": 12,
+                        "height": 4
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Performance Profile Scatter Plot\n\n**Note:** New Relic does not natively support scatter plots like Datadog. To create a performance profile:\n\n1. Create a custom query that calculates RPS and P95 latency by subgraph\n2. Export the data to a visualization tool\n3. Or use New Relic's API to fetch data and build custom visualizations\n\n**What this would show:**\n- **Top-right quadrant** (high RPS, high latency): Bottlenecks requiring optimization\n- **Bottom-right quadrant** (high RPS, low latency): Healthy, high-traffic subgraphs\n- **Top-left quadrant** (low RPS, high latency): Potential future bottlenecks\n- **Bottom-left quadrant** (low RPS, low latency): Efficient, underutilized subgraphs\n\n**Manual Query for Analysis:**\n```\nSELECT rate(count(`http.client.request.duration`), 1 MINUTE) as 'RPS',\n       percentile(`http.client.request.duration`, 95) as 'P95'\nFROM Metric\nWHERE subgraph.name IS NOT NULL\nFACET subgraph.name\n```"
+                    }
+                },
+                {
+                    "title": "Subgraph Latency P99",
+                    "layout": {
+                        "column": 1,
+                        "row": 16,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`http.client.request.duration`, 99) FROM Metric WHERE subgraph.name IS NOT NULL FACET subgraph.name LIMIT 100 TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Understanding P99 Latency",
+                    "layout": {
+                        "column": 7,
+                        "row": 16,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# P99 Latency Monitoring\n\n**What is P99?**\nP99 represents the 99th percentile - only 1% of requests are slower than this value. It's crucial for understanding tail latency.\n\n**What to look for:**\n- P99 significantly higher than P95 indicates high variance\n- Spikes may represent:\n  - Cold starts or cache misses\n  - Resource contention\n  - Specific expensive queries\n  \n**Why it matters:**\n- 1 in 100 requests experiencing slow performance\n- For high-volume APIs, this affects many users\n- Helps identify optimization opportunities\n\n**When to act:**\n- P99 > 2x P95: Investigate tail latency sources\n- Consistent P99 spikes: May need capacity or optimization\n- P99 during low traffic: May indicate infrastructure issues"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Coprocessors",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "Overall Coprocessor Latency",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`apollo.router.operations.coprocessor.duration`, 50, 75, 90, 95) FROM Metric TIMESERIES 1 minute"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Coprocessor Latency (p95) by Stage",
+                    "layout": {
+                        "column": 7,
+                        "row": 1,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`apollo.router.operations.coprocessor.duration`, 50, 75, 90, 95) FROM Metric FACET coprocessor.stage TIMESERIES 1 minute"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "",
+                    "layout": {
+                        "column": 1,
+                        "row": 4,
+                        "width": 4,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Coprocessor Metrics\n\nFor coprocessors, we recommend also including details within this dashboard. Coprocessors are critical pieces of a router deployment, and as such, should be visible alongside core router metrics.\n\nConsider raising some of the metrics here to the overview or related sections (e.g. resources) as well."
+                    }
+                },
+                {
+                    "title": "Coprocessor Success Rate",
+                    "layout": {
+                        "column": 5,
+                        "row": 4,
+                        "width": 4,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.billboard"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentage(count(*), WHERE error IS NULL) as 'Success Rate %' FROM Metric WHERE metricName LIKE 'apollo.router.operations.coprocessor%' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}})"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                },
+                {
+                    "title": "Coprocessor Request Count by Stage",
+                    "layout": {
+                        "column": 9,
+                        "row": 4,
+                        "width": 4,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT rate(count(`apollo.router.operations.coprocessor.duration`), 1 MINUTE) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET coprocessor.stage TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Coprocessor Best Practices",
+                    "layout": {
+                        "column": 1,
+                        "row": 7,
+                        "width": 12,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Coprocessor Monitoring Best Practices\n\n**What to look for:**\n- High latency in coprocessors directly adds to overall request latency\n- Failed coprocessor requests may block or degrade the request\n- Uneven load across stages may indicate optimization opportunities\n\n**Why it matters:**\n- Coprocessors are in the critical request path\n- Performance issues here compound across all requests\n- Early detection prevents cascading failures\n\n**Optimization tips:**\n1. Keep coprocessor logic lightweight and fast\n2. Use async operations where possible\n3. Implement proper timeouts and retries\n4. Monitor resource usage of coprocessor services\n5. Consider caching coprocessor responses when appropriate\n\n**Recommended alerts:**\n- Coprocessor P95 latency > 100ms for 5 minutes\n- Coprocessor error rate > 0.1% for 5 minutes\n- Coprocessor unavailable (no requests processed)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Resources",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "Infrastructure Monitoring Overview",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 12,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Infrastructure Monitoring\n\nMonitoring the resource consumption of your execution environment is essential. We recommend ensuring that average CPU usage does not exceed 80% load to leave overhead for expensive spikes such as schema reloads.\n\n**Note:** The metrics below use placeholder queries. Update them based on your deployment environment:\n- For Kubernetes: use container metrics\n- For bare metal/VMs: use system.* metrics from OpenTelemetry hostmetrics receiver\n- For Docker: use docker.container.* metrics"
+                    }
+                },
+                {
+                    "title": "CPU Usage (Placeholder - Update for Your Environment)",
+                    "layout": {
+                        "column": 1,
+                        "row": 3,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(process.runtime.cpu.utilization) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Memory Usage (Placeholder - Update for Your Environment)",
+                    "layout": {
+                        "column": 7,
+                        "row": 3,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(process.runtime.memory.usage) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "System CPU by Mode (Placeholder)",
+                    "layout": {
+                        "column": 1,
+                        "row": 6,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(system.cpu.utilization) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET state TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                },
+                {
+                    "title": "System Memory by Type (Placeholder)",
+                    "layout": {
+                        "column": 7,
+                        "row": 6,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.area"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(system.memory.usage) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET state TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Query Planning & Cache",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`apollo.router.query_planning.plan.duration`, 50, 75, 90, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) TIMESERIES 1 minute"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Query Planning p95 Total vs. Duration",
+                    "layout": {
+                        "column": 7,
+                        "row": 1,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`apollo.router.query_planning.total.duration`, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) TIMESERIES 1 minute"
+                            },
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`apollo.router.query_planning.plan.duration`, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) TIMESERIES 1 minute"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Estimated In-memory Query Plan Cache Size by Instance",
+                    "layout": {
+                        "column": 1,
+                        "row": 4,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(`apollo.router.cache.storage.estimated_size`) FROM Metric\nWHERE `service.name` IN ({{service_name}}) WHERE kind = 'query planner' TIMESERIES 1 minute"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Query Plan Cache Metrics",
+                    "layout": {
+                        "column": 7,
+                        "row": 4,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "FROM Metric SELECT rate(count(apollo_router_cache_hit_time), 1 MINUTE) as 'Memory-Hit' TIMESERIES 1 MINUTE"
+                            },
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "FROM Metric SELECT rate(count(apollo_router_cache_miss_time), 1 MINUTE) as 'Memory-Miss' TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Query Planner Warmup Time",
+                    "layout": {
+                        "column": 1,
+                        "row": 7,
+                        "width": 4,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`apollo.router.query_planning.warmup.duration`, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) TIMESERIES 1 minute"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Compute Jobs Queued",
+                    "layout": {
+                        "column": 5,
+                        "row": 7,
+                        "width": 2,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.bullet"
+                    },
+                    "rawConfiguration": {
+                        "limit": 0,
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "FROM Metric SELECT COUNT(`apollo.router.compute_jobs.queued`)"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        }
+                    }
+                },
+                {
+                    "title": "Schema Load Time (Last 24 hours)",
+                    "layout": {
+                        "column": 7,
+                        "row": 7,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT rate(count(`apollo_router_schema_load_duration`), 1 minute) FROM Metric WHERE service.name IN ('unknown_service:router') TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Compute Jobs Overview",
+                    "layout": {
+                        "column": 1,
+                        "row": 10,
+                        "width": 12,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Compute Jobs Metrics\n\nCompute jobs are CPU-intensive tasks managed on a dedicated thread pool, including query planning and parsing. Monitoring these metrics helps identify compute bottlenecks.\n\n**What to look for:**\n- High wait times indicate thread pool saturation\n- Increasing queue depth suggests need for more compute resources\n- Job outcomes show success vs failure rates"
+                    }
+                },
+                {
+                    "title": "Query Parsing Duration",
+                    "layout": {
+                        "column": 1,
+                        "row": 12,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`apollo.router.compute_jobs.execution.duration`, 50, 95, 99) FROM Metric WHERE job.type = 'query_parsing' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Query Planning Wait Time",
+                    "layout": {
+                        "column": 7,
+                        "row": 12,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`apollo.router.compute_jobs.queue.wait.duration`, 50, 95, 99) FROM Metric WHERE job.type = 'query_planning' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Compute Job Outcomes",
+                    "layout": {
+                        "column": 1,
+                        "row": 15,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT rate(count(`apollo.router.compute_jobs.execution.duration`), 1 MINUTE) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET job.type, outcome TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Compute Jobs Queue Depth",
+                    "layout": {
+                        "column": 7,
+                        "row": 15,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(`apollo.router.compute_jobs.queue.depth`) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Query Plan Cache Hit Rate Percentage",
+                    "layout": {
+                        "column": 1,
+                        "row": 18,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT (rate(count(apollo_router_cache_hit_time), 1 MINUTE) / (rate(count(apollo_router_cache_hit_time), 1 MINUTE) + rate(count(apollo_router_cache_miss_time), 1 MINUTE))) * 100 as 'Hit Rate %' FROM Metric WHERE kind = 'query planner' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true,
+                            "max": 100
+                        },
+                        "units": {
+                            "unit": "PERCENTAGE"
+                        }
+                    }
+                },
+                {
+                    "title": "Cache Size by Instance",
+                    "layout": {
+                        "column": 7,
+                        "row": 18,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(`apollo.router.cache.size`) FROM Metric WHERE kind = 'query planner' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET host TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Evaluated Plans Metric",
+                    "layout": {
+                        "column": 1,
+                        "row": 21,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(`apollo.router.query_planning.plan.evaluated_plans`) as 'Avg Plans', max(`apollo.router.query_planning.plan.evaluated_plans`) as 'Max Plans' FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Understanding Evaluated Plans",
+                    "layout": {
+                        "column": 7,
+                        "row": 21,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Query Planning Evaluated Plans\n\n**What this metric shows:**\nThe number of query plans evaluated before selecting the optimal one.\n\n**What to look for:**\n- Average near 1 is ideal (minimal work per request)\n- Frequent spikes may indicate complex queries\n- Sustained increases suggest schema optimization needed\n\n**Why it matters:**\n- More evaluated plans = higher CPU usage\n- Directly correlates with query planning duration\n- Indicator of query complexity\n\n**Optimization strategies:**\n1. Simplify complex queries when possible\n2. Review schema design for federation efficiency\n3. Use query plan warmup for common operations\n4. Consider query complexity limits"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Entity Caching",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "Entity Cache Hits by Type",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT rate(count(`apollo.router.operations.entity_cache_hit`),1 minute) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET entity.type TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Entity Cache Hits by Subgraph",
+                    "layout": {
+                        "column": 7,
+                        "row": 1,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT rate(count(`apollo.router.operations.entity_cache_hit`),1 minute) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET subgraph TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Uplink",
+            "description": null,
+            "widgets": [
+                {
+                    "title": "Overall Uplink Latency",
+                    "layout": {
+                        "column": 1,
+                        "row": 1,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`apollo_router_uplink_fetch_duration_seconds`, 50, 75, 90, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) TIMESERIES 1 minute"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "p95 Uplink Latency by Kind",
+                    "layout": {
+                        "column": 7,
+                        "row": 1,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT percentile(`apollo_router_uplink_fetch_duration_seconds`, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) FACET query TIMESERIES 1 minute"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Percent Uplink Failure",
+                    "layout": {
+                        "column": 1,
+                        "row": 4,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "markers": {
+                            "displayedTypes": {
+                                "criticalViolations": false,
+                                "deployments": true,
+                                "relatedDeployments": true,
+                                "warningViolations": false
+                            }
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "FROM Metric \nSELECT filter(rate(count(apollo_router_uplink_fetch_count_total), 1 minute), WHERE status = 'failure')\n       / rate(count(apollo_router_uplink_fetch_count_total), 1 minute)\n       AS fraction_with_errors\nTIMESERIES 1 minute"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "thresholds": {
+                            "isLabelVisible": true
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        },
+                        "yAxisRight": {
+                            "zero": true
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "variables": [
+        {
+            "name": "service_name",
+            "items": [
+                {
+                    "title": null,
+                    "value": "unknown_service:router"
+                },
+                {
+                    "title": null,
+                    "value": "service-name-1"
+                }
+            ],
+            "defaultValues": [
+                {
+                    "value": {
+                        "string": "unknown_service:router"
+                    }
+                }
+            ],
+            "nrqlQuery": null,
+            "options": {
+                "excluded": false
+            },
+            "title": "Service Name",
+            "type": "ENUM",
+            "isMultiSelection": true,
+            "replacementStrategy": "STRING"
+        },
+        {
+            "name": "env",
+            "items": [
+                {
+                    "title": null,
+                    "value": "prod"
+                },
+                {
+                    "title": null,
+                    "value": "staging"
+                },
+                {
+                    "title": null,
+                    "value": "dev"
+                }
+            ],
+            "defaultValues": [
+                {
+                    "value": {
+                        "string": "prod"
+                    }
+                }
+            ],
+            "nrqlQuery": null,
+            "options": {
+                "excluded": false
+            },
+            "title": "Environment",
+            "type": "ENUM",
+            "isMultiSelection": true,
+            "replacementStrategy": "STRING"
+        },
+        {
+            "name": "version",
+            "items": [
+                {
+                    "title": null,
+                    "value": "*"
+                }
+            ],
+            "defaultValues": [
+                {
+                    "value": {
+                        "string": "*"
+                    }
+                }
+            ],
+            "nrqlQuery": null,
+            "options": {
+                "excluded": false
+            },
+            "title": "Version",
+            "type": "ENUM",
+            "isMultiSelection": true,
+            "replacementStrategy": "STRING"
+        }
+    ]
+}
