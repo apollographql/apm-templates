@@ -3,6 +3,8 @@ run = "typos --write-changes"
 
 [tasks.format-markdown]
 run = "dprint fmt"
+# Mise uses this config file's location as the CWD
+dir = "../../"
 
 [tasks.pr-all]
 run = [
@@ -12,6 +14,8 @@ run = [
 
 [tasks.pr-markdown]
 run = "dprint check"
+# Mise uses this config file's location as the CWD
+dir = "../../"
 
 [tasks.pr-spell-check]
 run = "typos"
