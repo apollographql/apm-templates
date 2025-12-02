@@ -304,7 +304,7 @@
             "id": 6132914662720110,
             "definition": {
               "type": "note",
-              "content": "This chart shows the total error rate percentage of requests handled by the Router.\n\n**It includes**\n\n- GraphQL errors — e.g., validation failures, resolver exceptions.\n- HTTP 5xx responses — typically indicating internal or subgraph infrastructure issues.\n\nThe formula adds these two failure categories together and divides by the total request count, giving a single view into how often requests fail from the client’s perspective.\n\n**What to look for**\n\n- Spikes in error rate — especially following deploys or traffic increases.\n- Sustained error rates above 1–2% — which may indicate regressions or uncaught edge cases.\n- Increased 5xx errors without corresponding GraphQL errors — this may point to subgraph crashes or timeouts.\n- Silent drops in traffic — if error rate decreases while request volume drops, it could signal issues upstream (e.g., client timeouts or DNS problems).\n\n**Why it matters**\n\n- Reliability tracking — errors reflect user-facing failures and service health.\n- Incident detection — elevated error rates can signal broken schemas, subgraph failures, or deploy issues.\n- SLO compliance — helps teams track whether reliability objectives (like <1% error rate) are being met.",
+              "content": "This chart shows the total error rate percentage of requests handled by the Router. It includes GraphQL errors (e.g., validation failures, resolver exceptions) and HTTP 5xx responses (typically indicating internal or subgraph infrastructure issues). The formula adds these two failure categories together and divides by the total request count, giving a single view into how often requests fail from the client’s perspective.\n\n**What to look for**\n\n- Spikes in error rate — especially following deploys or traffic increases.\n- Sustained error rates above 1–2% — which may indicate regressions or uncaught edge cases.\n- Increased 5xx errors without corresponding GraphQL errors — this may point to subgraph crashes or timeouts.\n- Silent drops in traffic — if error rate decreases while request volume drops, it could signal issues upstream (e.g., client timeouts or DNS problems).\n\n**Why it matters**\n\n- Reliability tracking — errors reflect user-facing failures and service health.\n- Incident detection — elevated error rates can signal broken schemas, subgraph failures, or deploy issues.\n- SLO compliance — helps teams track whether reliability objectives (like <1% error rate) are being met.",
               "background_color": "gray",
               "font_size": "12",
               "text_align": "left",
@@ -3041,7 +3041,7 @@
             "id": 5923077997925504,
             "definition": {
               "type": "note",
-              "content": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns.",
+              "content": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency.",
               "background_color": "gray",
               "font_size": "12",
               "text_align": "left",
@@ -3225,7 +3225,7 @@
             "id": 8647054076741359,
             "definition": {
               "type": "note",
-              "content": "This chart shows the total number of compute jobs actively running in your runtime, broken down by success or failure status.\n\n**Why it matters**\n-   Failed jobs may indicate internal issues, misconfigurations, or upstream errors.\n-   Monitoring execution volume helps assess load and throughput.\n\n**What to look for**\n\n-   A steady level of `executed_ok` jobs.\n-   Any presence of failed job types (`executed_error`, `rejected_queue_full`, etc.).",
+              "content": "This chart shows the total number of compute jobs actively running in your runtime, broken down by success or failure status.\n\n**What to look for**\n\n-   A steady level of `executed_ok` jobs.\n-   Any presence of failed job types (`executed_error`, `rejected_queue_full`, etc.).\n\n**Why it matters**\n\n-   Failed jobs may indicate internal issues, misconfigurations, or upstream errors.\n-   Monitoring execution volume helps assess load and throughput.",
               "background_color": "gray",
               "font_size": "12",
               "text_align": "left",
@@ -3265,7 +3265,7 @@
             "id": 1060056504123377,
             "definition": {
               "type": "note",
-              "content": "Monitoring the resource consumption of your execution environment is essential to ensuring that your runtime can perform as desired.\n\nWe recommend monitoring for and ensuring that your average CPU usage does not exceed 80% load, to leave available overhead for expensive spikes such as schema reloads. You may also find it useful to break out your charts by instance or host ID to identify individually misbehaving instances.\n\nBelow are some example charts of how to plot this data in various deployment environments. They are parameterized using Datadog's [unified service tagging](https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging).",
+              "content": "Monitoring the resource consumption of your execution environment is essential to ensuring that your runtime can perform as desired.\n\nApollo recommends monitoring for and ensuring that your average CPU usage does not exceed 80% load, to leave available overhead for expensive spikes such as schema reloads. You may also find it useful to break out your charts by instance or host ID to identify individually misbehaving instances.\n\nBelow are some example charts of how to plot this data in various deployment environments. They are parameterized using Datadog's [unified service tagging](https://docs.datadoghq.com/getting_started/tagging/unified_service_tagging).",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -4187,7 +4187,7 @@
             "id": 2752267629213285,
             "definition": {
               "type": "note",
-              "content": "If you incorporate [coprocessors](https://www.apollographql.com/docs/graphos/routing/customization/coprocessor) into your runtime, these metrics will be emitted. They indicate basic health and performance impact of the coprocessors on your request lifecycle. In order to correlate any issues we highly recommend you add your own instrumentation to this section to include any health and performance metrics specific to the coprocessors you run and their own request lifecycle.",
+              "content": "If you incorporate [coprocessors](https://www.apollographql.com/docs/graphos/routing/customization/coprocessor) into your runtime, these metrics will be emitted. They indicate basic health and performance impact of the coprocessors on your request lifecycle. In order to correlate any issues Apollo highly recommends you add your own instrumentation to this section to include any health and performance metrics specific to the coprocessors you run and their own request lifecycle.",
               "background_color": "white",
               "font_size": "14",
               "text_align": "left",
@@ -4402,7 +4402,7 @@
             "id": 3453193672865711,
             "definition": {
               "type": "note",
-              "content": "This chart tracks the success rate of coprocessor invocations across each stage of the request lifecycle.\n\n**Why it matters**\n\n-   Coprocessors are on the critical path — failures here can short-circuit requests before they reach subgraphs.\n-   A drop in success rate will correlate with elevated error responses at the supergraph level.\n-   Helps isolate external causes of failure when subgraphs appear healthy.\n\n**What to look for**\n\n-   A consistent 100% success rate is expected for stable, production-grade coprocessors.\n-   Any dip may signal availability issues, timeouts, or bugs in coprocessor logic.\n-   If supergraph error rates rise while subgraphs remain unaffected, investigate this metric as a potential root cause.",
+              "content": "This chart tracks the success rate of coprocessor invocations across each stage of the request lifecycle.\n\n**What to look for**\n\n-   A consistent 100% success rate is expected for stable, production-grade coprocessors.\n-   Any dip may signal availability issues, timeouts, or bugs in coprocessor logic.\n-   If supergraph error rates rise while subgraphs remain unaffected, investigate this metric as a potential root cause.\n\n**Why it matters**\n\n-   Coprocessors are on the critical path — failures here can short-circuit requests before they reach subgraphs.\n-   A drop in success rate will correlate with elevated error responses at the supergraph level.\n-   Helps isolate external causes of failure when subgraphs appear healthy.",
               "background_color": "gray",
               "font_size": "12",
               "text_align": "left",
@@ -4612,7 +4612,7 @@
             "id": 7933157762395926,
             "definition": {
               "type": "note",
-              "content": "This graph can help you track the rollout of schema changes across your fleet as a supplemental indicator beyond the query planning cache metrics. We recommend adding markers for new deployments based on your CI system's integration with Datadog where appropriate so that you can correlate those with any incidents as well.\n\nTo learn more about launches and what constitutes a new one, see [the documentation](https://www.apollographql.com/docs/graphos/platform/schema-management/delivery/launch).",
+              "content": "This graph can help you track the rollout of schema changes across your fleet as a supplemental indicator beyond the query planning cache metrics. Apollo recommends adding markers for new deployments based on your CI system's integration with Datadog where appropriate so that you can correlate those with any incidents as well.\n\nTo learn more about launches and what constitutes a new one, see [the documentation](https://www.apollographql.com/docs/graphos/platform/schema-management/delivery/launch).",
               "background_color": "gray",
               "font_size": "12",
               "text_align": "left",
