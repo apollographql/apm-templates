@@ -219,7 +219,7 @@
                     }
                 },
                 {
-                    "title": "GraphQL Errors by Operation Name (Placeholder)",
+                    "title": "GraphQL Errors by Operation (Placeholder)",
                     "layout": {
                         "column": 1,
                         "row": 9,
@@ -680,7 +680,7 @@
                     }
                 },
                 {
-                    "title": "Request Body Size (p95, p99, max)",
+                    "title": "Request Body Size (p99 / Max)",
                     "layout": {
                         "column": 1,
                         "row": 3,
@@ -717,7 +717,7 @@
                     }
                 },
                 {
-                    "title": "Response Body Size (p95, p99, max)",
+                    "title": "Response Body Size",
                     "layout": {
                         "column": 7,
                         "row": 3,
@@ -954,7 +954,7 @@
                     }
                 },
                 {
-                    "title": "Latency (p95) by Subgraph",
+                    "title": "P95 Latency by Subgraph",
                     "layout": {
                         "column": 7,
                         "row": 4,
@@ -1084,7 +1084,7 @@
                     }
                 },
                 {
-                    "title": "Latency (p95) by Connector Source",
+                    "title": "P95 Latency by Connector Source",
                     "layout": {
                         "column": 7,
                         "row": 10,
