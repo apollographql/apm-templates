@@ -1366,6 +1366,125 @@
       "type": "text"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 72
+      },
+      "id": 43,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sum by(subgraph_name) (rate(http_client_request_duration_seconds_count{otel_scope_name=\"$otel_scope_name\",graphql_errors=\"true\",subgraph_name!=\"\"}[$__rate_interval]))",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{subgraph_name}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "GraphQL Errors by Subgraph",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 12,
+        "y": 80
+      },
+      "id": 44,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "This chart shows GraphQL errors returned by subgraphs, grouped by subgraph name. These errors are captured at the router level using the `http.client.request.duration` metric with the `graphql.errors` attribute.\n\n**What to look for**\n\n- Sudden spikes in errors for a specific subgraph\n- Which subgraphs are generating the most errors\n- Error patterns by subgraph to identify problematic backends\n- Trends in error rates for specific subgraphs\n\n**Why it matters**\n\n- GraphQL errors are surfaced in the response body in the `errors` array. If a request encounters a GraphQL error, the overall response still returns a `200 OK`. Looking at errors by subgraph can help highlight response degradation when individual subgraphs encounter elevated error rates.\n- Identifying error-prone subgraphs helps prioritize fixes and coordinate with backend teams.\n- Monitoring error rates by subgraph can help detect regressions in specific backends.\n\n**Caveats**\n\n- This chart shows router-level GraphQL errors from subgraph responses, which may originate from subgraph resolvers or validation failures.\n- Requires the router to be configured with `subgraph.name` and `graphql.errors` attributes on the `http.client.request.duration` instrument.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.1",
+      "type": "text"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,

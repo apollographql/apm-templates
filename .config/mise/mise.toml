@@ -23,6 +23,7 @@ run = "typos"
 [tools]
 "cargo:dprint" = "0.50"
 "cargo:typos-cli" = "1.36"
+rust = "latest"
 
 [env]
 _.file = '../../.env'

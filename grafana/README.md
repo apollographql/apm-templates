@@ -117,6 +117,8 @@ This section provides a detailed comparison between the Grafana template (`graph
 4. **Request Traffic & Health: Router → Backend**
    - HTTP requests by subgraph/connector
    - Throughput (requests per second)
+   - Non-2xx responses breakdown
+   - GraphQL errors by subgraph
 
 5. **Request Performance & Latency: Router → Backend**
    - P95 latency by subgraph
@@ -141,8 +143,6 @@ This section provides a detailed comparison between the Grafana template (`graph
    - Response body size tracking
 
 2. **Router → Backend Advanced Metrics**
-   - Non-2xx responses breakdown
-   - GraphQL errors by subgraph
    - Request duration distribution (histogram for backend requests)
    - Subgraph performance profiles (scatter plots: throughput vs latency)
    - Connector source performance profiles (scatter plots)

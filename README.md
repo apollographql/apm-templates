@@ -35,7 +35,7 @@ The following table shows which dashboard sections are available in each templat
 | **Request Performance & Latency: Router → Backend** | ✅ | ✅ | ✅ |
 | - P95 Latency by Subgraph | ✅ | ✅ | ✅ |
 | - P95 Latency by Operation Name | ✅ | ✅ | ✅ |
-| - GraphQL Errors by Subgraph | ✅ | ❌ | ✅ |
+| - GraphQL Errors by Subgraph | ✅ | ✅ | ✅ |
 | - Request Duration Distribution (Histogram) | ✅ | ❌ | ✅ |
 | - Subgraph Performance Profile (Scatter Plot) | ✅ | ❌ | ✅ |
 | - Connector Source Performance Profile (Scatter Plot) | ✅ | ❌ | ✅ |
@@ -88,7 +88,7 @@ While the templates cover similar functionality, there are some naming differenc
 | Datadog | Grafana | New Relic | Notes |
 |---------|---------|-----------|-------|
 | GraphQL Errors by Operation | GraphQL Errors by Operation | GraphQL Errors by Operation (Placeholder) | |
-| GraphQL Errors by Subgraph | x | x | |
+| GraphQL Errors by Subgraph | GraphQL Errors by Subgraph | GraphQL Errors by Subgraph | |
 | Http Requests by Status Code | Http Requests by Subgraph | Request Rate by Status Code<br>Request Rate by Subgraph | Grafana groups by subgraph instead of status code; New Relic splits into separate charts |
 | P95 Latency By Operation Name | P95 Latency By Operation Name | x | |
 | P95 Latency by Connector Source | x | P95 Latency by Connector Source | |
