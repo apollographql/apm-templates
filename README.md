@@ -36,7 +36,7 @@ The following table shows which dashboard sections are available in each templat
 | - P95 Latency by Subgraph | ✅ | ✅ | ✅ |
 | - P95 Latency by Operation Name | ✅ | ✅ | ✅ |
 | - GraphQL Errors by Subgraph | ✅ | ✅ | ✅ |
-| - Request Duration Distribution (Histogram) | ✅ | ❌ | ✅ |
+| - Request Duration Distribution (Histogram) | ✅ | ✅ | ✅ |
 | - Subgraph Performance Profile (Scatter Plot) | ✅ | ❌ | ✅ |
 | - Connector Source Performance Profile (Scatter Plot) | ✅ | ❌ | ✅ |
 | **Top Most Queried Subgraphs: Request Duration Distributions** | ✅ | ❌ | ✅ |

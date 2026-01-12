@@ -123,6 +123,7 @@ This section provides a detailed comparison between the Grafana template (`graph
 5. **Request Performance & Latency: Router → Backend**
    - P95 latency by subgraph
    - P95 latency by operation name
+   - Request duration distribution (histogram for backend requests)
 
 6. **Query Planning**
    - Duration and wait time
@@ -143,7 +144,6 @@ This section provides a detailed comparison between the Grafana template (`graph
    - Response body size tracking
 
 2. **Router → Backend Advanced Metrics**
-   - Request duration distribution (histogram for backend requests)
    - Subgraph performance profiles (scatter plots: throughput vs latency)
    - Connector source performance profiles (scatter plots)
 

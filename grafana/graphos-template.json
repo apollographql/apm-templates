@@ -1717,12 +1717,131 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 95
+      },
+      "id": 45,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "rate(http_client_request_duration_seconds_bucket{otel_scope_name=\"$otel_scope_name\",subgraph_name!=\"\"}[$__rate_interval])",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{le}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Request Duration Distribution",
+      "type": "histogram"
+    },
+    {
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 0,
+        "y": 103
+      },
+      "id": 46,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "This chart shows the distribution of backend request durations over time. It helps identify how long most requests take and highlights the presence of any outliers or tail latency issues.\n\n**What to look for**\n\n- A tight cluster around low durations suggests fast, consistent subgraph responses.\n- A long tail or spread to the right may indicate occasional slowness or outliers.\n- Sudden shape changes over time can highlight new regressions, changes in traffic, or schema changes.\n\n**Why it matters**\n\n- Understanding the distribution helps identify bottlenecks and improve user experience.\n- Monitoring duration trends assists in detecting regressions early.\n- The histogram view provides a different perspective than percentile charts, showing the full shape of latency distribution.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.1",
+      "type": "text"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 95
+        "y": 106
       },
       "id": 29,
       "panels": [],
@@ -1734,7 +1853,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 96
+        "y": 107
       },
       "id": 30,
       "options": {
@@ -1807,7 +1926,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 99
+        "y": 110
       },
       "id": 31,
       "options": {
@@ -1966,7 +2085,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 99
+        "y": 110
       },
       "id": 32,
       "options": {
@@ -2028,7 +2147,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 107
+        "y": 118
       },
       "id": 33,
       "panels": [],
@@ -2040,7 +2159,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 108
+        "y": 119
       },
       "id": 34,
       "options": {
@@ -2142,7 +2261,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 114
+        "y": 125
       },
       "id": 35,
       "options": {
@@ -2219,7 +2338,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 122
+        "y": 133
       },
       "id": 36,
       "panels": [],
@@ -2231,7 +2350,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 123
+        "y": 134
       },
       "id": 37,
       "options": {
@@ -2304,7 +2423,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 126
+        "y": 137
       },
       "id": 38,
       "options": {
@@ -2403,7 +2522,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 126
+        "y": 137
       },
       "id": 39,
       "options": {
@@ -2504,7 +2623,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 134
+        "y": 145
       },
       "id": 40,
       "options": {
