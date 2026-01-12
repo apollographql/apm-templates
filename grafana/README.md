@@ -46,9 +46,13 @@ telemetry:
         http.server.response.body.size: true
         http.server.active_requests: true
       subgraph:
-        http.client.request.duration:
-          attributes:
-            subgraph.name: true
+         http.client.request.duration:
+            attributes:
+               subgraph.name: true
+               graphql.errors:
+                  subgraph_on_graphql_error: true
+               http.response.status_code: 
+                  subgraph_response_status: code
         http.client.request.body.size:
           attributes:
             subgraph.name: true
