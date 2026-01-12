@@ -68,8 +68,6 @@ Dashboard variables:
 
 ### Known Limitations
 
-- **HTTP status codes are not available** as attributes on subgraph client metrics (`http.client.request.duration`). The dashboard shows subgraph metrics grouped by subgraph name only, without status code breakdowns. Router-level metrics do include status code information.
-
 - The template does not include any panels for resource views; this data is often bespoke to the environments in which the router is run, therefore it is easier to add your own panels from the correct datasources.
 
 - There are sections for resources, however, to be able to input the necessary panels.
