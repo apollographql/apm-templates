@@ -132,6 +132,7 @@ This section provides a detailed comparison between the Grafana template (`graph
 7. **Cache**
    - Misses vs. record count
    - Cache hit percentage
+   - Record counts by instance ✅
 
 8. **Coprocessors**
    - Request duration
@@ -152,7 +153,7 @@ This section provides a detailed comparison between the Grafana template (`graph
    - Dynamic distribution charts for top 12 most queried connector sources
 
 4. **Cache (Extended)**
-   - Record counts by instance
+   - Record counts by instance ✅
    - Record counts by type
    - Misses by type
    - Hit % by instance

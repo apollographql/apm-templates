@@ -47,7 +47,7 @@ The following table shows which dashboard sections are available in each templat
 | **Cache** | ✅ | ✅ | ✅ |
 | - Misses vs. Record Count | ✅ | ✅ | ✅ |
 | - Cache Hit Percentage | ✅ | ✅ | ✅ |
-| - Record Counts by Instance | ✅ | ❌ | ✅ |
+| - Record Counts by Instance | ✅ | ✅ | ✅ |
 | - Record Counts by Type | ✅ | ❌ | ✅ |
 | - Misses by Type | ✅ | ❌ | ✅ |
 | - Hit % by Instance | ✅ | ❌ | ✅ |
