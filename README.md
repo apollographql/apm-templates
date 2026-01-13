@@ -56,8 +56,8 @@ The following table shows which dashboard sections are available in each templat
 | - Query Parsing Duration Percentiles and Wait Time | ✅ | ✅ | ✅ |
 | - Queued Jobs | ✅ | ✅ | ✅ |
 | - Job Counts by Outcome | ✅ | ✅ | ✅ |
-| **Container/Host Resource Monitoring** | ✅ | ❌ | ✅ |
-| - Kubernetes CPU Usage | ✅ | ❌ | ✅ |
+| **Container/Host Resource Monitoring** | ✅ | ✅ | ✅ |
+| - Kubernetes CPU Usage | ✅ | ✅ | ✅ |
 | - Kubernetes Memory Usage | ✅ | ❌ | ✅ |
 | - Host CPU/Memory Usage (OTEL Collector) | ✅ | ❌ | ✅ |
 | - Docker CPU/Memory Usage | ✅ | ❌ | ✅ |

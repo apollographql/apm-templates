@@ -152,6 +152,9 @@ This section provides a detailed comparison between the Grafana template (`graph
    - Request count
    - Success rate
 
+11. **Container/Host Resource Monitoring**
+   - Kubernetes CPU usage (avg and max by pod)
+
 #### 📊 Additional Sections in Datadog Template Only
 
 1. **Request Characteristics: Router → Backend**
@@ -178,7 +181,7 @@ This section provides a detailed comparison between the Grafana template (`graph
    - Job counts by outcome ✅ (Note: This panel is now available in the Query Planning section)
 
 6. **Container/Host Resource Monitoring**
-   - Kubernetes CPU usage
+   - Kubernetes CPU usage ✅ (Note: This panel is now available in the Container/Host Resource Monitoring section)
    - Kubernetes memory usage
    - Host CPU usage (OTEL Collector - Hostmetrics)
    - Host memory usage (OTEL Collector - Hostmetrics)
@@ -242,6 +245,7 @@ This section provides a detailed comparison between the Grafana template (`graph
 - You need a lightweight, focused dashboard
 - You need query planning and query parsing duration percentiles (p50, p95, p99) and wait time monitoring
 - You need to monitor queued compute jobs and job outcomes
+- You need Kubernetes container resource monitoring (CPU usage)
 
 **Use Datadog Template if:**
 - You're already using Datadog for monitoring
