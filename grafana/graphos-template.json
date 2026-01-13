@@ -2816,10 +2816,56 @@
     },
     {
       "gridPos": {
-        "h": 3,
+        "h": 8,
         "w": 12,
         "x": 12,
         "y": 165
+      },
+      "id": 57,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sum by(kind, storage) (rate(apollo_router_cache_miss_time_count{otel_scope_name=\"$otel_scope_name\"}[$__rate_interval]))",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{kind}} - {{storage}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Misses by Type",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 0,
+        "y": 173
       },
       "id": 56,
       "options": {
@@ -2835,12 +2881,32 @@
       "type": "text"
     },
     {
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 12,
+        "y": 173
+      },
+      "id": 58,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "This chart shows cache misses broken down by cache type (kind) and storage backend.\n\n**What to look for**\n\n- Different cache types (`apq`, `query planner`, `introspection`) may have different miss patterns\n- Spikes in misses for a specific cache type may indicate:\n  - Schema changes causing cache invalidation\n  - New query patterns that aren't being cached\n  - Cache eviction due to size limits\n- Comparing miss rates across storage backends (`memory` vs `redis`) helps understand cache distribution\n\n**Why it matters**\n\n- High miss rates mean the cache isn't effectively serving requests, leading to increased query planning overhead\n- Identifying which cache types have the most misses helps prioritize optimization efforts\n- Tracking miss patterns by type helps correlate cache performance with schema deployments or traffic changes\n\n**Caveats**\n\n- The `kind` and `storage` labels must be present on the `apollo_router_cache_miss_time_count` metric for this chart to show meaningful breakdown\n- According to Apollo Router documentation, cache metrics include `kind` and `storage` attributes\n- If these labels are not available, the chart may show all misses grouped together",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.1",
+      "type": "text"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 173
+        "y": 181
       },
       "id": 36,
       "panels": [],

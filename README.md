@@ -49,7 +49,7 @@ The following table shows which dashboard sections are available in each templat
 | - Cache Hit Percentage | ✅ | ✅ | ✅ |
 | - Record Counts by Instance | ✅ | ✅ | ✅ |
 | - Record Counts by Type | ✅ | ✅ | ✅ |
-| - Misses by Type | ✅ | ❌ | ✅ |
+| - Misses by Type | ✅ | ✅ | ✅ |
 | - Hit % by Instance | ✅ | ❌ | ✅ |
 | **Compute Jobs** | ✅ | ❌ | ✅ |
 | - Query Planning Duration Percentiles and Wait Time | ✅ | ❌ | ✅ |
