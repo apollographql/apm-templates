@@ -139,6 +139,7 @@ This section provides a detailed comparison between the Grafana template (`graph
    - Misses vs. record count
    - Cache hit percentage
    - Record counts by instance ✅
+   - Record counts by type ✅
 
 10. **Coprocessors**
    - Request duration
@@ -160,7 +161,7 @@ This section provides a detailed comparison between the Grafana template (`graph
 
 4. **Cache (Extended)**
    - Record counts by instance ✅
-   - Record counts by type
+   - Record counts by type ✅
    - Misses by type
    - Hit % by instance
 

@@ -2716,12 +2716,131 @@
       "type": "text"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 165
+      },
+      "id": 55,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sum by(kind, storage) (apollo_router_cache_size{otel_scope_name=\"$otel_scope_name\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{kind}} - {{storage}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Record Counts by Type",
+      "type": "timeseries"
+    },
+    {
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 12,
+        "y": 165
+      },
+      "id": 56,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "This chart breaks down the number of records in the cache by cache type (kind) and storage backend.\n\n**What to look for**\n\n- Different cache types (kinds: `apq`, `query planner`, `introspection`) may have different growth patterns\n- Different storage backends (`memory`, `redis`) may show different cache sizes\n- Anomalous growth in a specific cache type may indicate unusual traffic patterns\n\n**Why it matters**\n\n- Understanding which cache types are consuming the most memory helps with capacity planning\n- Tracking cache growth by type helps identify if certain query patterns are causing cache bloat\n- Comparing memory vs Redis cache sizes helps understand cache distribution across storage backends\n\n**Caveats**\n\n- The `kind` and `storage` labels must be present on the `apollo_router_cache_size` metric for this chart to show meaningful data\n- According to Apollo Router documentation, cache metrics include `kind` and `storage` attributes, but not `version`\n- If these labels are not available, the chart may show all records grouped together or no data",
+        "mode": "markdown"
+      },
+      "pluginVersion": "10.1.1",
+      "type": "text"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 165
+        "y": 173
       },
       "id": 36,
       "panels": [],
