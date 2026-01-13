@@ -51,8 +51,8 @@ The following table shows which dashboard sections are available in each templat
 | - Record Counts by Type | ✅ | ✅ | ✅ |
 | - Misses by Type | ✅ | ✅ | ✅ |
 | - Hit % by Instance | ✅ | ✅ | ✅ |
-| **Compute Jobs** | ✅ | ❌ | ✅ |
-| - Query Planning Duration Percentiles and Wait Time | ✅ | ❌ | ✅ |
+| **Compute Jobs** | ✅ | ✅ | ✅ |
+| - Query Planning Duration Percentiles and Wait Time | ✅ | ✅ | ✅ |
 | - Query Parsing Duration Percentiles and Wait Time | ✅ | ❌ | ✅ |
 | - Queued Jobs | ✅ | ❌ | ✅ |
 | - Job Counts by Outcome | ✅ | ❌ | ✅ |

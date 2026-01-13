@@ -133,6 +133,7 @@ This section provides a detailed comparison between the Grafana template (`graph
 
 8. **Query Planning**
    - Duration and wait time
+   - Query planning duration percentiles and wait time (p50, p95, p99 execution duration and avg wait time)
    - Evaluated plans
 
 9. **Cache**
@@ -168,7 +169,7 @@ This section provides a detailed comparison between the Grafana template (`graph
    - Hit % by instance ✅
 
 5. **Compute Jobs**
-   - Query planning duration percentiles and wait time
+   - Query planning duration percentiles and wait time ✅ (Note: This panel is now available in the Query Planning section)
    - Query parsing duration percentiles and wait time
    - Queued jobs
    - Job counts by outcome
@@ -236,6 +237,7 @@ This section provides a detailed comparison between the Grafana template (`graph
 - You want to customize queries and panels extensively
 - You're running Grafana in your infrastructure
 - You need a lightweight, focused dashboard
+- You need query planning duration percentiles (p50, p95, p99) and wait time monitoring
 
 **Use Datadog Template if:**
 - You're already using Datadog for monitoring
@@ -243,7 +245,7 @@ This section provides a detailed comparison between the Grafana template (`graph
 - You need advanced features like anomaly detection
 - You want performance profile scatter plots
 - You need detailed cache breakdowns by instance and type
-- You want compute job monitoring (query parsing, queued jobs)
+- You want compute job monitoring (query parsing, queued jobs, job counts by outcome)
 
 ### Migration Considerations
 
