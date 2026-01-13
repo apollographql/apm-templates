@@ -125,6 +125,9 @@ This section provides a detailed comparison between the Grafana template (`graph
    - P95 latency by operation name
    - Request duration distribution (histogram for backend requests)
 
+6. **Top Most Queried Subgraphs: Request Duration Distributions**
+   - Request duration distributions grouped by subgraph ✅
+
 6. **Query Planning**
    - Duration and wait time
    - Evaluated plans
@@ -149,7 +152,7 @@ This section provides a detailed comparison between the Grafana template (`graph
    - Connector source performance profiles (scatter plots)
 
 3. **Top Most Queried Subgraphs/Connectors**
-   - Dynamic distribution charts for top 12 most queried subgraphs
+   - Dynamic distribution charts for top 12 most queried subgraphs ✅ (Note: Grafana shows all subgraphs; users can filter via legend)
    - Dynamic distribution charts for top 12 most queried connector sources
 
 4. **Cache (Extended)**

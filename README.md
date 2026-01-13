@@ -34,12 +34,12 @@ The following table shows which dashboard sections are available in each templat
 | - Response Body Size | ✅ | ❌ | ✅ |
 | **Request Performance & Latency: Router → Backend** | ✅ | ✅ | ✅ |
 | - P95 Latency by Subgraph | ✅ | ✅ | ✅ |
-| - P95 Latency by Operation Name | ✅ | ✅ | ✅ |
+| - P95 Latency by Operation Name | ❌ | ✅ | ✅ |
 | - GraphQL Errors by Subgraph | ✅ | ✅ | ✅ |
 | - Request Duration Distribution (Histogram) | ✅ | ✅ | ✅ |
 | - Subgraph Performance Profile (Scatter Plot) | ✅ | ❌ | ✅ |
 | - Connector Source Performance Profile (Scatter Plot) | ✅ | ❌ | ✅ |
-| **Top Most Queried Subgraphs: Request Duration Distributions** | ✅ | ❌ | ✅ |
+| **Top Most Queried Subgraphs: Request Duration Distributions** | ✅ | ✅ | ✅ |
 | **Top Most Queried Connector Sources: Request Duration Distributions** | ✅ | ❌ | ✅ |
 | **Query Planning** | ✅ | ✅ | ✅ |
 | - Duration and Wait Time | ✅ | ✅ | ✅ |
