@@ -59,7 +59,7 @@ The following table shows which dashboard sections are available in each templat
 | **Container/Host Resource Monitoring** | ✅ | ✅ | ✅ |
 | - Kubernetes CPU Usage | ✅ | ✅ | ✅ |
 | - Kubernetes Memory Usage | ✅ | ✅ | ✅ |
-| - Host CPU/Memory Usage (OTEL Collector) | ✅ | ❌ | ✅ |
+| - Host CPU/Memory Usage (OTEL Collector) | ✅ | ✅ | ✅ |
 | - Docker CPU/Memory Usage | ✅ | ❌ | ✅ |
 | **Coprocessors** | ✅ | ✅ | ✅ |
 | - Request Duration | ✅ | ✅ | ✅ |
