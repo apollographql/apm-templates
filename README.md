@@ -58,7 +58,7 @@ The following table shows which dashboard sections are available in each templat
 | - Job Counts by Outcome | ✅ | ✅ | ✅ |
 | **Container/Host Resource Monitoring** | ✅ | ✅ | ✅ |
 | - Kubernetes CPU Usage | ✅ | ✅ | ✅ |
-| - Kubernetes Memory Usage | ✅ | ❌ | ✅ |
+| - Kubernetes Memory Usage | ✅ | ✅ | ✅ |
 | - Host CPU/Memory Usage (OTEL Collector) | ✅ | ❌ | ✅ |
 | - Docker CPU/Memory Usage | ✅ | ❌ | ✅ |
 | **Coprocessors** | ✅ | ✅ | ✅ |

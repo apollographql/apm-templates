@@ -154,6 +154,7 @@ This section provides a detailed comparison between the Grafana template (`graph
 
 11. **Container/Host Resource Monitoring**
    - Kubernetes CPU usage (avg and max by pod)
+   - Kubernetes memory usage (avg and max by pod)
 
 #### 📊 Additional Sections in Datadog Template Only
 
@@ -182,7 +183,7 @@ This section provides a detailed comparison between the Grafana template (`graph
 
 6. **Container/Host Resource Monitoring**
    - Kubernetes CPU usage ✅ (Note: This panel is now available in the Container/Host Resource Monitoring section)
-   - Kubernetes memory usage
+   - Kubernetes memory usage ✅ (Note: This panel is now available in the Container/Host Resource Monitoring section)
    - Host CPU usage (OTEL Collector - Hostmetrics)
    - Host memory usage (OTEL Collector - Hostmetrics)
    - Docker CPU usage (multiple collectors)
