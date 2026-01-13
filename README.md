@@ -40,7 +40,7 @@ The following table shows which dashboard sections are available in each templat
 | - Subgraph Performance Profile (Scatter Plot) | ✅ | ❌ | ✅ |
 | - Connector Source Performance Profile (Scatter Plot) | ✅ | ❌ | ✅ |
 | **Top Most Queried Subgraphs: Request Duration Distributions** | ✅ | ✅ | ✅ |
-| **Top Most Queried Connector Sources: Request Duration Distributions** | ✅ | ❌ | ✅ |
+| **Top Most Queried Connector Sources: Request Duration Distributions** | ✅ | ✅ | ✅ |
 | **Query Planning** | ✅ | ✅ | ✅ |
 | - Duration and Wait Time | ✅ | ✅ | ✅ |
 | - Evaluated Plans | ✅ | ✅ | ✅ |

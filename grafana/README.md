@@ -128,16 +128,19 @@ This section provides a detailed comparison between the Grafana template (`graph
 6. **Top Most Queried Subgraphs: Request Duration Distributions**
    - Request duration distributions grouped by subgraph ✅
 
-6. **Query Planning**
+7. **Top Most Queried Connector Sources: Request Duration Distributions**
+   - Request duration distributions grouped by connector source ✅
+
+8. **Query Planning**
    - Duration and wait time
    - Evaluated plans
 
-7. **Cache**
+9. **Cache**
    - Misses vs. record count
    - Cache hit percentage
    - Record counts by instance ✅
 
-8. **Coprocessors**
+10. **Coprocessors**
    - Request duration
    - Request count
    - Success rate
@@ -153,7 +156,7 @@ This section provides a detailed comparison between the Grafana template (`graph
 
 3. **Top Most Queried Subgraphs/Connectors**
    - Dynamic distribution charts for top 12 most queried subgraphs ✅ (Note: Grafana shows all subgraphs; users can filter via legend)
-   - Dynamic distribution charts for top 12 most queried connector sources
+   - Dynamic distribution charts for top 12 most queried connector sources ✅ (Note: Grafana shows all connector sources; users can filter via legend)
 
 4. **Cache (Extended)**
    - Record counts by instance ✅
