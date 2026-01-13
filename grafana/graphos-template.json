@@ -2778,12 +2778,220 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 160
+      },
+      "id": 63,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max",
+            "lastNotNull",
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sum(apollo_router_compute_jobs_queued{otel_scope_name=\"$otel_scope_name\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "queued jobs",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Queued Jobs",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 168
+      },
+      "id": 64,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum by(job_outcome) (rate(apollo_router_compute_jobs_duration_seconds_count{otel_scope_name=\"$otel_scope_name\"}[$__rate_interval]))",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{job_outcome}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Job Counts by Outcome",
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 160
+        "y": 176
       },
       "id": 33,
       "panels": [],
@@ -2799,7 +3007,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 161
+        "y": 177
       },
       "id": 34,
       "options": {
@@ -2877,7 +3085,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 167
+        "y": 183
       },
       "id": 47,
       "options": {
@@ -2982,7 +3190,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 167
+        "y": 183
       },
       "id": 59,
       "options": {
@@ -3032,7 +3240,7 @@
         "h": 5,
         "w": 12,
         "x": 0,
-        "y": 175
+        "y": 191
       },
       "id": 48,
       "options": {
@@ -3057,7 +3265,7 @@
         "h": 5,
         "w": 12,
         "x": 12,
-        "y": 175
+        "y": 191
       },
       "id": 60,
       "options": {
@@ -3135,7 +3343,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 180
+        "y": 196
       },
       "id": 55,
       "options": {
@@ -3237,7 +3445,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 180
+        "y": 196
       },
       "id": 57,
       "options": {
@@ -3287,7 +3495,7 @@
         "h": 5,
         "w": 12,
         "x": 0,
-        "y": 188
+        "y": 204
       },
       "id": 56,
       "options": {
@@ -3312,7 +3520,7 @@
         "h": 5,
         "w": 12,
         "x": 12,
-        "y": 188
+        "y": 204
       },
       "id": 58,
       "options": {
@@ -3419,7 +3627,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 193
+        "y": 209
       },
       "id": 35,
       "options": {
@@ -3496,7 +3704,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 201
+        "y": 217
       },
       "id": 36,
       "panels": [],
@@ -3512,7 +3720,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 202
+        "y": 218
       },
       "id": 37,
       "options": {
@@ -3590,7 +3798,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 205
+        "y": 221
       },
       "id": 38,
       "options": {
@@ -3695,7 +3903,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 205
+        "y": 221
       },
       "id": 40,
       "options": {
@@ -3798,7 +4006,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 213
+        "y": 229
       },
       "id": 39,
       "options": {
@@ -3892,5 +4100,5 @@
   "timezone": "browser",
   "title": "GraphOS Runtime Dashboard Template",
   "uid": "graphos-runtime-dashboard",
-  "version": 24
+  "version": 31
 }

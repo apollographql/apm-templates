@@ -54,8 +54,8 @@ The following table shows which dashboard sections are available in each templat
 | **Compute Jobs** | ✅ | ✅ | ✅ |
 | - Query Planning Duration Percentiles and Wait Time | ✅ | ✅ | ✅ |
 | - Query Parsing Duration Percentiles and Wait Time | ✅ | ✅ | ✅ |
-| - Queued Jobs | ✅ | ❌ | ✅ |
-| - Job Counts by Outcome | ✅ | ❌ | ✅ |
+| - Queued Jobs | ✅ | ✅ | ✅ |
+| - Job Counts by Outcome | ✅ | ✅ | ✅ |
 | **Container/Host Resource Monitoring** | ✅ | ❌ | ✅ |
 | - Kubernetes CPU Usage | ✅ | ❌ | ✅ |
 | - Kubernetes Memory Usage | ✅ | ❌ | ✅ |
