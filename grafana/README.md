@@ -158,6 +158,11 @@ This section provides a detailed comparison between the Grafana template (`graph
    - Host CPU usage (user, system, iowait, idle breakdown)
    - Host memory usage (used and total memory)
 
+12. **Sentinel Metrics**
+   - Uplink and licensing (uplink fetch duration and licensed routers percentage)
+   - Open connections by schema and launch ID
+   - Router relative overhead (health score)
+
 #### 📊 Additional Sections in Datadog Template Only
 
 1. **Request Characteristics: Router → Backend**
@@ -192,9 +197,9 @@ This section provides a detailed comparison between the Grafana template (`graph
    - Docker memory usage (multiple collectors)
 
 7. **Sentinel Metrics**
-   - Uplink and licensing metrics
-   - Open connections by schema and launch ID
-   - Router relative overhead
+   - Uplink and licensing metrics ✅ (Note: This panel is now available in the Sentinel Metrics section)
+   - Open connections by schema and launch ID ✅ (Note: This panel is now available in the Sentinel Metrics section)
+   - Router relative overhead ✅ (Note: This panel is now available in the Sentinel Metrics section)
 
 ### Key Functional Differences
 
@@ -248,7 +253,9 @@ This section provides a detailed comparison between the Grafana template (`graph
 - You need a lightweight, focused dashboard
 - You need query planning and query parsing duration percentiles (p50, p95, p99) and wait time monitoring
 - You need to monitor queued compute jobs and job outcomes
-- You need Kubernetes container resource monitoring (CPU usage)
+- You need Kubernetes container resource monitoring (CPU and memory usage)
+- You need host-level resource monitoring (CPU and memory)
+- You need Sentinel metrics (Uplink, licensing, connections, overhead)
 
 **Use Datadog Template if:**
 - You're already using Datadog for monitoring

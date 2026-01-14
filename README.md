@@ -65,10 +65,10 @@ The following table shows which dashboard sections are available in each templat
 | - Request Duration | ✅ | ✅ | ✅ |
 | - Request Count | ✅ | ✅ | ✅ |
 | - Success Rate | ✅ | ✅ | ✅ |
-| **Sentinel Metrics** | ✅ | ❌ | ✅ |
-| - Uplink and Licensing | ✅ | ❌ | ✅ |
-| - Open Connections by Schema and Launch ID | ✅ | ❌ | ✅ |
-| - Router Relative Overhead | ✅ | ❌ | ✅ |
+| **Sentinel Metrics** | ✅ | ✅ | ✅ |
+| - Uplink and Licensing | ✅ | ✅ | ✅ |
+| - Open Connections by Schema and Launch ID | ✅ | ✅ | ✅ |
+| - Router Relative Overhead | ✅ | ✅ | ✅ |
 | **Entity Caching** | ❌ | ❌ | ✅ |
 | **Uplink (Dedicated Page)** | ❌ | ❌ | ✅ |
 
