@@ -24,6 +24,7 @@ in your Grafana instance.
 ### Dashboard Requirements
 
 This dashboard requires:
+
 - Grafana
 - A Prometheus datasource
 - Prometheus gathering metrics from the Apollo Router running v2.0 or higher
@@ -46,13 +47,9 @@ telemetry:
         http.server.response.body.size: true
         http.server.active_requests: true
       subgraph:
-         http.client.request.duration:
-            attributes:
-               subgraph.name: true
-               graphql.errors:
-                  subgraph_on_graphql_error: true
-               http.response.status_code: 
-                  subgraph_response_status: code
+        http.client.request.duration:
+          attributes:
+            subgraph.name: true
         http.client.request.body.size:
           attributes:
             subgraph.name: true
@@ -61,8 +58,9 @@ telemetry:
 
 ### Usage
 
-Once imported, select your datasource in the top variable section and the dashboard should populate so long as you use the standard metric values.
+Once imported, select your datasource in the top variable section and the dashboard should populate
+so long as you use the standard metric values.
 
 Dashboard variables:
-- `otel_scope_name` - Filter by OpenTelemetry scope name (default: "apollo/router")
 
+- `otel_scope_name` - Filter by OpenTelemetry scope name (default: "apollo/router")
