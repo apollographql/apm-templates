@@ -35,6 +35,11 @@ This dashboard also leverages the following telemetry configuration for the rout
 telemetry:
   instrumentation:
     instruments:
+      # Use "required" (Apollo's recommended default) to attach required attributes to standard
+      # instruments by default. "recommended" includes experimental attributes from OpenTelemetry's
+      # development-status conventions (e.g., graphql.document, subgraph.graphql.document), which
+      # can create high cardinality and may contain sensitive information. See:
+      # https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/instruments#default_requirement_level
       default_requirement_level: required
       router:
         http.server.request.duration:
