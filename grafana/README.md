@@ -5,7 +5,7 @@
 
 ![example dashboard preview](./dashboard-preview.png)
 
-This repository contains a [JSON file](./example-dashboard.json) containing an example
+This repository contains a [JSON file](./dashboard-template.json.json) containing an example
 [Grafana](https://grafana.com/oss/grafana/) dashboard for reference or use with the Apollo Router.
 
 **The code in this repository is experimental and has been provided for reference purposes only.
@@ -21,6 +21,8 @@ This repository contains the JSON needed to
 [import as a new dashboard](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/import-dashboards/)
 in your Grafana instance.
 
+### Dashboard Requirements
+
 This dashboard requires:
 
 - Grafana
@@ -33,38 +35,37 @@ This dashboard also leverages the following telemetry configuration for the rout
 telemetry:
   instrumentation:
     instruments:
+      # Use "required" (Apollo's recommended default) to attach required attributes to standard
+      # instruments by default. "recommended" includes experimental attributes from OpenTelemetry's
+      # development-status conventions (e.g., graphql.document, subgraph.graphql.document), which
+      # can create high cardinality and may contain sensitive information. See:
+      # https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/instruments#default_requirement_level
+      default_requirement_level: required
       router:
         http.server.request.duration:
           attributes:
-            http.response.status_code: true
+            graphql.operation.name:
+              operation_name: string
             graphql.errors:
               on_graphql_error: true
+        http.server.request.body.size: true
+        http.server.response.body.size: true
+        http.server.active_requests: true
       subgraph:
         http.client.request.duration:
           attributes:
             subgraph.name: true
-            http.response.status_code:
-              subgraph_response_status: code
-            graphql.errors:
-              subgraph_on_graphql_error: true
         http.client.request.body.size:
           attributes:
             subgraph.name: true
-      connector:
-        http.client.request.body.size: true
-        http.client.request.duration: true
         http.client.response.body.size: true
 ```
 
-## Usage
+### Usage
 
 Once imported, select your datasource in the top variable section and the dashboard should populate
 so long as you use the standard metric values.
 
-## Known Limitations
+Dashboard variables:
 
-The template does not include any panels for resource views; this data is often bespoke to the
-environments in which the router is run, therefore it is easier to add your own panels from the
-correct datasources.
-
-There are sections for resources, however, to be able to input the necessary panels.
+- `otel_scope_name` - Filter by OpenTelemetry scope name (default: "apollo/router")
