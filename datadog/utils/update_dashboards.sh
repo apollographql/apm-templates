@@ -54,7 +54,7 @@ DD_API_BASE="https://api.datadoghq.com/api/v1"
 
 # Dashboard mapping: filename:dashboard_id pairs
 DASHBOARD_MAPPINGS=(
-    "../graphos-template.json:aiz-4aa-wgr"
+    "../dashboard-template.json:aiz-4aa-wgr"
 )
 
 fetch_dashboard() {
