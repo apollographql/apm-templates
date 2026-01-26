@@ -57,8 +57,8 @@ DD_API_BASE="https://api.datadoghq.com/api/v1"
 # mapping and uncomment the line with no identifier. A new dashboard will be created owned by you
 # upon running the script.
 DASHBOARD_MAPPINGS=(
-    "../graphos-template.json:aiz-4aa-wgr"
-   #"../graphos-template.json"
+    "../dashboard-template.json:aiz-4aa-wgr"
+   #"../dashboard-template.json"
 )
 
 upload_dashboard() {
