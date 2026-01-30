@@ -436,6 +436,53 @@
             }
           },
           {
+            "id": 1128331247674468,
+            "definition": {
+              "title": "Open Subscriptions by Operation",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "vertical",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max"
+              ],
+              "time": {},
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.opened.subscriptions{$service,$env,$version} by {graphql.operation.name}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "values",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "bars"
+                }
+              ]
+            },
+            "layout": {
+              "x": 6,
+              "y": 0,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
             "id": 4330685396345820,
             "definition": {
               "type": "note",
@@ -455,6 +502,95 @@
               "width": 6,
               "height": 2
             }
+          },
+          {
+            "id": 4260729352541822,
+            "definition": {
+              "type": "note",
+              "content": "This chart shows the number of different opened subscriptions on the router by operation.\n\n**What to look for**\n\n- If you [limit your number of open connections](https://www.apollographql.com/docs/graphos/routing/operations/subscriptions/configuration#limiting-the-number-of-client-connections), ensure the total sum is not approaching or staying at that limit, as it will cause client rejections.\n- A high number of subscriptions for the same operation suggests that client requests could potentially be adjusted to better make use of [deduplication](https://www.apollographql.com/docs/graphos/routing/operations/subscriptions/configuration#subscription-deduplication).\n\n**Why it matters**\n\n- Subscriptions are long-lived HTTP connections so you want to ensure they are not holding too many resources open on your router.\n\n**Caveats**\n\n-  If multiple clients are listening to the same subscription, that will be deduplicated into a single subscription on the router side and will only show as a single count on this chart.",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 6,
+              "y": 4,
+              "width": 6,
+              "height": 2
+            }
+          },
+          {
+            "id": 5994722859738083,
+            "definition": {
+              "title": "Dropped Subscription Events",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "vertical",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max"
+              ],
+              "time": {},
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "sum:apollo.router.skipped.event.count{$service,$env,$version}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "values",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "bars"
+                }
+              ]
+            },
+            "layout": {
+              "x": 0,
+              "y": 6,
+              "width": 6,
+              "height": 4
+            }
+          },
+          {
+            "id": 7722180795101859,
+            "definition": {
+              "type": "note",
+              "content": "This chart shows the number of subscription events dropped because too many events were received from the subgraph without being sent to the client(s).\n\n**What to look for**\n\n- Regular non-zero values in this chart indicate backpressure being relieved by the router.\n\n**Why it matters**\n\n- This metric indicates that the relationship between clients and the subgraphs producing the subscription data is not aligned in performance. Either subgraphs are over-producing values or clients are under-consuming them.\n",
+              "background_color": "gray",
+              "font_size": "12",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": true,
+              "tick_pos": "50%",
+              "tick_edge": "top",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 10,
+              "width": 6,
+              "height": 2
+            }
           }
         ]
       },
@@ -462,7 +598,7 @@
         "x": 0,
         "y": 19,
         "width": 12,
-        "height": 7
+        "height": 13
       }
     },
     {
@@ -697,7 +833,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 26,
+        "y": 32,
         "width": 12,
         "height": 10
       }
@@ -976,7 +1112,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 36,
+        "y": 42,
         "width": 12,
         "height": 18
       }
@@ -1087,7 +1223,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 54,
+        "y": 60,
         "width": 12,
         "height": 7
       }
@@ -1641,7 +1777,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 61,
+        "y": 67,
         "width": 12,
         "height": 25
       }
@@ -1702,7 +1838,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 86,
+        "y": 92,
         "width": 12,
         "height": 5
       }
@@ -1763,7 +1899,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 91,
+        "y": 97,
         "width": 12,
         "height": 3
       }
@@ -2111,7 +2247,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 94,
+        "y": 100,
         "width": 12,
         "height": 9
       }
@@ -2657,7 +2793,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 103,
+        "y": 109,
         "width": 12,
         "height": 24
       }
@@ -3246,7 +3382,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 127,
+        "y": 133,
         "width": 12,
         "height": 15,
         "is_column_break": true
@@ -4169,7 +4305,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 142,
+        "y": 148,
         "width": 12,
         "height": 11
       }
@@ -4423,7 +4559,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 153,
+        "y": 159,
         "width": 12,
         "height": 15
       }
@@ -4630,9 +4766,9 @@
             }
           },
           {
-            "id": 1270431771452126,
+            "id": 844919061380459,
             "definition": {
-              "title": "Router Relative Overhead",
+              "title": "Router Overhead",
               "title_size": "16",
               "title_align": "left",
               "show_legend": false,
@@ -4644,6 +4780,7 @@
                 "value",
                 "sum"
               ],
+              "time": {},
               "type": "timeseries",
               "requests": [
                 {
@@ -4651,34 +4788,19 @@
                   "queries": [
                     {
                       "data_source": "metrics",
-                      "name": "query6",
-                      "query": "avg:http.server.request.duration{$service,$env}"
-                    },
-                    {
-                      "data_source": "metrics",
-                      "name": "query2",
-                      "query": "avg:apollo.router.compute_jobs.duration{$service,$env}"
-                    },
-                    {
-                      "data_source": "metrics",
-                      "name": "query5",
-                      "query": "avg:apollo.router.operations.coprocessor.duration{$service,$env}"
-                    },
-                    {
-                      "data_source": "metrics",
                       "name": "query4",
-                      "query": "avg:http.client.request.duration{$service,$env}"
-                    },
-                    {
-                      "data_source": "metrics",
-                      "name": "query3",
-                      "query": "count:http.server.request.duration{$service,$env}.as_rate()"
+                      "query": "avg:apollo.router.overhead{$service,$env , subgraph.active_requests:true}"
                     }
                   ],
                   "formulas": [
                     {
-                      "alias": "health score",
-                      "formula": "((query6 - query2 - query5 - query4) * pow(10, 5)) / query3"
+                      "formula": "query4",
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "second"
+                        }
+                      }
                     }
                   ],
                   "style": {
@@ -4706,12 +4828,12 @@
             "id": 3032109276671033,
             "definition": {
               "type": "note",
-              "content": "This graph measures the average delta between your runtime's request duration and the duration spent in compute jobs, coprocessors, and subgraph requests, normalized against your incoming request rate. This is a fuzzy metric intended to provide a birds-eye view of your runtime's overall performance health that can identify trends and potential regressions in any one of the above components.\n\nThe exponential function in this chart needs to be manually configured to provide a useful numeric value based on your overall request rate. Ideally you should set the exponent such that the metric produces a value with at least one whole number of precision.\n\nChanges in this metric should be considered only over large time windows (multiple weeks, at minimum), and treated as a suggestion to investigate other dependent metrics. Trends are not necessarily direct cause for concern if those measured values remain within acceptable bounds.",
-              "background_color": "gray",
+              "content": "This metric tracks the time the router spends on tasks other than waiting for downstream HTTP requests. It is filtered to `subgraph.active_requests: true` to capture overhead time spent only while requests are outstanding.\n\nThe overhead calculation excludes time spent waiting for downstream HTTP services (subgraphs and connectors), giving you visibility into the router's actual processing time versus downstream latency. This metric helps identify when the router itself is a bottleneck versus when delays are caused by downstream services.\n\nFor considerations and common questions, [the documentation](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/standard-instruments#important-considerations) provides further reference.",
+              "background_color": "white",
               "font_size": "12",
               "text_align": "left",
-              "vertical_align": "center",
-              "show_tick": true,
+              "vertical_align": "top",
+              "show_tick": false,
               "tick_pos": "50%",
               "tick_edge": "top",
               "has_padding": true
@@ -4727,7 +4849,7 @@
       },
       "layout": {
         "x": 0,
-        "y": 168,
+        "y": 174,
         "width": 12,
         "height": 15
       }
