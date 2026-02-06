@@ -55,7 +55,7 @@
         "content": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from router\n-   If your organization has control over all clients of your supergraph:\n    -   alert on increases in 4xx responses indicating a potential misconfiguration of one or more clients.\n    -   alert on increases in GraphQL errors indicating bad queries from one or more clients.\n-   Reliability SLO: ≥99.9% of Router responses should be 2xx and without error.\n-   Metric health: unexpected zero or missing metrics indicate a potential networking or telemetry misconfiguration\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You're likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -141,7 +141,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -245,7 +245,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -287,7 +287,7 @@
         "content": "This chart shows the volume of requests Apollo Router is handling over time, broken down by status code.\n\n**What to look for**\n\n- Are most requests successful (`2xx`)?\n- Are clients misbehaving (`4xx`)?\n- Is the router or a subgraph failing (`5xx`)?\n\n**Why it matters**\n\n- An increase in `4xx` errors may indicate client bugs or attempts to invoke deprecated queries.\n- A spike in `5xx` errors likely indicates that something is broken downstream.\n- Changes in total volume may reflect traffic surges or outages.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -312,7 +312,7 @@
         "content": "This chart shows requests per second (RPS) hitting the Apollo Router. This is your clearest view into how much work the Router is doing right now.\n\n**What to look for**\n\n- A sudden drop may indicate client outages or configuration errors.\n- A flat line during known busy periods may indicate that you are hitting throttling limits.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -401,7 +401,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -504,7 +504,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -546,7 +546,7 @@
         "content": "This chart shows the total error rate percentage of requests handled by the Router. It includes GraphQL errors (e.g., validation failures, resolver exceptions) and HTTP 5xx responses (typically indicating internal or subgraph infrastructure issues). The formula adds these two failure categories together and divides by the total request count, giving a single view into how often requests fail from the client's perspective.\n\n**What to look for**\n\n- Spikes in error rate — especially following deploys or traffic increases.\n- Sustained error rates above 1–2% — which may indicate regressions or uncaught edge cases.\n- Increased 5xx errors without corresponding GraphQL errors — this may point to subgraph crashes or timeouts.\n- Silent drops in traffic — if error rate decreases while request volume drops, it could signal issues upstream (e.g., client timeouts or DNS problems).\n\n**Why it matters**\n\n- Reliability tracking — errors reflect user-facing failures and service health.\n- Incident detection — elevated error rates can signal broken schemas, subgraph failures, or deploy issues.\n- SLO compliance — helps teams track whether reliability objectives (like <1% error rate) are being met.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -571,7 +571,7 @@
         "content": "This chart shows GraphQL errors returned by the Router, grouped by query operation name. These errors are captured at the router level using the `http.server.request.duration` metric with the `graphql.errors` attribute.\n\n**What to look for**\n\n- Which operations are generating the most errors\n- Error patterns by operation name to identify problematic queries\n- Trends in error rates for specific operations\n\n**Why it matters**\n\n- These are requests that returned a 2xx HTTP response, but contained errors within the GraphQL response body.\n- Identifying error-prone operations helps prioritize fixes and understand client or subgraph issues.\n- Monitoring error rates by operation can help detect regressions in specific queries.\n\n**Caveats**\n\n- This chart shows router-level GraphQL errors, which may originate from subgraph resolvers or validation failures.\n- Requires the router to be configured with `graphql.operation.name` and `graphql.errors` attributes on the `http.server.request.duration` instrument.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -671,7 +671,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -708,6 +708,109 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 32
+      },
+      "id": 82,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.0-21490573584",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sum(apollo_router_opened_subscriptions{otel_scope_name=\"$otel_scope_name\"}) by (graphql_operation_name)",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "{{graphql_operation_name}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Open Subscriptions by Operation",
+      "type": "timeseries"
+    },
+    {
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -728,7 +831,160 @@
         "content": "This chart shows the size of incoming HTTP request bodies, highlighting the largest payloads seen.\n\n**What to look for**\n\n- A stable `p99` suggests consistent request sizes.\n- Occasional `max` spikes are okay — frequent ones may require investigation.\n- Rising trends could signal a client change or growing inefficiency.\n\n**Why it matters**\n\n- `p99` — shows typical large requests.\n- `max` — shows the absolute biggest, helpful for spotting outliers.\n- Large payloads can increase parsing/validation time.\n- Large payloads can cause memory pressure or latency spikes.\n- Large payloads can indicate misuse (e.g., file uploads, bloated mutations).\n\n**Caveats**\n\n- Doesn't reflect query complexity — a small body can still be expensive.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
+      "title": "",
+      "type": "text"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 12,
+        "y": 40
+      },
+      "id": 83,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "This chart shows the number of different opened subscriptions on the router by operation.\n\n**What to look for**\n\n- If you [limit your number of open connections](https://www.apollographql.com/docs/graphos/routing/operations/subscriptions/configuration#limiting-the-number-of-client-connections), ensure the total sum is not approaching or staying at that limit, as it will cause client rejections.\n- A high number of subscriptions for the same operation suggests that client requests could potentially be adjusted to better make use of [deduplication](https://www.apollographql.com/docs/graphos/routing/operations/subscriptions/configuration#subscription-deduplication).\n\n**Why it matters**\n\n- Subscriptions are long-lived HTTP connections so you want to ensure they are not holding too many resources open on your router.\n\n**Caveats**\n\n- If multiple clients are listening to the same subscription, that will be deduplicated into a single subscription on the router side and will only show as a single count on this chart.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "12.4.0-21490573584",
+      "title": "",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 43
+      },
+      "id": 84,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.0-21490573584",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "expr": "sum(rate(apollo_router_skipped_event_count_total{otel_scope_name=\"$otel_scope_name\"}[$__rate_interval]))",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "legendFormat": "Dropped Events",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Dropped Subscription Events",
+      "type": "timeseries"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 12,
+        "x": 0,
+        "y": 51
+      },
+      "id": 85,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "This chart shows the number of subscription events dropped because too many events were received from the subgraph without being sent to the client(s).\n\n**What to look for**\n\n- Regular non-zero values in this chart indicate backpressure being relieved by the router.\n\n**Why it matters**\n\n- This metric indicates that the relationship between clients and the subgraphs producing the subscription data is not aligned in performance. Either subgraphs are over-producing values or clients are under-consuming them.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -738,7 +994,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 54
       },
       "id": 14,
       "panels": [],
@@ -754,7 +1010,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 55
       },
       "id": 15,
       "options": {
@@ -766,7 +1022,7 @@
         "content": "**Apollo Router Latency Overview**\n\nApollo Router routes incoming GraphQL requests to subgraphs, handles query planning, and coordinates responses. Latency here reflects the total time the Router takes to process and respond to an HTTP request, including:\n\n-   Parsing and validating the GraphQL query\n-   Calling subgraphs\n-   Merging responses, handling errors, and formatting results\n-   Any middleware or plugin logic you've added\n\nIf your latency rises, the cause could be the Router itself, one or more subgraphs, or custom logic you've installed.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -812,7 +1068,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 48
+        "y": 59
       },
       "id": 16,
       "options": {
@@ -832,7 +1088,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -915,7 +1171,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 48
+        "y": 59
       },
       "id": 17,
       "options": {
@@ -935,7 +1191,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -1025,7 +1281,7 @@
         "h": 3,
         "w": 12,
         "x": 0,
-        "y": 56
+        "y": 67
       },
       "id": 18,
       "options": {
@@ -1037,7 +1293,7 @@
         "content": "This chart shows the distribution of request durations for the Apollo Router using the [http.server.request.duration](https://opentelemetry.io/docs/specs/semconv/http/http-metrics/#metric-httpserverrequestduration) metric.\n\n**What to look for**\n\n- Sudden shifts in duration patterns — may indicate changes in backend performance.\n- Long tail durations — can point to slow queries or infrastructure issues.\n\n**Why it matters**\n\n- Understanding latency helps identify bottlenecks and improve user experience.\n- Monitoring duration trends assists in detecting regressions early.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -1050,7 +1306,7 @@
         "h": 3,
         "w": 12,
         "x": 12,
-        "y": 56
+        "y": 67
       },
       "id": 19,
       "options": {
@@ -1062,7 +1318,7 @@
         "content": "**How to interpret percentiles**\n\n- p90 / p95 — these percentiles represent the upper range of typical request latencies. If these values rise, it generally means a significant portion of requests are experiencing slower responses. Possible causes include:\n\n  - A subgraph is responding more slowly than usual (e.g., due to load or inefficiency)\n  - The Router's query planning step is taking longer (especially with complex or highly federated queries)\n  - Overall increased load causing processing delays\n\n- p99 — this is a tail latency metric that reflects the slowest 1% of requests. Spikes here often indicate rare but impactful delays, such as:\n\n  - Intermittent subgraph performance issues or temporary timeouts\n  - Specific heavy or complex queries that take much longer to plan or execute\n  - Unusual overhead in middleware or Router internals affecting some requests\n\n- Max — the absolute slowest observed request during the timeframe. Isolated high max values are usually less concerning (e.g., caused by a single unusual request). However, frequent or sustained high max latencies may point to:\n\n  - Clients issuing extremely large or repeated queries causing resource exhaustion or retries\n  - Transient infrastructure problems (network issues, DNS delays, resource contention)\n\n- Min — represents the fastest possible response from the Router. A surprisingly high minimum usually reflects baseline overhead within the Router itself — such as:\n\n  - Middleware or plugin execution time\n  - Query parsing, validation, or planning\n  - Routing logic that's inherently non-negligible\n\n**Caveats**\n\n- Low request volumes can skew percentiles; a single slow request distorts p99 or max.\n- Slow subgraphs inflate Router latency here—this chart shows total request time, not internal breakdowns.\n- Latency spikes without load increase may point to network hiccups, subgraph cold starts, or cloud platform noise outside the Router's control.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -1072,7 +1328,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 59
+        "y": 70
       },
       "id": 20,
       "panels": [],
@@ -1088,7 +1344,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 60
+        "y": 71
       },
       "id": 21,
       "options": {
@@ -1100,7 +1356,7 @@
         "content": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in errors or latency from any subgraph or connector source.\n-   Reliability SLO: ≥99.9% of Router→backend requests should be successful and without error.\n-   **Note:** HTTP status codes are not available as attributes on subgraph client metrics. Monitor subgraph health through latency, throughput, and error rates from router-level metrics.\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You're likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -1166,7 +1422,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 66
+        "y": 77
       },
       "id": 22,
       "options": {
@@ -1186,7 +1442,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -1269,7 +1525,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 66
+        "y": 77
       },
       "id": 23,
       "options": {
@@ -1289,7 +1545,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -1372,7 +1628,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 74
+        "y": 85
       },
       "id": 41,
       "options": {
@@ -1393,7 +1649,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -1476,7 +1732,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 74
+        "y": 85
       },
       "id": 43,
       "options": {
@@ -1496,7 +1752,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -1526,7 +1782,7 @@
         "h": 3,
         "w": 12,
         "x": 0,
-        "y": 82
+        "y": 93
       },
       "id": 42,
       "options": {
@@ -1538,7 +1794,7 @@
         "content": "This chart focuses specifically on non-successful (non-2xx) responses from subgraphs and connector sources — grouped by subgraph and status code.\n\n**What to look for**\n\n- Common causes of 4xx:\n  - Schema mismatch between subgraph and Supergraph (e.g., schema drift)\n  - Misconfigured connector specifications\n  - Missing auth headers or invalid inputs\n- Common causes of 5xx:\n  - Crashes, timeouts, or errors in a subgraph or connector source's logic\n- How this impacts Router performance:\n  - Frequent 5xxs inflate latency as the Router retries or collects error details.\n  - Repeated 4xxs may be harmless but still consume Router resources and can signal client or schema issues.\n- Pro tip — if a subgraph or connector source frequently appears here, coordinate with its owning team to investigate error logs or validate schema compatibility.\n\n**Why it matters**\n\n- These are the requests that failed, either due to config errors (4xx) or server-side issues (5xx).\n- The Router isn't failing — it's forwarding a query that the subgraph can't fulfill.\n\n**Caveats**\n\n- You might see `N/A` as a status code. This means that a request was made but a response was not received.\n- **Note:** HTTP status codes may not be available as attributes on subgraph client metrics depending on your OpenTelemetry configuration. If this chart shows no data, verify that `http_response_status_code` is being exported as a label on the `http_client_request_duration_seconds` metric.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -1551,7 +1807,7 @@
         "h": 3,
         "w": 12,
         "x": 12,
-        "y": 82
+        "y": 93
       },
       "id": 44,
       "options": {
@@ -1563,7 +1819,7 @@
         "content": "This chart shows GraphQL errors returned by subgraphs, grouped by subgraph name. These errors are captured at the router level using the `http.client.request.duration` metric with the `graphql.errors` attribute.\n\n**What to look for**\n\n- Sudden spikes in errors for a specific subgraph\n- Which subgraphs are generating the most errors\n- Error patterns by subgraph to identify problematic backends\n- Trends in error rates for specific subgraphs\n\n**Why it matters**\n\n- GraphQL errors are surfaced in the response body in the `errors` array. If a request encounters a GraphQL error, the overall response still returns a `200 OK`. Looking at errors by subgraph can help highlight response degradation when individual subgraphs encounter elevated error rates.\n- Identifying error-prone subgraphs helps prioritize fixes and coordinate with backend teams.\n- Monitoring error rates by subgraph can help detect regressions in specific backends.\n\n**Caveats**\n\n- This chart shows router-level GraphQL errors from subgraph responses, which may originate from subgraph resolvers or validation failures.\n- Requires the router to be configured with `subgraph.name` and `graphql.errors` attributes on the `http.client.request.duration` instrument.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -1573,7 +1829,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 85
+        "y": 96
       },
       "id": 25,
       "panels": [],
@@ -1589,7 +1845,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 86
+        "y": 97
       },
       "id": 26,
       "options": {
@@ -1601,7 +1857,7 @@
         "content": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on P95 latency exceeding thresholds for critical subgraphs and operations.\n-   Latency SLO (For High-Throughput): P95 Router → Subgraph latency should remain under 300ms\n-   Latency SLO (For Moderate-Throughput): Set threshold to (current P95 for the last week + 20%). This allows for natural variability while detecting regressions.\n\n**Charts in this section:**\n\n- **P95 Latency by Subgraph** - Shows the 95th percentile latency for requests from the Router to each subgraph, helping identify which subgraphs are contributing to slow responses.\n- **P95 Latency By Operation Name** - Shows the 95th percentile latency for router-level requests grouped by GraphQL operation name, helping identify which operations are experiencing the highest latencies.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -1667,7 +1923,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 89
+        "y": 100
       },
       "id": 27,
       "options": {
@@ -1688,7 +1944,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -1771,7 +2027,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 89
+        "y": 100
       },
       "id": 28,
       "options": {
@@ -1791,7 +2047,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -1854,7 +2110,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 97
+        "y": 108
       },
       "id": 45,
       "options": {
@@ -1874,7 +2130,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -1904,7 +2160,7 @@
         "h": 3,
         "w": 12,
         "x": 0,
-        "y": 105
+        "y": 116
       },
       "id": 46,
       "options": {
@@ -1916,7 +2172,7 @@
         "content": "This chart shows the distribution of backend request durations over time. It helps identify how long most requests take and highlights the presence of any outliers or tail latency issues.\n\n**What to look for**\n\n- A tight cluster around low durations suggests fast, consistent subgraph responses.\n- A long tail or spread to the right may indicate occasional slowness or outliers.\n- Sudden shape changes over time can highlight new regressions, changes in traffic, or schema changes.\n\n**Why it matters**\n\n- Understanding the distribution helps identify bottlenecks and improve user experience.\n- Monitoring duration trends assists in detecting regressions early.\n- The histogram view provides a different perspective than percentile charts, showing the full shape of latency distribution.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -1926,7 +2182,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 108
+        "y": 119
       },
       "id": 49,
       "panels": [],
@@ -1942,7 +2198,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 109
+        "y": 120
       },
       "id": 50,
       "options": {
@@ -1954,7 +2210,7 @@
         "content": "This section shows request duration distributions for the top most queried subgraphs. Each histogram displays the distribution of request latencies for a specific subgraph, helping you identify which subgraphs have the most traffic and how their latency patterns differ.\n\n**What to look for**\n\n- Subgraphs with wide distributions (high variance) may indicate inconsistent performance\n- Subgraphs with long tails (extending to the right) may have occasional slow requests\n- Comparing distributions across subgraphs helps identify which ones contribute most to overall latency\n\n**Why it matters**\n\n- Understanding latency distributions per subgraph helps prioritize optimization efforts\n- Identifying subgraphs with problematic latency patterns can guide capacity planning\n- These distributions complement percentile metrics by showing the full shape of latency data",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -2000,7 +2256,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 112
+        "y": 123
       },
       "id": 51,
       "options": {
@@ -2020,7 +2276,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -2047,7 +2303,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 120
+        "y": 131
       },
       "id": 52,
       "panels": [],
@@ -2063,7 +2319,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 121
+        "y": 132
       },
       "id": 53,
       "options": {
@@ -2075,7 +2331,7 @@
         "content": "This section shows request duration distributions for connector sources (REST APIs, databases, etc. accessed via Apollo Connectors). Each histogram displays the distribution of request latencies for a specific connector source, helping you identify which connector sources have the most traffic and how their latency patterns differ.\n\n**What to look for**\n\n- Connector sources with wide distributions (high variance) may indicate inconsistent performance\n- Connector sources with long tails (extending to the right) may have occasional slow requests\n- Comparing distributions across connector sources helps identify which ones contribute most to overall latency\n\n**Why it matters**\n\n- Understanding latency distributions per connector source helps prioritize optimization efforts\n- Identifying connector sources with problematic latency patterns can guide capacity planning or connector configuration adjustments\n- These distributions complement percentile metrics by showing the full shape of latency data\n\n**Caveats**\n\n- This chart filters for requests where `subgraph_name` is empty, which identifies connector source requests (non-subgraph backend requests)\n- The query will automatically group by any available connector source labels (e.g., `connector_source_name`, `connector_source`, `source`) if present\n- If no connector source labels are present, all connector requests will be shown together\n- **If you see \"No histogram found in response\":**\n  - Verify that connector sources are configured and being used in your Apollo Router\n  - Check that requests to connector sources are being made (this section only shows data when connector sources are actively being queried)\n  - If connector sources exist but use different label names, you may need to adjust the `legendFormat` to match your label names\n  - Try running this query directly in Prometheus to see what labels are available: `http_client_request_duration_seconds_bucket{otel_scope_name=\"apollo/router\",subgraph_name=\"\"}`",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -2121,7 +2377,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 124
+        "y": 135
       },
       "id": 54,
       "options": {
@@ -2141,7 +2397,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -2168,7 +2424,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 132
+        "y": 143
       },
       "id": 29,
       "panels": [],
@@ -2184,7 +2440,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 133
+        "y": 144
       },
       "id": 30,
       "options": {
@@ -2196,7 +2452,7 @@
         "content": "The query planner is the heart of the runtime's computational efforts. This is where a request to your supergraph is translated into an invocation plan for the appropriate underlying subgraphs. Its performance will be very closely correlated to your supergraph schema and request characteristics, and will be the other determining factor in your response times beyond the subgraphs themselves.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -2262,7 +2518,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 136
+        "y": 147
       },
       "id": 31,
       "options": {
@@ -2282,7 +2538,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -2425,7 +2681,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 136
+        "y": 147
       },
       "id": 32,
       "options": {
@@ -2445,7 +2701,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -2543,7 +2799,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 144
+        "y": 155
       },
       "id": 61,
       "options": {
@@ -2563,7 +2819,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -2691,7 +2947,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 152
+        "y": 163
       },
       "id": 62,
       "options": {
@@ -2711,7 +2967,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -2839,7 +3095,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 160
+        "y": 171
       },
       "id": 63,
       "options": {
@@ -2861,7 +3117,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -2944,7 +3200,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 168
+        "y": 179
       },
       "id": 64,
       "options": {
@@ -2964,7 +3220,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -2991,7 +3247,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 176
+        "y": 187
       },
       "id": 33,
       "panels": [],
@@ -3007,7 +3263,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 177
+        "y": 188
       },
       "id": 34,
       "options": {
@@ -3019,7 +3275,7 @@
         "content": "Whenever your router receives an incoming GraphQL operation, it generates a [query plan](https://www.apollographql.com/docs/federation/query-plans/) to determine which subgraphs it needs to query to resolve that operation. By caching previously generated query plans, your router can — skip — generating them — again — if a client later sends the exact same operation. This improves your router's responsiveness.\n\nMonitoring your caching provides insights into both how normal your traffic is and how well your router is able to serve those requests. Your ideal cache performance and hit rates will vary depending on your expected traffic patterns. With the in-memory cache, it will be common to see spikes of cache misses and changes in cache size when new instances are deployed, new schemas are deployed, or new config versions are deployed. During this time, the cache will be evicted and re-warmed up.\n\nThese charts are pre-populated with event overlays for schema reloads and query plan warmup events. Schema reloads will accompany an expected drop in cache record count and a spike in cache miss rate as unusable cache records are evicted. [Cache warmups](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory#cache-warm-up) will accompany a period of cache misses as new plans are deliberately hit to prime them into the cache. The router does not serve traffic on the new schema until after that precompute warmup has completed.\n\nFor context on what's cached and why, review the in-memory caching [documentation](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory) before interpreting the charts below.\n\n**Caveats**\n\n- These metrics assume that you are running an in-memory cache on your Router.\n- If you are using Redis for distributed caching, you will want to monitor that separately [via Datadog's agent](https://docs.datadoghq.com/integrations/redisdb/?tab=host).\n- If you are using Entity Caching, [separate metrics will be available](https://www.apollographql.com/docs/graphos/routing/performance/caching/entity#observability) to monitor the performance of that feature.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -3085,7 +3341,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 183
+        "y": 194
       },
       "id": 47,
       "options": {
@@ -3105,7 +3361,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -3190,7 +3446,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 183
+        "y": 194
       },
       "id": 59,
       "options": {
@@ -3210,7 +3466,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -3240,7 +3496,7 @@
         "h": 5,
         "w": 12,
         "x": 0,
-        "y": 191
+        "y": 202
       },
       "id": 48,
       "options": {
@@ -3252,7 +3508,7 @@
         "content": "This chart breaks down the number of records in the cache of each of your runtime instances.\n\n**What to look for**\n\n- An instance or instances that have an anomalous count of records without a corresponding deployment or schema change\n- An instance or instances that are growing at a different rate than the others without a corresponding deployment\n\n**Why it matters**\n\n- If your traffic isn't well-distributed across your instances, some caches will lag behind in growth rate\n- If you have an instance go into an unhealthy state, you may see the anomaly represented here\n\n**Caveats**\n\nGrouping by `instance` may need to be adjusted based on your Prometheus configuration. If you use Kubernetes, you may want to group by `pod` or `container` labels instead. Update the group-by fields in the query to whatever works best in your environment for accurate results.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -3265,7 +3521,7 @@
         "h": 5,
         "w": 12,
         "x": 12,
-        "y": 191
+        "y": 202
       },
       "id": 60,
       "options": {
@@ -3277,7 +3533,7 @@
         "content": "This chart shows cache hit rate broken down by each individual running instance of your runtime.\n\n**What to look for**\n\n- Instances with significantly lower hit rates than others may indicate:\n  - Uneven traffic distribution\n  - Instance-specific issues (memory pressure, configuration differences)\n  - New instances that haven't warmed up their cache yet\n- Consistent hit rates across instances suggest healthy cache performance\n\n**Why it matters**\n\n- When diagnosing issues with aggregate cache hit percentage, seeing the breakdown at the instance level provides finer detail\n- Helps identify if cache performance issues are affecting all instances or just specific ones\n- Useful for correlating cache performance with instance health or deployment events\n\n**Caveats**\n\n- Grouping by `instance` may need to be adjusted based on your Prometheus configuration\n- If you use Kubernetes, you may want to group by `pod` or `container` labels instead\n- Update the group-by fields in the query to whatever works best in your environment for accurate results",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -3343,7 +3599,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 196
+        "y": 207
       },
       "id": 55,
       "options": {
@@ -3363,7 +3619,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -3385,6 +3641,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3445,7 +3705,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 196
+        "y": 207
       },
       "id": 57,
       "options": {
@@ -3465,7 +3725,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -3495,7 +3755,7 @@
         "h": 5,
         "w": 12,
         "x": 0,
-        "y": 204
+        "y": 215
       },
       "id": 56,
       "options": {
@@ -3507,7 +3767,7 @@
         "content": "This chart breaks down the number of records in the cache by cache type (kind) and storage backend.\n\n**What to look for**\n\n- Different cache types (kinds: `apq`, `query planner`, `introspection`) may have different growth patterns\n- Different storage backends (`memory`, `redis`) may show different cache sizes\n- Anomalous growth in a specific cache type may indicate unusual traffic patterns\n\n**Why it matters**\n\n- Understanding which cache types are consuming the most memory helps with capacity planning\n- Tracking cache growth by type helps identify if certain query patterns are causing cache bloat\n- Comparing memory vs Redis cache sizes helps understand cache distribution across storage backends\n\n**Caveats**\n\n- The `kind` and `storage` labels must be present on the `apollo_router_cache_size` metric for this chart to show meaningful data\n- According to Apollo Router documentation, cache metrics include `kind` and `storage` attributes, but not `version`\n- If these labels are not available, the chart may show all records grouped together or no data",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -3520,7 +3780,7 @@
         "h": 5,
         "w": 12,
         "x": 12,
-        "y": 204
+        "y": 215
       },
       "id": 58,
       "options": {
@@ -3532,7 +3792,7 @@
         "content": "This chart shows cache misses broken down by cache type (kind) and storage backend.\n\n**What to look for**\n\n- Different cache types (`apq`, `query planner`, `introspection`) may have different miss patterns\n- Spikes in misses for a specific cache type may indicate:\n  - Schema changes causing cache invalidation\n  - New query patterns that aren't being cached\n  - Cache eviction due to size limits\n- Comparing miss rates across storage backends (`memory` vs `redis`) helps understand cache distribution\n\n**Why it matters**\n\n- High miss rates mean the cache isn't effectively serving requests, leading to increased query planning overhead\n- Identifying which cache types have the most misses helps prioritize optimization efforts\n- Tracking miss patterns by type helps correlate cache performance with schema deployments or traffic changes\n\n**Caveats**\n\n- The `kind` and `storage` labels must be present on the `apollo_router_cache_miss_time_count` metric for this chart to show meaningful breakdown\n- According to Apollo Router documentation, cache metrics include `kind` and `storage` attributes\n- If these labels are not available, the chart may show all misses grouped together",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -3627,7 +3887,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 209
+        "y": 220
       },
       "id": 35,
       "options": {
@@ -3647,7 +3907,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -3704,7 +3964,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 217
+        "y": 228
       },
       "id": 36,
       "panels": [],
@@ -3720,7 +3980,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 218
+        "y": 229
       },
       "id": 37,
       "options": {
@@ -3732,7 +3992,7 @@
         "content": "If you incorporate [coprocessors](https://www.apollographql.com/docs/graphos/routing/customization/coprocessor) into your runtime, these metrics will be emitted. They indicate basic health and performance impact of the coprocessors on your request lifecycle. In order to correlate any issues Apollo highly recommends you add your own instrumentation to this section to include any health and performance metrics specific to the coprocessors you run and their own request lifecycle.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -3798,7 +4058,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 221
+        "y": 232
       },
       "id": 38,
       "options": {
@@ -3818,7 +4078,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -3903,7 +4163,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 221
+        "y": 232
       },
       "id": 40,
       "options": {
@@ -3923,7 +4183,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -4006,7 +4266,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 229
+        "y": 240
       },
       "id": 39,
       "options": {
@@ -4026,7 +4286,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -4053,7 +4313,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 230
+        "y": 248
       },
       "id": 65,
       "panels": [],
@@ -4069,7 +4329,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 231
+        "y": 249
       },
       "id": 66,
       "options": {
@@ -4081,7 +4341,7 @@
         "content": "Monitoring the resource consumption of your execution environment is essential to ensuring that your runtime can perform as desired.\n\nApollo recommends monitoring for and ensuring that your average CPU usage does not exceed 80% load, to leave available overhead for expensive spikes such as schema reloads. You may also find it useful to break out your charts by instance or pod name to identify individually misbehaving instances.\n\n**Note:** These panels use Kubernetes container metrics from cAdvisor. Adjust the label selectors (e.g., `container_name`, `pod`, `namespace`) to match your specific deployment configuration.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -4135,7 +4395,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               },
               {
                 "color": "yellow",
@@ -4155,7 +4415,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 234
+        "y": 252
       },
       "id": 67,
       "options": {
@@ -4176,7 +4436,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -4262,7 +4522,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -4274,7 +4534,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 242
+        "y": 260
       },
       "id": 68,
       "options": {
@@ -4295,7 +4555,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -4381,7 +4641,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -4393,7 +4653,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 250
+        "y": 268
       },
       "id": 69,
       "options": {
@@ -4413,7 +4673,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -4529,7 +4789,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -4541,7 +4801,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 258
+        "y": 276
       },
       "id": 80,
       "options": {
@@ -4562,7 +4822,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -4678,7 +4938,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -4690,7 +4950,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 266
+        "y": 284
       },
       "id": 70,
       "options": {
@@ -4711,7 +4971,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -4812,7 +5072,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -4824,7 +5084,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 274
+        "y": 292
       },
       "id": 81,
       "options": {
@@ -4845,7 +5105,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -4902,7 +5162,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 282
+        "y": 300
       },
       "id": 71,
       "panels": [],
@@ -4918,7 +5178,7 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 283
+        "y": 301
       },
       "id": 72,
       "options": {
@@ -4930,7 +5190,7 @@
         "content": "This section is a collection of assorted metrics that do not provide directly actionable data, but still may be useful as sentinel values to help diagnose problems occurring in other charts.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -4984,7 +5244,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -4996,7 +5256,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 286
+        "y": 304
       },
       "id": 73,
       "options": {
@@ -5017,7 +5277,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -5103,7 +5363,7 @@
             "steps": [
               {
                 "color": "green",
-                "value": null
+                "value": 0
               }
             ]
           },
@@ -5115,7 +5375,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 286
+        "y": 304
       },
       "id": 74,
       "options": {
@@ -5135,7 +5395,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -5165,7 +5425,7 @@
         "h": 3,
         "w": 12,
         "x": 0,
-        "y": 294
+        "y": 312
       },
       "id": 75,
       "options": {
@@ -5177,7 +5437,7 @@
         "content": "[Uplink is used to retrieve your GraphOS license (where applicable) and published schemas from Apollo](https://www.apollographql.com/docs/graphos/routing/uplink). If Uplink has an outage or incident, your license or schema pulls may fail, and this metric can give you a warning when that is the reason.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -5190,7 +5450,7 @@
         "h": 3,
         "w": 12,
         "x": 12,
-        "y": 294
+        "y": 312
       },
       "id": 76,
       "options": {
@@ -5202,7 +5462,7 @@
         "content": "This graph can help you track the rollout of schema changes across your fleet as a supplemental indicator beyond the query planning cache metrics. Apollo recommends adding markers for new deployments based on your CI system's integration with Grafana where appropriate so that you can correlate those with any incidents as well.\n\nTo learn more about launches and what constitutes a new one, see [the documentation](https://www.apollographql.com/docs/graphos/platform/schema-management/delivery/launch).",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     },
@@ -5260,7 +5520,7 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "s"
         },
         "overrides": []
       },
@@ -5268,7 +5528,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 297
+        "y": 315
       },
       "id": 77,
       "options": {
@@ -5281,7 +5541,7 @@
           ],
           "displayMode": "table",
           "placement": "right",
-          "showLegend": false
+          "showLegend": true
         },
         "tooltip": {
           "hideZeros": false,
@@ -5289,7 +5549,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "targets": [
         {
           "datasource": {
@@ -5298,16 +5558,16 @@
           },
           "disableTextWrap": false,
           "editorMode": "code",
-          "expr": "((sum(rate(http_server_request_duration_seconds_sum{otel_scope_name=\"$otel_scope_name\"}[$__rate_interval])) / sum(rate(http_server_request_duration_seconds_count{otel_scope_name=\"$otel_scope_name\"}[$__rate_interval])) - ((sum(rate(apollo_router_compute_jobs_duration_seconds_sum{otel_scope_name=\"$otel_scope_name\"}[$__rate_interval])) / sum(rate(apollo_router_compute_jobs_duration_seconds_count{otel_scope_name=\"$otel_scope_name\"}[$__rate_interval])) or vector(0)) - ((sum(rate(apollo_router_operations_coprocessor_duration_seconds_sum{otel_scope_name=\"$otel_scope_name\"}[$__rate_interval])) / sum(rate(apollo_router_operations_coprocessor_duration_seconds_count{otel_scope_name=\"$otel_scope_name\"}[$__rate_interval])) or vector(0)) - ((sum(rate(http_client_request_duration_seconds_sum{otel_scope_name=\"$otel_scope_name\"}[$__rate_interval])) / sum(rate(http_client_request_duration_seconds_count{otel_scope_name=\"$otel_scope_name\"}[$__rate_interval])) or vector(0))))) * 100000) / (sum(rate(http_server_request_duration_seconds_count{otel_scope_name=\"$otel_scope_name\"}[$__rate_interval])) or vector(1)))",
+          "expr": "avg(apollo_router_overhead_seconds{otel_scope_name=\"$otel_scope_name\", subgraph_active_requests=\"true\"})",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
-          "legendFormat": "health score",
+          "legendFormat": "overhead",
           "range": true,
           "refId": "A",
           "useBackend": false
         }
       ],
-      "title": "Router Relative Overhead",
+      "title": "Router Overhead",
       "type": "timeseries"
     },
     {
@@ -5319,7 +5579,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 305
+        "y": 323
       },
       "id": 78,
       "options": {
@@ -5328,10 +5588,10 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "This graph measures the average delta between your runtime's request duration and the duration spent in compute jobs, coprocessors, and subgraph requests, normalized against your incoming request rate. This is a fuzzy metric intended to provide a birds-eye view of your runtime's overall performance health that can identify trends and potential regressions in any one of the above components.\n\nThe exponential function in this chart needs to be manually configured to provide a useful numeric value based on your overall request rate. Ideally you should set the exponent such that the metric produces a value with at least one whole number of precision.\n\nChanges in this metric should be considered only over large time windows (multiple weeks, at minimum), and treated as a suggestion to investigate other dependent metrics. Trends are not necessarily direct cause for concern if those measured values remain within acceptable bounds.\n\n**Note:** If no data appears, verify that all required metrics are available:\n- `http_server_request_duration_seconds`\n- `apollo_router_compute_jobs_duration_seconds`\n- `apollo_router_operations_coprocessor_duration_seconds` (may be empty if no coprocessors)\n- `http_client_request_duration_seconds`",
+        "content": "This metric tracks the time the router spends on tasks other than waiting for downstream HTTP requests. It is filtered to `subgraph_active_requests: true` to capture overhead time spent only while requests are outstanding.\n\nThe overhead calculation excludes time spent waiting for downstream HTTP services (subgraphs and connectors), giving you visibility into the router's actual processing time versus downstream latency. This metric helps identify when the router itself is a bottleneck versus when delays are caused by downstream services.\n\nFor considerations and common questions, [the documentation](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/standard-instruments#important-considerations) provides further reference.",
         "mode": "markdown"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.4.0-21490573584",
       "title": "",
       "type": "text"
     }
