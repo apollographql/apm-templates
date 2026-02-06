@@ -5,7 +5,7 @@
 
 ![example dashboard preview](./dashboard-preview.png)
 
-This repository contains a [JSON file](./dashboard-template.json.json) containing an example
+This repository contains a [JSON file](./dashboard-template.json) containing an example
 [Grafana](https://grafana.com/oss/grafana/) dashboard for reference or use with the Apollo Router.
 
 **The code in this repository is experimental and has been provided for reference purposes only.
