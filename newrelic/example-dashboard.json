@@ -20,7 +20,7 @@
                         "id": "viz.markdown"
                     },
                     "rawConfiguration": {
-                        "text": "# GraphOS Runtime Dashboard Template\n\nThis dashboard provides comprehensive monitoring for your Apollo GraphOS Router deployment.\n\n**Feature Set:**\n- Full infrastructure monitoring (CPU, memory, system resources)\n- Request/Response body size monitoring\n- Non-2xx error isolation and analysis\n- Comprehensive SLO recommendations and alert guidelines\n- Sentinel Metrics for health tracking\n- Enhanced caching metrics and query planning insights\n- Compute jobs monitoring\n- Connector source support\n- P99 latency tracking\n- Extensive documentation and best practices throughout\n\n**Dashboard Organization:**\n1. **Overview**: High-level health metrics\n2. **Infrastructure**: CPU, memory, and system resources  \n3. **Sentinel Metrics**: SLOs, health scores, and alert recommendations\n4. **Request Characteristics**: Body sizes and error patterns\n5. **Request Performance**: Detailed breakdown by subgraph, operation, and connector\n6. **Coprocessors**: Coprocessor latency and success metrics\n7. **Resources**: System-level resource monitoring\n8. **Query Planning & Cache**: Query planning performance, caching, and compute jobs\n9. **Entity Caching**: Entity cache hit rates\n10. **Uplink**: Schema fetching and uplink health\n\nCustomize each section for your specific requirements."
+                        "text": "# GraphOS Runtime Dashboard Template\n\nThis dashboard provides comprehensive monitoring for your Apollo GraphOS Router deployment.\n\n**Feature Set:**\n- Full infrastructure monitoring (CPU, memory, system resources)\n- Request/Response body size monitoring\n- Non-2xx error isolation and analysis\n- Comprehensive SLO recommendations and alert guidelines\n- Sentinel Metrics for health tracking\n- Enhanced caching metrics and query planning insights\n- Compute jobs monitoring\n- Connector source support\n- P99 latency tracking\n- Subscription monitoring and dropped event tracking\n- Router overhead tracking\n- Extensive documentation and best practices throughout\n\n**Dashboard Organization:**\n1. **Overview**: High-level health metrics\n2. **Infrastructure**: CPU, memory, and system resources  \n3. **Sentinel Metrics**: SLOs, health scores, router overhead, and alert recommendations\n4. **Request Characteristics**: Body sizes, error patterns, and subscription metrics\n5. **Request Performance**: Detailed breakdown by subgraph, operation, and connector\n6. **Coprocessors**: Coprocessor latency and success metrics\n7. **Resources**: System-level resource monitoring\n8. **Query Planning & Cache**: Query planning performance, caching, and compute jobs\n9. **Entity Caching**: Entity cache hit rates\n10. **Uplink**: Schema fetching and uplink health\n\nCustomize each section for your specific requirements."
                     }
                 },
                 {
@@ -642,10 +642,63 @@
                     }
                 },
                 {
-                    "title": "Alert Recommendations",
+                    "title": "Router Overhead",
                     "layout": {
                         "column": 1,
                         "row": 10,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT average(`apollo.router.overhead`) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) AND subgraph.active_requests = 'true' TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "units": {
+                            "unit": "SECONDS"
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Router Overhead Details",
+                    "layout": {
+                        "column": 7,
+                        "row": 10,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Router Overhead\n\n**What is Router Overhead?**\nRouter overhead tracks the time the router spends on tasks other than waiting for downstream HTTP requests (subgraph calls). This includes query planning, serialization/deserialization, and other processing.\n\n**Why filter on `subgraph.active_requests = true`?**\nFiltering to only show overhead when subgraph requests are active captures meaningful processing time and excludes idle periods.\n\n**What to look for:**\n- Sustained increases may indicate query planning inefficiency\n- Spikes may correlate with schema changes or cache misses\n- Compare with subgraph latency to understand where time is spent"
+                    }
+                },
+                {
+                    "title": "Alert Recommendations",
+                    "layout": {
+                        "column": 1,
+                        "row": 13,
                         "width": 12,
                         "height": 4
                     },
@@ -833,6 +886,90 @@
                     },
                     "rawConfiguration": {
                         "text": "# Non-2xx Error Isolation\n\n**What to look for:**\n- **4xx errors**: Client-side issues (bad requests, authentication failures, not found)\n  - 400: Malformed GraphQL queries\n  - 401/403: Authentication/authorization failures\n  - 404: Endpoint not found\n- **5xx errors**: Server-side issues (router or subgraph failures)\n  - 500: Internal server error\n  - 502/503: Subgraph unavailable or timing out\n  - 504: Gateway timeout\n\n**Why it matters:**\n- 4xx errors may indicate client bugs or malicious activity\n- 5xx errors directly impact user experience and SLO compliance\n- Isolating non-2xx responses helps prioritize incident response\n- Trending analysis reveals patterns in error types"
+                    }
+                },
+                {
+                    "title": "Subscriptions",
+                    "layout": {
+                        "column": 1,
+                        "row": 14,
+                        "width": 12,
+                        "height": 2
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.markdown"
+                    },
+                    "rawConfiguration": {
+                        "text": "# Subscription Monitoring\n\n**What are Subscriptions?**\nGraphQL subscriptions allow clients to receive real-time updates from the router via long-lived connections. Monitoring subscription health is critical for understanding resource consumption and ensuring reliable event delivery.\n\n**Key Metrics:**\n- **Open Subscriptions**: Number of active subscription connections, broken down by operation name\n- **Dropped Events**: Subscription events dropped due to backpressure when events arrive faster than they can be delivered to clients"
+                    }
+                },
+                {
+                    "title": "Open Subscriptions by Operation",
+                    "layout": {
+                        "column": 1,
+                        "row": 16,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT sum(`apollo.router.opened.subscriptions`) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET graphql.operation.name TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
+                    }
+                },
+                {
+                    "title": "Dropped Subscription Events",
+                    "layout": {
+                        "column": 7,
+                        "row": 16,
+                        "width": 6,
+                        "height": 3
+                    },
+                    "linkedEntityGuids": null,
+                    "visualization": {
+                        "id": "viz.line"
+                    },
+                    "rawConfiguration": {
+                        "facet": {
+                            "showOtherSeries": false
+                        },
+                        "legend": {
+                            "enabled": true
+                        },
+                        "nrqlQueries": [
+                            {
+                                "accountIds": [<YOUR-ACCOUNT-ID>
+                                ],
+                                "query": "SELECT sum(`apollo.router.skipped.event.count`) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                            }
+                        ],
+                        "platformOptions": {
+                            "ignoreTimeRange": false
+                        },
+                        "yAxisLeft": {
+                            "zero": true
+                        }
                     }
                 }
             ]
