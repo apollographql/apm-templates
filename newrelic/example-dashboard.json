@@ -122,7 +122,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentile(`http.server.request.duration`, 50, 75, 90, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) TIMESERIES 1 minute"
+                                "query": "SELECT percentile(`http.server.request.duration`, 50, 75, 90, 95) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 minute"
                             }
                         ],
                         "platformOptions": {
@@ -173,7 +173,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "FROM Metric \nSELECT filter(rate(count(http.server.request.duration), 1 minute), WHERE graphql_errors = 'true')\n       / rate(count(http.server.request.duration), 1 minute)\n       AS fraction_with_errors\nTIMESERIES 1 minute"
+                                "query": "FROM Metric SELECT filter(rate(count(`http.server.request.duration`), 1 minute), WHERE graphql_errors = 'true') / rate(count(`http.server.request.duration`), 1 minute) AS fraction_with_errors WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 minute"
                             }
                         ],
                         "platformOptions": {
@@ -210,7 +210,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT rate(count(`apollo.router.graphql_error`),1 minute) FROM Metric WHERE `service.name` IN ({{service_name}}) FACET code"
+                                "query": "SELECT rate(count(`apollo.router.graphql_error`),1 minute) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET code"
                             }
                         ],
                         "platformOptions": {
@@ -231,7 +231,7 @@
                         "id": "viz.markdown"
                     },
                     "rawConfiguration": {
-                        "text": "# GraphQL Errors by Operation\n\n**Note:** This requires operation-level instrumentation which may increase cardinality.\n\n**Recommended Query (if instrumented):**\n```\nSELECT count(*)\nFROM Metric\nWHERE metricName = 'apollo.router.graphql_error'\n  AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}})\n  AND graphql.operation.name IS NOT NULL\nFACET graphql.operation.name\nLIMIT 20\n```\n\n**What this shows:**\n- Which GraphQL operations are most error-prone\n- Patterns in client query issues\n- Operations that may need schema improvements\n\n**Why it matters:**\n- Prioritize fixing operations affecting the most users\n- Identify problematic query patterns\n- Guide schema evolution decisions"
+                        "text": "# GraphQL Errors by Operation\n\n**Note:** This requires operation-level instrumentation which may increase cardinality.\n\n**Router Configuration Required:**\nAdd the following to your router configuration to enable operation-level error tracking:\n```yaml\ntelemetry:\n  instrumentation:\n    instruments:\n      graphql.error:\n        attributes:\n          graphql.operation.name: true\n```\n\n**Recommended Query (if instrumented):**\n```\nSELECT count(*)\nFROM Metric\nWHERE metricName = 'apollo.router.graphql_error'\n  AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}})\n  AND graphql.operation.name IS NOT NULL\nFACET graphql.operation.name\nLIMIT 20\n```\n\n**What this shows:**\n- Which GraphQL operations are most error-prone\n- Patterns in client query issues\n- Operations that may need schema improvements\n\n**Why it matters:**\n- Prioritize fixing operations affecting the most users\n- Identify problematic query patterns\n- Guide schema evolution decisions"
                     }
                 },
                 {
@@ -329,7 +329,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT average(process.runtime.cpu.utilization) * 100 FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                                "query": "SELECT average(`process.runtime.cpu.utilization`) * 100 FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -366,7 +366,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT average(process.runtime.memory.usage) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                                "query": "SELECT average(`process.runtime.memory.usage`) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -403,7 +403,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT average(process.runtime.cpu.utilization) * 100 FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET host TIMESERIES 1 MINUTE"
+                                "query": "SELECT average(`process.runtime.cpu.utilization`) * 100 FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET host TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -440,7 +440,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT average(process.runtime.memory.usage) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET host TIMESERIES 1 MINUTE"
+                                "query": "SELECT average(`process.runtime.memory.usage`) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET host TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -493,7 +493,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentage(count(*), WHERE http.response.status_code LIKE '2%' AND (graphql_errors IS NULL OR graphql_errors != 'true')) as 'Health Score %' FROM Metric WHERE metricName = 'http.server.request.duration' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}})"
+                                "query": "SELECT percentage(count(*), WHERE http.response.status_code >= 200 AND http.response.status_code < 300 AND (graphql_errors IS NULL OR graphql_errors != 'true')) as 'Health Score %' FROM Metric WHERE metricName = 'http.server.request.duration' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}})"
                             }
                         ],
                         "platformOptions": {
@@ -528,7 +528,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentage(count(*), WHERE http.response.status_code LIKE '2%') as 'Success Rate %' FROM Metric WHERE metricName = 'http.server.request.duration' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                                "query": "SELECT percentage(count(*), WHERE http.response.status_code >= 200 AND http.response.status_code < 300) as 'Success Rate %' FROM Metric WHERE metricName = 'http.server.request.duration' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -861,7 +861,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT rate(count(`http.server.request.duration`), 1 MINUTE) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) AND http.response.status_code NOT LIKE '2%' FACET http.response.status_code TIMESERIES 1 MINUTE"
+                                "query": "SELECT rate(count(`http.server.request.duration`), 1 MINUTE) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) AND (http.response.status_code < 200 OR http.response.status_code >= 300) FACET http.response.status_code TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1025,7 +1025,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT rate(count(`http.server.request.duration`), 1 MINUTE) FROM Metric FACET http.response.status_code LIMIT 100 TIMESERIES 1 MINUTE"
+                                "query": "SELECT rate(count(`http.server.request.duration`), 1 MINUTE) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET http.response.status_code LIMIT 100 TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1073,7 +1073,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT rate(count(`http.client.request.duration`), 1 MINUTE) FROM Metric WHERE NOT ((subgraph.name = '')) FACET subgraph.name LIMIT 100 TIMESERIES 1 MINUTE"
+                                "query": "SELECT rate(count(`http.client.request.duration`), 1 MINUTE) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) AND NOT ((subgraph.name = '')) FACET subgraph.name LIMIT 100 TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1121,7 +1121,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentile(`http.client.request.duration`, 95) FROM Metric FACET subgraph.name LIMIT 100 TIMESERIES 1 MINUTE"
+                                "query": "SELECT percentile(`http.client.request.duration`, 95) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET subgraph.name LIMIT 100 TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1169,7 +1169,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT rate(count(`http.client.request.duration`), 1 MINUTE) FROM Metric WHERE (NOT ((subgraph.name = '')) AND (graphql.errors = 'true')) FACET subgraph.name LIMIT 100 TIMESERIES 1 MINUTE"
+                                "query": "SELECT rate(count(`http.client.request.duration`), 1 MINUTE) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) AND (NOT ((subgraph.name = '')) AND (graphql.errors = 'true')) FACET subgraph.name LIMIT 100 TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1209,7 +1209,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT rate(count(`http.client.request.duration`), 1 MINUTE) FROM Metric WHERE connector.source.name IS NOT NULL FACET connector.source.name LIMIT 100 TIMESERIES 1 MINUTE"
+                                "query": "SELECT rate(count(`http.client.request.duration`), 1 MINUTE) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) AND connector.source.name IS NOT NULL FACET connector.source.name LIMIT 100 TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1243,7 +1243,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentile(`http.client.request.duration`, 95) FROM Metric WHERE connector.source.name IS NOT NULL FACET connector.source.name LIMIT 100 TIMESERIES 1 MINUTE"
+                                "query": "SELECT percentile(`http.client.request.duration`, 95) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) AND connector.source.name IS NOT NULL FACET connector.source.name LIMIT 100 TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1267,7 +1267,7 @@
                         "id": "viz.markdown"
                     },
                     "rawConfiguration": {
-                        "text": "# Performance Profile Scatter Plot\n\n**Note:** New Relic does not natively support scatter plots like Datadog. To create a performance profile:\n\n1. Create a custom query that calculates RPS and P95 latency by subgraph\n2. Export the data to a visualization tool\n3. Or use New Relic's API to fetch data and build custom visualizations\n\n**What this would show:**\n- **Top-right quadrant** (high RPS, high latency): Bottlenecks requiring optimization\n- **Bottom-right quadrant** (high RPS, low latency): Healthy, high-traffic subgraphs\n- **Top-left quadrant** (low RPS, high latency): Potential future bottlenecks\n- **Bottom-left quadrant** (low RPS, low latency): Efficient, underutilized subgraphs\n\n**Manual Query for Analysis:**\n```\nSELECT rate(count(`http.client.request.duration`), 1 MINUTE) as 'RPS',\n       percentile(`http.client.request.duration`, 95) as 'P95'\nFROM Metric\nWHERE subgraph.name IS NOT NULL\nFACET subgraph.name\n```"
+                        "text": "# Performance Profile Scatter Plot\n\n**Note:** New Relic does not natively support scatter plots like Datadog. To create a performance profile:\n\n1. Create a custom query that calculates RPS and P95 latency by subgraph\n2. Export the data to a visualization tool\n3. Or use New Relic's API to fetch data and build custom visualizations\n\n**What this would show:**\n- **Top-right quadrant** (high RPS, high latency): Bottlenecks requiring optimization\n- **Bottom-right quadrant** (high RPS, low latency): Healthy, high-traffic subgraphs\n- **Top-left quadrant** (low RPS, high latency): Potential future bottlenecks\n- **Bottom-left quadrant** (low RPS, low latency): Efficient, underutilized subgraphs\n\n**Manual Query for Analysis:**\n```\nSELECT rate(count(`http.client.request.duration`), 1 MINUTE) as 'RPS',\n       percentile(`http.client.request.duration`, 95) as 'P95'\nFROM Metric\nWHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}})\n  AND subgraph.name IS NOT NULL\nFACET subgraph.name\n```"
                     }
                 },
                 {
@@ -1293,7 +1293,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentile(`http.client.request.duration`, 99) FROM Metric WHERE subgraph.name IS NOT NULL FACET subgraph.name LIMIT 100 TIMESERIES 1 MINUTE"
+                                "query": "SELECT percentile(`http.client.request.duration`, 99) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) AND subgraph.name IS NOT NULL FACET subgraph.name LIMIT 100 TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1357,7 +1357,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentile(`apollo.router.operations.coprocessor.duration`, 50, 75, 90, 95) FROM Metric TIMESERIES 1 minute"
+                                "query": "SELECT percentile(`apollo.router.operations.coprocessor.duration`, 50, 75, 90, 95) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 minute"
                             }
                         ],
                         "platformOptions": {
@@ -1405,7 +1405,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentile(`apollo.router.operations.coprocessor.duration`, 50, 75, 90, 95) FROM Metric FACET coprocessor.stage TIMESERIES 1 minute"
+                                "query": "SELECT percentile(`apollo.router.operations.coprocessor.duration`, 50, 75, 90, 95) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET coprocessor.stage TIMESERIES 1 minute"
                             }
                         ],
                         "platformOptions": {
@@ -1561,7 +1561,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT average(process.runtime.cpu.utilization) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                                "query": "SELECT average(`process.runtime.cpu.utilization`) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1595,7 +1595,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT average(process.runtime.memory.usage) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                                "query": "SELECT average(`process.runtime.memory.usage`) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1629,7 +1629,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT average(system.cpu.utilization) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET state TIMESERIES 1 MINUTE"
+                                "query": "SELECT average(`system.cpu.utilization`) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET state TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1660,7 +1660,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT average(system.memory.usage) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET state TIMESERIES 1 MINUTE"
+                                "query": "SELECT average(`system.memory.usage`) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET state TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1705,7 +1705,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentile(`apollo.router.query_planning.plan.duration`, 50, 75, 90, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) TIMESERIES 1 minute"
+                                "query": "SELECT percentile(`apollo.router.query_planning.plan.duration`, 50, 75, 90, 95) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 minute"
                             }
                         ],
                         "platformOptions": {
@@ -1753,12 +1753,12 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentile(`apollo.router.query_planning.total.duration`, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) TIMESERIES 1 minute"
+                                "query": "SELECT percentile(`apollo.router.query_planning.total.duration`, 95) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 minute"
                             },
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentile(`apollo.router.query_planning.plan.duration`, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) TIMESERIES 1 minute"
+                                "query": "SELECT percentile(`apollo.router.query_planning.plan.duration`, 95) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 minute"
                             }
                         ],
                         "platformOptions": {
@@ -1806,7 +1806,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT average(`apollo.router.cache.storage.estimated_size`) FROM Metric\nWHERE `service.name` IN ({{service_name}}) WHERE kind = 'query planner' TIMESERIES 1 minute"
+                                "query": "SELECT average(`apollo.router.cache.storage.estimated_size`) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) AND kind = 'query planner' TIMESERIES 1 minute"
                             }
                         ],
                         "platformOptions": {
@@ -1854,12 +1854,12 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "FROM Metric SELECT rate(count(apollo_router_cache_hit_time), 1 MINUTE) as 'Memory-Hit' TIMESERIES 1 MINUTE"
+                                "query": "FROM Metric SELECT rate(count(`apollo.router.cache.hit.time`), 1 MINUTE) as 'Memory-Hit' WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
                             },
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "FROM Metric SELECT rate(count(apollo_router_cache_miss_time), 1 MINUTE) as 'Memory-Miss' TIMESERIES 1 MINUTE"
+                                "query": "FROM Metric SELECT rate(count(`apollo.router.cache.miss.time`), 1 MINUTE) as 'Memory-Miss' WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -1907,7 +1907,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentile(`apollo.router.query_planning.warmup.duration`, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) TIMESERIES 1 minute"
+                                "query": "SELECT percentile(`apollo.router.query_planning.warmup.duration`, 95) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 minute"
                             }
                         ],
                         "platformOptions": {
@@ -1942,7 +1942,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "FROM Metric SELECT COUNT(`apollo.router.compute_jobs.queued`)"
+                                "query": "FROM Metric SELECT COUNT(`apollo.router.compute_jobs.queued`) WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}})"
                             }
                         ],
                         "platformOptions": {
@@ -1981,7 +1981,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT rate(count(`apollo_router_schema_load_duration`), 1 minute) FROM Metric WHERE service.name IN ('unknown_service:router') TIMESERIES 1 MINUTE"
+                                "query": "SELECT rate(count(`apollo.router.schema.load.duration`), 1 minute) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -2173,7 +2173,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT (rate(count(apollo_router_cache_hit_time), 1 MINUTE) / (rate(count(apollo_router_cache_hit_time), 1 MINUTE) + rate(count(apollo_router_cache_miss_time), 1 MINUTE))) * 100 as 'Hit Rate %' FROM Metric WHERE kind = 'query planner' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
+                                "query": "SELECT (rate(count(`apollo.router.cache.hit.time`), 1 MINUTE) / (rate(count(`apollo.router.cache.hit.time`), 1 MINUTE) + rate(count(`apollo.router.cache.miss.time`), 1 MINUTE))) * 100 as 'Hit Rate %' FROM Metric WHERE kind = 'query planner' AND service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 MINUTE"
                             }
                         ],
                         "platformOptions": {
@@ -2411,7 +2411,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentile(`apollo_router_uplink_fetch_duration_seconds`, 50, 75, 90, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) TIMESERIES 1 minute"
+                                "query": "SELECT percentile(`apollo.router.uplink.fetch.duration.seconds`, 50, 75, 90, 95) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 minute"
                             }
                         ],
                         "platformOptions": {
@@ -2459,7 +2459,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "SELECT percentile(`apollo_router_uplink_fetch_duration_seconds`, 95) FROM Metric\nWHERE `service.name` IN ({{service_name}}) FACET query TIMESERIES 1 minute"
+                                "query": "SELECT percentile(`apollo.router.uplink.fetch.duration.seconds`, 95) FROM Metric WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) FACET query TIMESERIES 1 minute"
                             }
                         ],
                         "platformOptions": {
@@ -2507,7 +2507,7 @@
                             {
                                 "accountIds": [<YOUR-ACCOUNT-ID>
                                 ],
-                                "query": "FROM Metric \nSELECT filter(rate(count(apollo_router_uplink_fetch_count_total), 1 minute), WHERE status = 'failure')\n       / rate(count(apollo_router_uplink_fetch_count_total), 1 minute)\n       AS fraction_with_errors\nTIMESERIES 1 minute"
+                                "query": "FROM Metric SELECT filter(rate(count(`apollo.router.uplink.fetch.count.total`), 1 minute), WHERE status = 'failure') / rate(count(`apollo.router.uplink.fetch.count.total`), 1 minute) AS fraction_with_errors WHERE service.name IN ({{service_name}}) AND env IN ({{env}}) AND version IN ({{version}}) TIMESERIES 1 minute"
                             }
                         ],
                         "platformOptions": {
