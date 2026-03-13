@@ -1,12 +1,12 @@
 {
-    "title": "Constellation Dashboard",
+    "title": "Constellation Runtime Dashboard",
     "description": "[[suggested_dashboards]]",
     "widgets": [
         {
             "id": 4279866510697354,
             "definition": {
                 "title": "Highlights",
-                "background_color": "vivid_blue",
+                "background_color": "gray",
                 "show_title": true,
                 "type": "group",
                 "layout_type": "ordered",
@@ -15,9 +15,9 @@
                         "id": 3833645881184511,
                         "definition": {
                             "type": "note",
-                            "content": "This section gives you a high-level view of your Constellation platform ecosystem's health. Use it to quickly spot issues and understand what actions to take next. For proactive recommendations on improving your system, see the \"Tool Optimization\" section.\n### What to watch for\n**Drop in tool calls** → Sudden drops in active connections or tool invocations\n*Next step: Check the \"Traffic\" section for details*\n\n**Spike in errors** → Error rate spikes above baseline\n*Next step: Review the 'Errors' section to identify failing tools or malformed requests*\n\n**Increase in latency or response sizes** → Will hurt tool rankings and limit agent effectiveness  \n\n*Next step: Investigate the \"Performance\" section for optimization opportunities*\n\n**Unexpected changes in any direction** → Anomalous traffic patterns or usage spikes\n\n*Next step: Review the 'Traffic' section and check for potential misuse or new integrations*",
-                            "background_color": "gray",
-                            "font_size": "12",
+                            "content": "This section gives you a high-level view of your Constellation platform ecosystem's health. Use it to quickly spot issues and understand what actions to take next. \n\n**What to look for**\n- Sudden drops in active connections or tool invocations check the \"Traffic\" section for details.\n- Spike in errors review the \"Errors\" section to identify failing tools or malformed requests.\n- Increase in latency or response sizes will hurt tool rankings and limit agent effectiveness. Investigate the \"Performance Metrics\" section for optimization opportunities.\n- Unexpected changes in traffic patterns or usage spikes review the \"Traffic\" section and check for potential misuse or new integration.\n- For proactive recommendations on improving your system, see the \"Tool Optimization\" section.",
+                            "background_color": "white",
+                            "font_size": "14",
                             "text_align": "left",
                             "vertical_align": "top",
                             "show_tick": false,
@@ -29,7 +29,7 @@
                             "x": 0,
                             "y": 0,
                             "width": 12,
-                            "height": 3
+                            "height": 2
                         }
                     },
                     {
@@ -69,7 +69,7 @@
                         },
                         "layout": {
                             "x": 0,
-                            "y": 3,
+                            "y": 2,
                             "width": 3,
                             "height": 2
                         }
@@ -117,7 +117,7 @@
                         },
                         "layout": {
                             "x": 3,
-                            "y": 3,
+                            "y": 2,
                             "width": 3,
                             "height": 2
                         }
@@ -179,7 +179,7 @@
                         },
                         "layout": {
                             "x": 6,
-                            "y": 3,
+                            "y": 2,
                             "width": 3,
                             "height": 2
                         }
@@ -214,7 +214,7 @@
                         },
                         "layout": {
                             "x": 9,
-                            "y": 3,
+                            "y": 2,
                             "width": 3,
                             "height": 2
                         }
@@ -225,14 +225,14 @@
                 "x": 0,
                 "y": 0,
                 "width": 12,
-                "height": 6
+                "height": 5
             }
         },
         {
             "id": 8748023886403958,
             "definition": {
                 "title": "Traffic",
-                "background_color": "vivid_purple",
+                "background_color": "gray",
                 "show_title": true,
                 "type": "group",
                 "layout_type": "ordered",
@@ -241,9 +241,9 @@
                         "id": 1635959434962923,
                         "definition": {
                             "type": "note",
-                            "content": "Traffic overview showing total requests and error distribution across your MCP tool ecosystem.\n\n**Use this to:** \n- Identify peak usage windows for capacity planning \n- Detect sudden traffic drops that may indicate client connectivity issues or service disruptions\n- Spot anomalous traffic spikes that could indicate misconfigurations or abuse\n- Correlate traffic patterns with error rates and latency to diagnose performance issues\n",
-                            "background_color": "gray",
-                            "font_size": "12",
+                            "content": "Traffic overview showing total requests across your MCP tool ecosystem.\n\n**What to look for** \n- Identify peak usage windows for capacity planning. \n- Detect sudden traffic drops that may indicate client connectivity issues or service disruptions.\n- Spot anomalous traffic spikes that could indicate misconfigurations or abuse.\n- Correlate traffic patterns with error rates and latency to diagnose performance issues.",
+                            "background_color": "white",
+                            "font_size": "14",
                             "text_align": "left",
                             "vertical_align": "top",
                             "show_tick": false,
@@ -265,7 +265,7 @@
                             "title_size": "16",
                             "title_align": "left",
                             "show_legend": true,
-                            "legend_layout": "auto",
+                            "legend_layout": "vertical",
                             "legend_columns": [
                                 "avg",
                                 "min",
@@ -413,14 +413,32 @@
                             "width": 4,
                             "height": 2
                         }
-                    },
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 5,
+                "width": 12,
+                "height": 10
+            }
+        },
+        {
+            "id": 7430367204821779,
+            "definition": {
+                "title": "Tool Usage Analysis",
+                "background_color": "gray",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
                     {
                         "id": 5699405418462039,
                         "definition": {
                             "type": "note",
-                            "content": "# Tool Usage Analysis\n\nDistribution of AI agent calls across different tools, showing usage patterns and performance metrics. \n\n**Use this to:**\n\n- Identify which tools are being called most frequently\n- Spot performance issues through latency, success rates, and traffic distribution.\n- Detect anomalous usage patterns",
-                            "background_color": "gray",
-                            "font_size": "12",
+                            "content": "Distribution of calls across different tools, showing usage patterns and performance metrics. \n\n**What to look for**\n\n- Identify which tools are being called most frequently.\n- Spot performance issues through latency, success rates, and traffic distribution.\n- Detect anomalous usage patterns.",
+                            "background_color": "white",
+                            "font_size": "14",
                             "text_align": "left",
                             "vertical_align": "top",
                             "show_tick": false,
@@ -430,7 +448,7 @@
                         },
                         "layout": {
                             "x": 0,
-                            "y": 9,
+                            "y": 0,
                             "width": 12,
                             "height": 2
                         }
@@ -442,7 +460,7 @@
                             "title_size": "16",
                             "title_align": "left",
                             "show_legend": true,
-                            "legend_layout": "auto",
+                            "legend_layout": "vertical",
                             "legend_columns": [
                                 "avg",
                                 "min",
@@ -478,7 +496,7 @@
                         },
                         "layout": {
                             "x": 0,
-                            "y": 11,
+                            "y": 2,
                             "width": 12,
                             "height": 4
                         }
@@ -526,7 +544,7 @@
                         },
                         "layout": {
                             "x": 0,
-                            "y": 15,
+                            "y": 6,
                             "width": 5,
                             "height": 5
                         }
@@ -615,7 +633,7 @@
                         },
                         "layout": {
                             "x": 5,
-                            "y": 15,
+                            "y": 6,
                             "width": 7,
                             "height": 5
                         }
@@ -665,7 +683,7 @@
                         },
                         "layout": {
                             "x": 0,
-                            "y": 20,
+                            "y": 11,
                             "width": 6,
                             "height": 5
                         }
@@ -704,7 +722,7 @@
                         },
                         "layout": {
                             "x": 6,
-                            "y": 20,
+                            "y": 11,
                             "width": 6,
                             "height": 5
                         }
@@ -713,16 +731,16 @@
             },
             "layout": {
                 "x": 0,
-                "y": 6,
+                "y": 15,
                 "width": 12,
-                "height": 26
+                "height": 17
             }
         },
         {
             "id": 5207190075495801,
             "definition": {
                 "title": "Error Tracking",
-                "background_color": "vivid_orange",
+                "background_color": "gray",
                 "show_title": true,
                 "type": "group",
                 "layout_type": "ordered",
@@ -731,9 +749,9 @@
                         "id": 1817727588825760,
                         "definition": {
                             "type": "note",
-                            "content": "Identify the most common error types, spot problematic tools with high failure rates, and monitor error trends to maintain system reliability and prioritize fixes.\n\n **Use this to**\n - Understand the most common error types\n - Find tools with consistently high error rates\n - Correlate error spikes with specific time periods or traffic patterns\n ",
-                            "background_color": "gray",
-                            "font_size": "12",
+                            "content": "Identify the most common error types, spot problematic tools with high failure rates, and monitor error trends to maintain system reliability and prioritize fixes.\n\n **What to look for**\n - Understand the most common error types.\n - Find tools with consistently high error rates.\n - Correlate error spikes with specific time periods or traffic patterns.\n ",
+                            "background_color": "white",
+                            "font_size": "14",
                             "text_align": "left",
                             "vertical_align": "top",
                             "show_tick": false,
@@ -755,7 +773,7 @@
                             "title_size": "16",
                             "title_align": "left",
                             "show_legend": true,
-                            "legend_layout": "auto",
+                            "legend_layout": "vertical",
                             "legend_columns": [
                                 "avg",
                                 "min",
@@ -915,15 +933,14 @@
                 "x": 0,
                 "y": 32,
                 "width": 12,
-                "height": 11,
-                "is_column_break": true
+                "height": 11
             }
         },
         {
             "id": 7726201287528502,
             "definition": {
                 "title": "Performance Metrics",
-                "background_color": "vivid_green",
+                "background_color": "gray",
                 "show_title": true,
                 "type": "group",
                 "layout_type": "ordered",
@@ -932,9 +949,9 @@
                         "id": 6662906568573298,
                         "definition": {
                             "type": "note",
-                            "content": "Track tool execution performance across your MCP ecosystem. Monitor response times, throughput, and identify slow tools impacting agent effectiveness.\n\n**Use this to:**\n* Monitor system availability and success rates to catch reliability issues early\n* Identify performance outliers through P99 latency that hurt tool rankings\n* Spot inconsistent performance when percentiles diverge significantly\n* Correlate latency spikes with traffic patterns or specific tools\n",
-                            "background_color": "gray",
-                            "font_size": "12",
+                            "content": "Track tool execution performance across your MCP ecosystem. Monitor response times, throughput, and identify slow tools impacting agent effectiveness.\n\n**What to look for**\n* Monitor system availability and success rates to catch reliability issues early.\n* Identify performance outliers through P99 latency that hurt tool rankings.\n* Spot inconsistent performance when percentiles diverge significantly.\n* Correlate latency spikes with traffic patterns or specific tools.\n",
+                            "background_color": "white",
+                            "font_size": "14",
                             "text_align": "left",
                             "vertical_align": "top",
                             "show_tick": false,
@@ -986,7 +1003,7 @@
                                         "line_type": "solid",
                                         "line_width": "normal"
                                     },
-                                    "display_type": "area"
+                                    "display_type": "bars"
                                 }
                             ]
                         },
@@ -1037,7 +1054,7 @@
                                         "duration": {
                                             "type": "previous_timeframe"
                                         },
-                                        "directionality": "increase_better"
+                                        "directionality": "neutral"
                                     }
                                 }
                             ],
