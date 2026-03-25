@@ -33,9 +33,114 @@
                         }
                     },
                     {
+                        "id": 4896909653172860,
+                        "definition": {
+                            "title": "Total Active Tools",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "count_nonzero(query1)"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$service,$apollo.gateway.client.name,$gen_ai.tool.name} by {gen_ai.tool.name}.as_count()",
+                                            "aggregator": "sum"
+                                        }
+                                    ],
+                                    "response_format": "scalar"
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 0
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 2,
+                            "width": 4,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 1228892448089835,
+                        "definition": {
+                            "title": "Total Active Clients",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "count_nonzero(query1)"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$apollo.gateway.client.name,$gen_ai.tool.name} by {apollo.gateway.client.name}.as_count()",
+                                            "aggregator": "sum"
+                                        }
+                                    ],
+                                    "response_format": "scalar"
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 0
+                        },
+                        "layout": {
+                            "x": 4,
+                            "y": 2,
+                            "width": 4,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 1620037563723568,
+                        "definition": {
+                            "title": "Max Active Sessions",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "max:apollo.gateway.mcp.server.sessions.active{$service,$apollo.gateway.client.name}",
+                                            "aggregator": "max"
+                                        }
+                                    ],
+                                    "response_format": "scalar"
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2
+                        },
+                        "layout": {
+                            "x": 8,
+                            "y": 2,
+                            "width": 4,
+                            "height": 2
+                        }
+                    },
+                    {
                         "id": 4073213132896294,
                         "definition": {
-                            "title": "Average Number of Requests",
+                            "title": "Average Request Rate",
                             "title_size": "16",
                             "title_align": "left",
                             "type": "query_value",
@@ -46,7 +151,7 @@
                                         {
                                             "name": "query1",
                                             "data_source": "metrics",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,$apollo.gateway.name}.as_count()",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,$service,$apollo.gateway.client.name,$gen_ai.tool.name}.as_rate()",
                                             "aggregator": "avg"
                                         }
                                     ],
@@ -69,56 +174,8 @@
                         },
                         "layout": {
                             "x": 0,
-                            "y": 2,
-                            "width": 3,
-                            "height": 2
-                        }
-                    },
-                    {
-                        "id": 5808656593048237,
-                        "definition": {
-                            "title": "P90 Tool Call Latency",
-                            "title_size": "16",
-                            "title_align": "left",
-                            "type": "query_value",
-                            "requests": [
-                                {
-                                    "response_format": "scalar",
-                                    "queries": [
-                                        {
-                                            "name": "query2",
-                                            "data_source": "metrics",
-                                            "query": "p90:mcp.server.operation.duration{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$apollo.gateway.name}",
-                                            "aggregator": "percentile"
-                                        }
-                                    ],
-                                    "formulas": [
-                                        {
-                                            "number_format": {
-                                                "unit": {
-                                                    "type": "canonical_unit",
-                                                    "unit_name": "millisecond"
-                                                }
-                                            },
-                                            "formula": "query2"
-                                        }
-                                    ],
-                                    "comparison": {
-                                        "type": "absolute",
-                                        "duration": {
-                                            "type": "previous_timeframe"
-                                        },
-                                        "directionality": "decrease_better"
-                                    }
-                                }
-                            ],
-                            "autoscale": true,
-                            "precision": 0
-                        },
-                        "layout": {
-                            "x": 3,
-                            "y": 2,
-                            "width": 3,
+                            "y": 4,
+                            "width": 4,
                             "height": 2
                         }
                     },
@@ -136,13 +193,13 @@
                                         {
                                             "name": "query1",
                                             "data_source": "metrics",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,error.type:*,$apollo.gateway.name}.as_count()",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,error.type:*,$service,$apollo.gateway.client.name,$gen_ai.tool.name}.as_count()",
                                             "aggregator": "sum"
                                         },
                                         {
                                             "name": "query2",
                                             "data_source": "metrics",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,$apollo.gateway.name}.as_count()",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,$service,$apollo.gateway.client.name,$gen_ai.tool.name}.as_count()",
                                             "aggregator": "sum"
                                         }
                                     ],
@@ -178,44 +235,57 @@
                             "precision": 0
                         },
                         "layout": {
-                            "x": 6,
-                            "y": 2,
-                            "width": 3,
+                            "x": 4,
+                            "y": 4,
+                            "width": 4,
                             "height": 2
                         }
                     },
                     {
-                        "id": 4896909653172860,
+                        "id": 5808656593048237,
                         "definition": {
-                            "title": "Total Active Tools",
+                            "title": "P90 Tool Call Latency",
                             "title_size": "16",
                             "title_align": "left",
                             "type": "query_value",
                             "requests": [
                                 {
-                                    "formulas": [
-                                        {
-                                            "formula": "count_nonzero(query1)"
-                                        }
-                                    ],
+                                    "response_format": "scalar",
                                     "queries": [
                                         {
+                                            "name": "query2",
                                             "data_source": "metrics",
-                                            "name": "query1",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$apollo.gateway.name} by {gen_ai.tool.name}.as_count()",
-                                            "aggregator": "sum"
+                                            "query": "p90:mcp.server.operation.duration{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$service,$apollo.gateway.client.name,$gen_ai.tool.name}",
+                                            "aggregator": "percentile"
                                         }
                                     ],
-                                    "response_format": "scalar"
+                                    "formulas": [
+                                        {
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "canonical_unit",
+                                                    "unit_name": "millisecond"
+                                                }
+                                            },
+                                            "formula": "query2"
+                                        }
+                                    ],
+                                    "comparison": {
+                                        "type": "absolute",
+                                        "duration": {
+                                            "type": "previous_timeframe"
+                                        },
+                                        "directionality": "decrease_better"
+                                    }
                                 }
                             ],
                             "autoscale": true,
                             "precision": 0
                         },
                         "layout": {
-                            "x": 9,
-                            "y": 2,
-                            "width": 3,
+                            "x": 8,
+                            "y": 4,
+                            "width": 4,
                             "height": 2
                         }
                     }
@@ -225,7 +295,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 12,
-                "height": 5
+                "height": 7
             }
         },
         {
@@ -281,7 +351,7 @@
                                         {
                                             "name": "query1",
                                             "data_source": "metrics",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,$apollo.gateway.name} by {mcp.method.name}.as_count()"
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,$service,$apollo.gateway.client.name,$gen_ai.tool.name} by {mcp.method.name}.as_count()"
                                         }
                                     ],
                                     "formulas": [
@@ -302,7 +372,55 @@
                         "layout": {
                             "x": 0,
                             "y": 2,
-                            "width": 12,
+                            "width": 6,
+                            "height": 5
+                        }
+                    },
+                    {
+                        "id": 1264547195309804,
+                        "definition": {
+                            "title": "Traffic by Client",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "vertical",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "sum:mcp.server.operation.duration.count{$service,$apollo.gateway.client.name,$apollo.gateway.upstream.name,$gen_ai.tool.name} by {apollo.gateway.client.name}.as_count()"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 2,
+                            "width": 6,
                             "height": 5
                         }
                     },
@@ -320,7 +438,7 @@
                                         {
                                             "name": "query1",
                                             "data_source": "metrics",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,$apollo.gateway.name}.as_count()",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,$service,$apollo.gateway.client.name,$gen_ai.tool.name}.as_count()",
                                             "aggregator": "sum"
                                         }
                                     ],
@@ -356,7 +474,7 @@
                                         {
                                             "name": "query1",
                                             "data_source": "metrics",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,$apollo.gateway.name}.as_rate()",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,$service,$apollo.gateway.client.name,$gen_ai.tool.name}.as_rate()",
                                             "aggregator": "min"
                                         }
                                     ],
@@ -392,7 +510,7 @@
                                         {
                                             "name": "query1",
                                             "data_source": "metrics",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,$apollo.gateway.name}.as_rate()",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,$service,$apollo.gateway.client.name,$gen_ai.tool.name}.as_rate()",
                                             "aggregator": "max"
                                         }
                                     ],
@@ -418,7 +536,7 @@
             },
             "layout": {
                 "x": 0,
-                "y": 5,
+                "y": 7,
                 "width": 12,
                 "height": 10
             }
@@ -476,7 +594,7 @@
                                         {
                                             "name": "query1",
                                             "data_source": "metrics",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$apollo.gateway.name} by {gen_ai.tool.name}.as_count().rollup(sum, 60)"
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$service,$apollo.gateway.client.name,$gen_ai.tool.name} by {gen_ai.tool.name}.as_count().rollup(sum, 60)"
                                         }
                                     ],
                                     "formulas": [
@@ -513,7 +631,7 @@
                                         {
                                             "name": "query1",
                                             "data_source": "metrics",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$apollo.gateway.name} by {gen_ai.tool.name}.as_count()",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$service,$apollo.gateway.client.name,$gen_ai.tool.name} by {gen_ai.tool.name}.as_count()",
                                             "aggregator": "sum"
                                         }
                                     ],
@@ -545,8 +663,146 @@
                         "layout": {
                             "x": 0,
                             "y": 6,
-                            "width": 5,
-                            "height": 5
+                            "width": 6,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 8375051603359382,
+                        "definition": {
+                            "title": "Request Count by Client",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "bar_chart",
+                            "requests": [
+                                {
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$apollo.gateway.client.name,$gen_ai.tool.name} by {apollo.gateway.client.name,gen_ai.tool.name}.as_count()",
+                                            "aggregator": "sum"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "sort": {
+                                        "count": 100,
+                                        "order_by": [
+                                            {
+                                                "type": "formula",
+                                                "index": 0,
+                                                "order": "desc"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ],
+                            "style": {
+                                "display": {
+                                    "type": "stacked",
+                                    "legend": "automatic"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 6,
+                            "width": 6,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 239220657075077,
+                        "definition": {
+                            "title": "Top 5 Slowest Tools",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "toplist",
+                            "requests": [
+                                {
+                                    "queries": [
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query1",
+                                            "query": "p95:mcp.server.operation.duration{mcp.method.name:tools/call,$service,$apollo.gateway.client.name,$apollo.gateway.upstream.name,$gen_ai.tool.name} by {gen_ai.tool.name}",
+                                            "aggregator": "percentile"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "sort": {
+                                        "count": 5,
+                                        "order_by": [
+                                            {
+                                                "type": "formula",
+                                                "index": 0,
+                                                "order": "desc"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ],
+                            "style": {
+                                "display": {
+                                    "type": "stacked",
+                                    "legend": "automatic"
+                                },
+                                "palette": "dog_classic"
+                            }
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 10,
+                            "width": 6,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 1007170607488111,
+                        "definition": {
+                            "title": "Tool Call Latency Distribution",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": false,
+                            "type": "distribution",
+                            "xaxis": {
+                                "scale": "linear",
+                                "min": "auto",
+                                "max": "auto",
+                                "include_zero": true,
+                                "num_buckets": 14
+                            },
+                            "yaxis": {
+                                "scale": "linear",
+                                "min": "auto",
+                                "max": "auto",
+                                "include_zero": true
+                            },
+                            "requests": [
+                                {
+                                    "request_type": "histogram",
+                                    "query": {
+                                        "name": "query1",
+                                        "data_source": "metrics",
+                                        "query": "histogram:mcp.server.operation.duration{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$service,$apollo.gateway.client.name,$gen_ai.tool.name}.as_count()"
+                                    }
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 10,
+                            "width": 6,
+                            "height": 4
                         }
                     },
                     {
@@ -562,25 +818,25 @@
                                         {
                                             "data_source": "metrics",
                                             "name": "query1",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$apollo.gateway.name} by {gen_ai.tool.name}.as_count()",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$service,$apollo.gateway.client.name,$gen_ai.tool.name} by {gen_ai.tool.name}.as_count()",
                                             "aggregator": "sum"
                                         },
                                         {
                                             "data_source": "metrics",
                                             "name": "query2",
-                                            "query": "p90:mcp.server.operation.duration{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$apollo.gateway.name} by {gen_ai.tool.name}",
+                                            "query": "p90:mcp.server.operation.duration{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$service,$apollo.gateway.client.name,$gen_ai.tool.name} by {gen_ai.tool.name}",
                                             "aggregator": "percentile"
                                         },
                                         {
                                             "data_source": "metrics",
                                             "name": "query3",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,error.type:*,$apollo.gateway.name} by {gen_ai.tool.name}.as_count()",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,error.type:*,$service,$apollo.gateway.client.name,$gen_ai.tool.name} by {gen_ai.tool.name}.as_count()",
                                             "aggregator": "sum"
                                         },
                                         {
                                             "data_source": "metrics",
                                             "name": "query4",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$apollo.gateway.name}.as_count()",
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$service,$apollo.gateway.client.name,$gen_ai.tool.name}.as_count()",
                                             "aggregator": "sum"
                                         }
                                     ],
@@ -632,108 +888,19 @@
                             "has_search_bar": "auto"
                         },
                         "layout": {
-                            "x": 5,
-                            "y": 6,
-                            "width": 7,
-                            "height": 5
-                        }
-                    },
-                    {
-                        "id": 239220657075077,
-                        "definition": {
-                            "title": "Top 5 Slowest Tools",
-                            "title_size": "16",
-                            "title_align": "left",
-                            "type": "toplist",
-                            "requests": [
-                                {
-                                    "queries": [
-                                        {
-                                            "data_source": "metrics",
-                                            "name": "query1",
-                                            "query": "p95:mcp.server.operation.duration{mcp.method.name:tools/call,$apollo.gateway.name} by {gen_ai.tool.name}",
-                                            "aggregator": "percentile"
-                                        }
-                                    ],
-                                    "response_format": "scalar",
-                                    "formulas": [
-                                        {
-                                            "formula": "query1"
-                                        }
-                                    ],
-                                    "sort": {
-                                        "count": 5,
-                                        "order_by": [
-                                            {
-                                                "type": "formula",
-                                                "index": 0,
-                                                "order": "desc"
-                                            }
-                                        ]
-                                    }
-                                }
-                            ],
-                            "style": {
-                                "display": {
-                                    "type": "stacked",
-                                    "legend": "automatic"
-                                },
-                                "palette": "dog_classic"
-                            }
-                        },
-                        "layout": {
                             "x": 0,
-                            "y": 11,
-                            "width": 6,
-                            "height": 5
-                        }
-                    },
-                    {
-                        "id": 1007170607488111,
-                        "definition": {
-                            "title": "Tool Call Latency Distribution",
-                            "title_size": "16",
-                            "title_align": "left",
-                            "show_legend": false,
-                            "type": "distribution",
-                            "xaxis": {
-                                "scale": "linear",
-                                "min": "auto",
-                                "max": "auto",
-                                "include_zero": true,
-                                "num_buckets": 14
-                            },
-                            "yaxis": {
-                                "scale": "linear",
-                                "min": "auto",
-                                "max": "auto",
-                                "include_zero": true
-                            },
-                            "requests": [
-                                {
-                                    "request_type": "histogram",
-                                    "query": {
-                                        "name": "query1",
-                                        "data_source": "metrics",
-                                        "query": "histogram:mcp.server.operation.duration{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$apollo.gateway.name}.as_count()"
-                                    }
-                                }
-                            ]
-                        },
-                        "layout": {
-                            "x": 6,
-                            "y": 11,
-                            "width": 6,
-                            "height": 5
+                            "y": 14,
+                            "width": 12,
+                            "height": 3
                         }
                     }
                 ]
             },
             "layout": {
                 "x": 0,
-                "y": 15,
+                "y": 17,
                 "width": 12,
-                "height": 17
+                "height": 18
             }
         },
         {
@@ -789,7 +956,7 @@
                                         {
                                             "data_source": "metrics",
                                             "name": "query1",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,error.type:*,$apollo.gateway.name} by {error.type}.as_count()"
+                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,error.type:*,$service,$apollo.gateway.client.name,$gen_ai.tool.name} by {error.type}.as_count()"
                                         }
                                     ],
                                     "formulas": [
@@ -815,9 +982,9 @@
                         }
                     },
                     {
-                        "id": 1011182960294639,
+                        "id": 5809958042866536,
                         "definition": {
-                            "title": "Errors by Type",
+                            "title": "Tool Error Percentages",
                             "title_size": "16",
                             "title_align": "left",
                             "type": "toplist",
@@ -827,7 +994,13 @@
                                         {
                                             "data_source": "metrics",
                                             "name": "query1",
-                                            "query": "sum:mcp.server.operation.duration.count{$apollo.gateway.upstream.name,error.type:*,$apollo.gateway.name} by {error.type}.as_count()",
+                                            "query": "sum:mcp.server.operation.duration.count{mcp.method.name:tools/call,$service,error.type:*,$apollo.gateway.client.name,$apollo.gateway.upstream.name,$gen_ai.tool.name} by {gen_ai.tool.name}.as_count()",
+                                            "aggregator": "sum"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query2",
+                                            "query": "sum:mcp.server.operation.duration.count{mcp.method.name:tools/call,$service,$apollo.gateway.client.name,$apollo.gateway.upstream.name,$gen_ai.tool.name} by {gen_ai.tool.name}.as_count()",
                                             "aggregator": "sum"
                                         }
                                     ],
@@ -841,18 +1014,24 @@
                                     ],
                                     "formulas": [
                                         {
-                                            "formula": "query1"
+                                            "formula": "(query1 / query2) * 100",
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "canonical_unit",
+                                                    "unit_name": "percent"
+                                                }
+                                            }
                                         }
                                     ],
                                     "sort": {
-                                        "count": 10,
                                         "order_by": [
                                             {
                                                 "type": "formula",
                                                 "index": 0,
                                                 "order": "desc"
                                             }
-                                        ]
+                                        ],
+                                        "count": 10
                                     }
                                 }
                             ],
@@ -860,8 +1039,7 @@
                                 "display": {
                                     "type": "stacked",
                                     "legend": "automatic"
-                                },
-                                "palette": "warm"
+                                }
                             }
                         },
                         "layout": {
@@ -872,9 +1050,9 @@
                         }
                     },
                     {
-                        "id": 5809958042866536,
+                        "id": 457978803716116,
                         "definition": {
-                            "title": "Tool Error Rates",
+                            "title": "Client Error Percentages",
                             "title_size": "16",
                             "title_align": "left",
                             "type": "toplist",
@@ -884,7 +1062,13 @@
                                         {
                                             "data_source": "metrics",
                                             "name": "query1",
-                                            "query": "sum:mcp.server.operation.duration.count{mcp.method.name:tools/call,error.type:*,$apollo.gateway.name} by {gen_ai.tool.name}.as_rate()",
+                                            "query": "sum:mcp.server.operation.duration.count{mcp.method.name:tools/call,$service,error.type:*,$apollo.gateway.client.name,$apollo.gateway.upstream.name,$gen_ai.tool.name} by {apollo.gateway.client.name}.as_count()",
+                                            "aggregator": "sum"
+                                        },
+                                        {
+                                            "data_source": "metrics",
+                                            "name": "query2",
+                                            "query": "sum:mcp.server.operation.duration.count{mcp.method.name:tools/call,$service,$apollo.gateway.client.name,$apollo.gateway.upstream.name,$gen_ai.tool.name} by {apollo.gateway.client.name}.as_count()",
                                             "aggregator": "sum"
                                         }
                                     ],
@@ -898,18 +1082,24 @@
                                     ],
                                     "formulas": [
                                         {
-                                            "formula": "query1"
+                                            "formula": "(query1 / query2) * 100",
+                                            "number_format": {
+                                                "unit": {
+                                                    "type": "canonical_unit",
+                                                    "unit_name": "percent"
+                                                }
+                                            }
                                         }
                                     ],
                                     "sort": {
-                                        "count": 10,
                                         "order_by": [
                                             {
                                                 "type": "formula",
                                                 "index": 0,
                                                 "order": "desc"
                                             }
-                                        ]
+                                        ],
+                                        "count": 10
                                     }
                                 }
                             ],
@@ -917,7 +1107,8 @@
                                 "display": {
                                     "type": "stacked",
                                     "legend": "automatic"
-                                }
+                                },
+                                "scaling": "absolute"
                             }
                         },
                         "layout": {
@@ -926,14 +1117,72 @@
                             "width": 6,
                             "height": 4
                         }
+                    },
+                    {
+                        "id": 2234554108127858,
+                        "definition": {
+                            "title": "Traces With Errors",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "requests": [
+                                {
+                                    "response_format": "event_list",
+                                    "query": {
+                                        "data_source": "trace_stream",
+                                        "query_string": "service:$service.value @apollo.gateway.id:* error.type:* $apollo.gateway.client.name $apollo.gateway.upstream.name $gen_ai.tool.name",
+                                        "indexes": [
+                                            "*"
+                                        ]
+                                    },
+                                    "columns": [
+                                        {
+                                            "field": "timestamp",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "service",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "status",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "resource_name",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "error.type",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "@error.message",
+                                            "width": "auto"
+                                        },
+                                        {
+                                            "field": "@duration",
+                                            "width": "auto"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "type": "list_stream"
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 10,
+                            "width": 12,
+                            "height": 4
+                        }
                     }
                 ]
             },
             "layout": {
                 "x": 0,
-                "y": 32,
+                "y": 35,
                 "width": 12,
-                "height": 11
+                "height": 15,
+                "is_column_break": true
             }
         },
         {
@@ -993,7 +1242,7 @@
                                         {
                                             "name": "query2",
                                             "data_source": "metrics",
-                                            "query": "sum:apollo.gateway.uptime{$apollo.gateway.name} by {apollo.gateway.name}.as_count().rollup(count)"
+                                            "query": "sum:apollo.gateway.uptime{$service} by {apollo.gateway.name}.as_count().rollup(count)"
                                         }
                                     ],
                                     "response_format": "timeseries",
@@ -1038,13 +1287,13 @@
                                         {
                                             "data_source": "metrics",
                                             "name": "query2",
-                                            "query": "sum:mcp.server.operation.duration.count{$gen_ai.tool.name,$apollo.gateway.name}.as_count()",
+                                            "query": "sum:mcp.server.operation.duration.count{$gen_ai.tool.name,$service,$apollo.gateway.client.name,$apollo.gateway.upstream.name}.as_count()",
                                             "aggregator": "avg"
                                         },
                                         {
                                             "data_source": "metrics",
                                             "name": "query1",
-                                            "query": "sum:mcp.server.operation.duration.count{$gen_ai.tool.name,error.type:*,$apollo.gateway.name}.as_count()",
+                                            "query": "sum:mcp.server.operation.duration.count{$gen_ai.tool.name,error.type:*,$service,$apollo.gateway.client.name,$apollo.gateway.upstream.name}.as_count()",
                                             "aggregator": "avg"
                                         }
                                     ],
@@ -1079,20 +1328,20 @@
                                 {
                                     "formulas": [
                                         {
-                                            "formula": "query1",
                                             "number_format": {
                                                 "unit": {
                                                     "type": "canonical_unit",
                                                     "unit_name": "millisecond"
                                                 }
-                                            }
+                                            },
+                                            "formula": "query1"
                                         }
                                     ],
                                     "queries": [
                                         {
                                             "data_source": "metrics",
                                             "name": "query1",
-                                            "query": "p99:mcp.server.operation.duration{$apollo.gateway.name}",
+                                            "query": "p99:mcp.server.operation.duration{$service,$apollo.gateway.client.name,$apollo.gateway.upstream.name,$gen_ai.tool.name}",
                                             "aggregator": "percentile"
                                         }
                                     ],
@@ -1132,17 +1381,17 @@
                                         {
                                             "name": "query1",
                                             "data_source": "metrics",
-                                            "query": "p50:mcp.server.operation.duration{$apollo.gateway.upstream.name,$apollo.gateway.name}"
+                                            "query": "p50:mcp.server.operation.duration{$apollo.gateway.upstream.name,$service,$apollo.gateway.client.name,$gen_ai.tool.name}"
                                         },
                                         {
                                             "name": "query2",
                                             "data_source": "metrics",
-                                            "query": "p95:mcp.server.operation.duration{$apollo.gateway.upstream.name,$apollo.gateway.name}"
+                                            "query": "p95:mcp.server.operation.duration{$apollo.gateway.upstream.name,$service,$apollo.gateway.client.name,$gen_ai.tool.name}"
                                         },
                                         {
                                             "name": "query3",
                                             "data_source": "metrics",
-                                            "query": "p99:mcp.server.operation.duration{$apollo.gateway.upstream.name,$apollo.gateway.name}"
+                                            "query": "p99:mcp.server.operation.duration{$apollo.gateway.upstream.name,$service,$apollo.gateway.client.name,$gen_ai.tool.name}"
                                         }
                                     ],
                                     "formulas": [
@@ -1172,7 +1421,56 @@
                         "layout": {
                             "x": 0,
                             "y": 4,
-                            "width": 12,
+                            "width": 6,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 3213823544293829,
+                        "definition": {
+                            "title": "Tool Response Time p95",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "legend_layout": "auto",
+                            "legend_columns": [
+                                "avg",
+                                "min",
+                                "max",
+                                "value",
+                                "sum"
+                            ],
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "response_format": "timeseries",
+                                    "queries": [
+                                        {
+                                            "name": "query2",
+                                            "data_source": "metrics",
+                                            "query": "p95:mcp.server.operation.duration{$apollo.gateway.upstream.name,$service,$apollo.gateway.client.name,$gen_ai.tool.name} by {gen_ai.tool.name}"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "alias": "P95",
+                                            "formula": "query2"
+                                        }
+                                    ],
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "line"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 4,
+                            "width": 6,
                             "height": 4
                         }
                     }
@@ -1180,16 +1478,373 @@
             },
             "layout": {
                 "x": 0,
-                "y": 43,
+                "y": 50,
                 "width": 12,
                 "height": 9
+            }
+        },
+        {
+            "id": 5129028049646427,
+            "definition": {
+                "title": "Tool Optimization",
+                "background_color": "gray",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 1905779392406552,
+                        "definition": {
+                            "type": "note",
+                            "content": "Monitor token consumption patterns across your MCP tools to optimize costs and identify inefficient tool descriptions or responses.\n\n**What to look for**\n- Track overall token consumption and cost trends across your ecosystem.\n- Identify tools with disproportionate token usage that need optimization.\n- Correlate token spikes with specific workflows or time periods.",
+                            "background_color": "white",
+                            "font_size": "14",
+                            "text_align": "left",
+                            "vertical_align": "top",
+                            "show_tick": false,
+                            "tick_pos": "50%",
+                            "tick_edge": "left",
+                            "has_padding": true
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 12,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 7213707765663254,
+                        "definition": {
+                            "title": "Average Output Tokens Across Tools",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "name": "query2",
+                                            "data_source": "metrics",
+                                            "query": "avg:apollo.gateway.result.tokens.estimated{$apollo.gateway.upstream.name,$gen_ai.tool.name,gen_ai.operation.name:execute_tool,$apollo.gateway.client.name,$service}",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query2"
+                                        }
+                                    ],
+                                    "comparison": {
+                                        "type": "relative",
+                                        "duration": {
+                                            "type": "previous_timeframe"
+                                        },
+                                        "directionality": "neutral"
+                                    }
+                                }
+                            ],
+                            "autoscale": false,
+                            "precision": 0
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 2,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 4705730831129505,
+                        "definition": {
+                            "title": "Average Estimated Output Tokens by Tool",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "toplist",
+                            "requests": [
+                                {
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "avg:apollo.gateway.result.tokens.estimated.sum{$apollo.gateway.upstream.name,mcp.method.name:tools/call,$apollo.gateway.client.name,$gen_ai.tool.name} by {gen_ai.tool.name}.as_count()",
+                                            "aggregator": "avg"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "sort": {
+                                        "count": 10,
+                                        "order_by": [
+                                            {
+                                                "type": "formula",
+                                                "index": 0,
+                                                "order": "desc"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ],
+                            "style": {
+                                "display": {
+                                    "type": "stacked"
+                                },
+                                "palette": "dog_classic",
+                                "scaling": "absolute"
+                            }
+                        },
+                        "layout": {
+                            "x": 3,
+                            "y": 2,
+                            "width": 9,
+                            "height": 4
+                        }
+                    },
+                    {
+                        "id": 667197007329286,
+                        "definition": {
+                            "title": "Total Estimated Output Tokens",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "response_format": "scalar",
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "sum:apollo.gateway.result.tokens.estimated.sum{$apollo.gateway.upstream.name,$service,$apollo.gateway.client.name,$gen_ai.tool.name}.as_count()",
+                                            "aggregator": "sum"
+                                        }
+                                    ],
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "comparison": {
+                                        "type": "relative",
+                                        "duration": {
+                                            "type": "previous_timeframe"
+                                        },
+                                        "directionality": "neutral"
+                                    }
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 1
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 4,
+                            "width": 3,
+                            "height": 2
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 59,
+                "width": 12,
+                "height": 7
+            }
+        },
+        {
+            "id": 8592507208932475,
+            "definition": {
+                "title": "Sessions",
+                "background_color": "gray",
+                "show_title": true,
+                "type": "group",
+                "layout_type": "ordered",
+                "widgets": [
+                    {
+                        "id": 6691437412589732,
+                        "definition": {
+                            "title": "Top 5 Most Active Sessions by Client",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "toplist",
+                            "requests": [
+                                {
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "max:apollo.gateway.mcp.server.sessions.active{$service, $apollo.gateway.client.name} by {apollo.gateway.client.name}",
+                                            "aggregator": "max"
+                                        }
+                                    ],
+                                    "response_format": "scalar",
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "sort": {
+                                        "count": 5,
+                                        "order_by": [
+                                            {
+                                                "type": "formula",
+                                                "index": 0,
+                                                "order": "desc"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ],
+                            "style": {
+                                "display": {
+                                    "type": "stacked",
+                                    "legend": "automatic"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 0,
+                            "width": 6,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 461539899606110,
+                        "definition": {
+                            "title": "Active Sessions by Client",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "time": {},
+                            "type": "timeseries",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "max:apollo.gateway.mcp.server.sessions.active{$service,$apollo.gateway.client.name} by {apollo.gateway.client.name}"
+                                        }
+                                    ],
+                                    "response_format": "timeseries",
+                                    "style": {
+                                        "palette": "dog_classic",
+                                        "order_by": "values",
+                                        "line_type": "solid",
+                                        "line_width": "normal"
+                                    },
+                                    "display_type": "area"
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 0,
+                            "width": 6,
+                            "height": 3
+                        }
+                    },
+                    {
+                        "id": 2471743567919366,
+                        "definition": {
+                            "title": "Currently Active Sessions",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "type": "query_value",
+                            "requests": [
+                                {
+                                    "formulas": [
+                                        {
+                                            "formula": "query1"
+                                        }
+                                    ],
+                                    "queries": [
+                                        {
+                                            "name": "query1",
+                                            "data_source": "metrics",
+                                            "query": "max:apollo.gateway.mcp.server.sessions.active{$service,$apollo.gateway.client.name}",
+                                            "aggregator": "last"
+                                        }
+                                    ],
+                                    "response_format": "scalar"
+                                }
+                            ],
+                            "autoscale": true,
+                            "precision": 2,
+                            "timeseries_background": {
+                                "type": "bars",
+                                "yaxis": {}
+                            }
+                        },
+                        "layout": {
+                            "x": 0,
+                            "y": 3,
+                            "width": 3,
+                            "height": 2
+                        }
+                    },
+                    {
+                        "id": 8765451027775120,
+                        "definition": {
+                            "title": "Session Duration Distribution",
+                            "title_size": "16",
+                            "title_align": "left",
+                            "show_legend": true,
+                            "type": "distribution",
+                            "xaxis": {
+                                "scale": "linear",
+                                "min": "auto",
+                                "max": "auto",
+                                "include_zero": true
+                            },
+                            "yaxis": {
+                                "scale": "linear",
+                                "min": "auto",
+                                "max": "auto",
+                                "include_zero": true
+                            },
+                            "requests": [
+                                {
+                                    "request_type": "histogram",
+                                    "query": {
+                                        "name": "query1",
+                                        "data_source": "metrics",
+                                        "query": "histogram:mcp.server.session.duration{$service, $apollo.gateway.client.name}"
+                                    }
+                                }
+                            ]
+                        },
+                        "layout": {
+                            "x": 6,
+                            "y": 3,
+                            "width": 6,
+                            "height": 3
+                        }
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 66,
+                "width": 12,
+                "height": 7
             }
         }
     ],
     "template_variables": [
         {
-            "name": "apollo.gateway.name",
-            "prefix": "apollo.gateway.name",
+            "name": "service",
+            "prefix": "service",
             "available_values": [],
             "default": "*"
         },
@@ -1202,6 +1857,12 @@
         {
             "name": "gen_ai.tool.name",
             "prefix": "gen_ai.tool.name",
+            "available_values": [],
+            "default": "*"
+        },
+        {
+            "name": "apollo.gateway.client.name",
+            "prefix": "apollo.gateway.client.name",
             "available_values": [],
             "default": "*"
         }
