@@ -1,0 +1,1931 @@
+{
+  "version": 13,
+  "variables": [
+    {
+      "key": "service_name",
+      "type": "csv",
+      "defaultValue": "router",
+      "input": "router",
+      "version": 2,
+      "visible": true,
+      "editable": true,
+      "multiple": true
+    }
+  ],
+  "tiles": {
+    "0": {
+      "type": "markdown",
+      "content": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from router\n-   If your organization has control over all clients of your supergraph:\n    -   alert on increases in 4xx responses indicating a potential misconfiguration of one or more clients.\n    -   alert on increases in GraphQL errors indicating bad queries from one or more clients.\n-   Reliability SLO: ≥99.9% of Router responses should be 2xx and without error.\n-   Metric health: unexpected zero or missing metrics indicate a potential networking or telemetry misconfiguration\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement"
+    },
+    "1": {
+      "type": "data",
+      "title": "Volume of Requests Per Status Code",
+      "query": "timeseries count(`http.server.request.duration`), by: {`http.response.status_code`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "barChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "2": {
+      "type": "data",
+      "title": "Throughput: Requests Per Second",
+      "query": "timeseries count(`http.server.request.duration`, rate: 1s), by: {`service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "3": {
+      "type": "markdown",
+      "content": "This chart shows the volume of requests Apollo Router is handling over time, broken down by status code.\n\n**What to look for**\n\n- Are most requests successful (`2xx`)?\n- Are clients misbehaving (`4xx`)?\n- Is the router or a subgraph failing (`5xx`)?\n\n**Why it matters**\n\n- An increase in `4xx` errors may indicate client bugs or attempts to invoke deprecated queries.\n- A spike in `5xx` errors likely indicates that something is broken downstream.\n- Changes in total volume may reflect traffic surges or outages."
+    },
+    "4": {
+      "type": "markdown",
+      "content": "This chart shows requests per second (RPS) hitting the Apollo Router. This is your clearest view into how much work the Router is doing right now.\n\n**What to look for**\n\n- A sudden drop may indicate client outages or configuration errors.\n- A flat line during known busy periods may indicate that you are hitting throttling limits."
+    },
+    "5": {
+      "type": "data",
+      "title": "Error Rate Percent",
+      "query": "timeseries {\n  graphql_errors = count(`http.server.request.duration`, filter: `graphql.errors` == \"true\"),\n  http_errors = count(`http.server.request.duration`, filter: not (startsWith(`http.response.status_code`, \"2\") or startsWith(`http.response.status_code`, \"4\"))),\n  total = count(`http.server.request.duration`)\n}, by: {`service.name`}\n| filter in(`service.name`, array($service_name))\n| fieldsAdd error_rate_pct = ((graphql_errors[] + http_errors[]) / total[]) * 100",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "error_rate_pct",
+            "unitCategory": "percentage",
+            "baseUnit": "percent",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      }
+    },
+    "6": {
+      "type": "data",
+      "title": "GraphQL Errors by Operation",
+      "query": "timeseries count(`http.server.request.duration`, filter: `graphql.errors` == \"true\"), by: {`graphql.operation.name`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "barChart"
+    },
+    "7": {
+      "type": "markdown",
+      "content": "This chart shows the total error rate percentage of requests handled by the Router. It includes GraphQL errors (e.g., validation failures, resolver exceptions) and HTTP 5xx responses (typically indicating internal or subgraph infrastructure issues). The formula adds these two failure categories together and divides by the total request count, giving a single view into how often requests fail from the client’s perspective.\n\n**What to look for**\n\n- Spikes in error rate — especially following deploys or traffic increases.\n- Sustained error rates above 1–2% — which may indicate regressions or uncaught edge cases.\n- Increased 5xx errors without corresponding GraphQL errors — this may point to subgraph crashes or timeouts.\n- Silent drops in traffic — if error rate decreases while request volume drops, it could signal issues upstream (e.g., client timeouts or DNS problems).\n\n**Why it matters**\n\n- Reliability tracking — errors reflect user-facing failures and service health.\n- Incident detection — elevated error rates can signal broken schemas, subgraph failures, or deploy issues.\n- SLO compliance — helps teams track whether reliability objectives (like <1% error rate) are being met."
+    },
+    "8": {
+      "type": "markdown",
+      "content": "This chart focuses specifically on GraphQL errors — counting requests served by the Router that were flagged with `graphql.errors == \"true\"`, grouped by query operation name.\n\n**What to look for**\n\n- Spikes in errors for a specific operation — often the result of a client or subgraph logic change.\n\n**Why it matters**\n\n- GraphQL errors are surfaced in the `errors` array of the response body, so these requests usually still return an HTTP `200 OK` even though something failed.\n- These do not directly impact router performance, but can be an indicator of incorrect logic on your client or subgraph side.\n"
+    },
+    "9": {
+      "type": "data",
+      "title": "Request Body Size (p99 / Max)",
+      "query": "timeseries {\n  Max = max(`http.server.request.body.size`),\n  p99 = percentile(`http.server.request.body.size`, 99)\n}, by: {`service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "Max",
+            "unitCategory": "data",
+            "baseUnit": "byte",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "p99",
+            "unitCategory": "data",
+            "baseUnit": "byte",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "10": {
+      "type": "data",
+      "title": "Open Subscriptions by Operation",
+      "query": "timeseries sum(`apollo.router.opened.subscriptions`, rollup: avg), by: {`graphql.operation.name`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "barChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "11": {
+      "type": "markdown",
+      "content": "This chart shows the size of incoming HTTP request bodies, highlighting the largest payloads seen.\n\n**What to look for**\n\n- A stable `p99` suggests consistent request sizes.\n- Occasional `max` spikes are okay — frequent ones may require investigation.\n- Rising trends could signal a client change or growing inefficiency.\n\n**Why it matters**\n\n- `p99` — shows typical large requests.\n- `max` — shows the absolute biggest, helpful for spotting outliers.\n- Large payloads can increase parsing/validation time.\n- Large payloads can cause memory pressure or latency spikes.\n- Large payloads can indicate misuse (e.g., file uploads, bloated mutations).\n\n**Caveats**\n\n- Doesn’t reflect query complexity — a small body can still be expensive."
+    },
+    "12": {
+      "type": "markdown",
+      "content": "This chart shows the number of different opened subscriptions on the router by operation.\n\n**What to look for**\n\n- If you [limit your number of open connections](https://www.apollographql.com/docs/graphos/routing/operations/subscriptions/configuration#limiting-the-number-of-client-connections), ensure the total sum is not approaching or staying at that limit, as it will cause client rejections.\n- A high number of subscriptions for the same operation suggests that client requests could potentially be adjusted to better make use of [deduplication](https://www.apollographql.com/docs/graphos/routing/operations/subscriptions/configuration#subscription-deduplication).\n\n**Why it matters**\n\n- Subscriptions are long-lived HTTP connections so you want to ensure they are not holding too many resources open on your router.\n\n**Caveats**\n\n-  If multiple clients are listening to the same subscription, that will be deduplicated into a single subscription on the router side and will only show as a single count on this chart."
+    },
+    "13": {
+      "type": "data",
+      "title": "Dropped Subscription Events",
+      "query": "timeseries sum(`apollo.router.skipped.event.count`), by: {`service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "barChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "14": {
+      "type": "markdown",
+      "content": "This chart shows the number of subscription events dropped because too many events were received from the subgraph without being sent to the client(s).\n\n**What to look for**\n\n- Regular non-zero values in this chart indicate backpressure being relieved by the router.\n\n**Why it matters**\n\n- This metric indicates that the relationship between clients and the subgraphs producing the subscription data is not aligned in performance. Either subgraphs are over-producing values or clients are under-consuming them.\n"
+    },
+    "15": {
+      "type": "markdown",
+      "content": "**Apollo Router Latency Overview**\n\nApollo Router routes incoming GraphQL requests to subgraphs, handles query planning, and coordinates responses. Latency here reflects the total time the Router takes to process and respond to an HTTP request, including:\n\n-   Parsing and validating the GraphQL query\n-   Calling subgraphs\n-   Merging responses, handling errors, and formatting results\n-   Any middleware or plugin logic you've added\n\nIf your latency rises, the cause could be the Router itself, one or more subgraphs, or custom logic you've installed."
+    },
+    "16": {
+      "type": "data",
+      "title": "Request Duration (avg)",
+      "query": "timeseries avg(`http.server.request.duration`), by: {`service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "avg(http.server.request.duration)",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "17": {
+      "type": "data",
+      "title": "Request Duration Percentiles",
+      "query": "timeseries {\n  p99 = percentile(`http.server.request.duration`, 99),\n  p95 = percentile(`http.server.request.duration`, 95),\n  p90 = percentile(`http.server.request.duration`, 90),\n  Min = min(`http.server.request.duration`),\n  Max = max(`http.server.request.duration`)\n}, by: {`service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "p99",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "p95",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "p90",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "Min",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "Max",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "18": {
+      "type": "markdown",
+      "content": "This chart shows the average request duration for the Apollo Router over time, using the [http.server.request.duration](https://opentelemetry.io/docs/specs/semconv/http/http-metrics/#metric-httpserverrequestduration) metric.\n\n**What to look for**\n\n- Sudden shifts in average duration — may indicate changes in backend performance.\n- Rising trends over time — can point to slow queries or infrastructure issues.\n\n**Why it matters**\n\n- Understanding latency helps identify bottlenecks and improve user experience.\n- Monitoring duration trends assists in detecting regressions early.\n\n**Caveats**\n\n- An average hides outliers and the shape of the latency distribution. Use the percentile chart alongside it, and open the metric in a Notebook or Data Explorer for distribution analysis (histograms, long tails)."
+    },
+    "19": {
+      "type": "markdown",
+      "content": "**How to interpret percentiles**\n\n- p90 / p95 — these percentiles represent the upper range of typical request latencies. If these values rise, it generally means a significant portion of requests are experiencing slower responses. Possible causes include:\n\n  - A subgraph is responding more slowly than usual (e.g., due to load or inefficiency)\n  - The Router’s query planning step is taking longer (especially with complex or highly federated queries)\n  - Overall increased load causing processing delays\n\n- p99 — this is a tail latency metric that reflects the slowest 1% of requests. Spikes here often indicate rare but impactful delays, such as:\n\n  - Intermittent subgraph performance issues or temporary timeouts\n  - Specific heavy or complex queries that take much longer to plan or execute\n  - Unusual overhead in middleware or Router internals affecting some requests\n\n- Max — the absolute slowest observed request during the timeframe. Isolated high max values are usually less concerning (e.g., caused by a single unusual request). However, frequent or sustained high max latencies may point to:\n\n  - Clients issuing extremely large or repeated queries causing resource exhaustion or retries\n  - Transient infrastructure problems (network issues, DNS delays, resource contention)\n\n- Min — represents the fastest possible response from the Router. A surprisingly high minimum usually reflects baseline overhead within the Router itself — such as:\n\n  - Middleware or plugin execution time\n  - Query parsing, validation, or planning\n  - Routing logic that's inherently non-negligible\n\n**Caveats**\n\n- Low request volumes can skew percentiles; a single slow request distorts p99 or max.\n- Slow subgraphs inflate Router latency here—this chart shows total request time, not internal breakdowns.\n- Latency spikes without load increase may point to network hiccups, subgraph cold starts, or cloud platform noise outside the Router’s control."
+    },
+    "20": {
+      "type": "markdown",
+      "content": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on sustained increases in 5xx responses from any subgraph or connector source.\n-   Reliability SLO: ≥99.9% of Router→backend requests should be 2xx and without error.\n\n### Throughput Categories\n\n**Low Throughput:** Fewer than **10 requests per minute (RPM)** (~0.17 RPS)\n-  Metrics like P95 latency and error rates may be unreliable. You’re likely looking at isolated client activity or background tasks due to the api not being warm.\n-  Monitor with logs, traces, or uptime checks, not SLO-based alerts\n\n**Moderate Throughput:** Between **10 and 100 RPM** (~0.17 to ~1.7 RPS)\n-   Enough volume to detect trends, but not enough to be confident in moment-to-moment alerting.\n-  Use conservative thresholds on any alerts and look for trends over longer windows of time\n\n**High _(enough)_ Throughput:** Greater than **100 RPM** (>1.7 RPS)\n-  Generally enough for real-time alerting and solid SLO enforcement"
+    },
+    "21": {
+      "type": "data",
+      "title": "Http Requests by Status Code",
+      "query": "timeseries count(`http.client.request.duration`), by: {`http.response.status_code`, `subgraph.name`, `connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "barChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "22": {
+      "type": "data",
+      "title": "Throughput (Requests per Second)",
+      "query": "timeseries count(`http.client.request.duration`, rate: 1s), by: {`subgraph.name`, `connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "23": {
+      "type": "markdown",
+      "content": "This chart shows the volume of outgoing HTTP requests from the Router to backend services, broken down by HTTP status code and subgraph or connector source.\n\n**What to look for**\n\n- High volume of `2xx` is normal and healthy.\n\n**Why it matters**\n\n- Tracks overall subgraph and connector source traffic."
+    },
+    "24": {
+      "type": "markdown",
+      "content": "This chart shows how many requests per second (RPS) each subgraph and connector source is handling. It's useful for understanding traffic distribution across your federated architecture and identifying which subgraphs and connectors are the busiest.\n\n**What to look for**\n\n- Consistently high RPS on a subgraph or connector may indicate:\n\n  - It supports popular or frequently queried fields.\n  - It could become a performance bottleneck if not properly scaled or optimized.\n\n- Sudden spikes can signal usage surges or potential issues downstream (e.g., retry storms).\n- Low RPS subgraphs and connectors might be underutilized or intentionally lightweight.\n\n**Why it matters**\n\n- Ensure high-throughput subgraphs and connectors are well-instrumented and autoscaled where possible.\n- Investigate traffic spikes for correlation with client activity or backend issues.\n- Cross-reference with latency charts to catch early signs of degradation under load.\n\n**Caveats**\n\n- This reflects traffic from the Router to each subgraph and connector, not necessarily user-facing load.\n- Subgraphs and connectors handling many small, fast requests may show high RPS but minimal latency or load — context is key."
+    },
+    "25": {
+      "type": "data",
+      "title": "Non-2xx Responses",
+      "query": "timeseries count(`http.client.request.duration`, filter: not startsWith(`http.response.status_code`, \"2\")), by: {`subgraph.name`, `connector.source.name`, `http.response.status_code`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "barChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "26": {
+      "type": "markdown",
+      "content": "This chart focuses specifically on non-successful (non-2xx) responses from subgraphs and connector sources — grouped by subgraph, connector source, and status code.\n\n**What to look for**\n\n- Common causes of 4xx:\n  - Schema mismatch between subgraph and Supergraph (e.g., schema drift)\n  - Misconfigured connector specifications\n  - Missing auth headers or invalid inputs\n- Common causes of 5xx:\n  - Crashes, timeouts, or errors in a subgraph or connector source's logic\n- How this impacts Router performance:\n  - Frequent 5xxs inflate latency as the Router retries or collects error details.\n  - Repeated 4xxs may be harmless but still consume Router resources and can signal client or schema issues.\n- Pro tip — if a subgraph or connector source frequently appears here, coordinate with its owning team to investigate error logs or validate schema compatibility.\n\n**Why it matters**\n\n- These are the requests that failed, either due to config errors (4xx) or server-side issues (5xx).\n- The Router isn’t failing — it’s forwarding a query that the subgraph can't fulfill.\n\n**Caveats**\n\n- You might see a null (empty) status code grouping. This means that a request was made but a response was not received."
+    },
+    "27": {
+      "type": "data",
+      "title": "Response Body Size",
+      "query": "timeseries avg(`http.client.response.body.size`), by: {`subgraph.name`, `connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "avg(http.client.response.body.size)",
+            "unitCategory": "data",
+            "baseUnit": "byte",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "28": {
+      "type": "markdown",
+      "content": "This chart tracks the total volume of response data returned by each subgraph or connector source over time. It helps identify subgraphs or connector sources that are consistently returning large payloads, which can impact overall performance and client-side load times.\n\n**What to look for**\n\n- Spikes or sustained high values from a subgraph or connector source may indicate:\n\n  - Overfetching — unnecessary fields being resolved and returned.\n  - Inefficient schema design — returning deeply nested or verbose structures.\n  - Missing pagination or filtering on list-type fields.\n\n- Flat, low-volume backends could either be healthy or underutilized — context matters.\n\n**Why it matters**\n\n- Audit GraphQL queries hitting high-volume backends.\n- Consider schema redesigns to reduce payload size (e.g., use fragments, `@defer`, or pagination).\n- If the size is expected (e.g., media, large objects), ensure proper compression is in place.\n\n**Caveats**\n\n- Values are based on the `Content-Length` header and may not reflect actual decompressed payload size.\n- This metric tracks data size returned by subgraphs and connector sources, not what is ultimately sent to the client by the router."
+    },
+    "29": {
+      "type": "markdown",
+      "content": "**Set Up Recommended SLOs & Alerts:**\n\n-   Alert on P95 latency exceeding thresholds for critical subgraphs.\n-   Latency SLO (For High-Throughput): P95 Router → Subgraph latency should remain under 300ms\n-   Latency SLO (For Moderate-Throughput): Set threshold to (current P95 for the last week + 20%). This allows for natural variability while detecting regressions.\n"
+    },
+    "30": {
+      "type": "data",
+      "title": "P95 Latency by Subgraph",
+      "query": "timeseries percentile(`http.client.request.duration`, 95), by: {`subgraph.name`, `connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "percentile(http.client.request.duration, 95)",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "31": {
+      "type": "data",
+      "title": "GraphQL Errors by Subgraph",
+      "query": "fetch spans\n| filter in(service.name, array($service_name))\n| filter span.name == \"subgraph\"\n| filter isNotNull(`subgraph.name`) and lower(toString(span.status_code)) == \"error\"\n| summarize count(), by: {bin(timestamp, 1m), `subgraph.name`}",
+      "visualization": "barChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "32": {
+      "type": "markdown",
+      "content": "This chart tracks the 95th percentile (P95) request duration from the Router to each subgraph and connector source.\n\n**What to look for**\n\n- Rising P95 values can indicate:\n\n  - Backend slowness\n  - Schema changes causing more complex queries\n  - Increased load on backends\n\n- Flat or low P95 suggests stable performance under current conditions.\n- Correlate with throughput — rising latency during peak traffic may mean you’re under-provisioned.\n\n**Why it matters**\n\n- P95 is more resilient to outliers than max but still reveals tail latency problems that affect real users.\n- Investigate consistently high-latency backends — even if they aren’t crashing, they may be degrading user experience.\n- Compare with response body size and throughput to find potential root causes (e.g., payload bloat or traffic spikes).\n- Check if retry or @requires patterns are contributing.\n- Consider the use of the @defer directive to handle fields that take a particularly long time to resolve.\n\n**Caveats**\n\n- P95 latency is unreliable for low-throughput backends because small sample sizes let outliers disproportionately skew the metric, making it hard to distinguish real issues from statistical noise.\n- P95 doesn’t reveal all latency issues — check the duration charts and percentiles for outliers and long tails."
+    },
+    "33": {
+      "type": "markdown",
+      "content": "This chart shows GraphQL errors by subgraph\n\n**What to look for**\n\n- Sudden spikes in errors for a specific subgraph\n\n**Why it matters**\n\n- GraphQL errors are surfaced in the response body in the `errors` array. If a request encounters a GraphQL error, the overall response still returns a `200 OK`. Looking at errors by subgraph can help highlight response degradation when individual subgraphs encounter elevated error rates.\n\n**Caveats**\n\n- Unlike the other charts in this section, this chart is powered by spans (`fetch spans`), not metrics — it requires span ingestion into Dynatrace to populate. It counts subgraph spans with an error status, which can differ from the counts of requests flagged with `graphql.errors`."
+    },
+    "34": {
+      "type": "data",
+      "title": "Subgraph Performance Profile (Dashboard Time Scale)",
+      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  p95_latency = percentile(`http.client.request.duration`, 95)\n}, by: {`subgraph.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`subgraph.name`)\n| summarize requests = sum(arraySum(requests)), p95_latency = avg(arrayAvg(p95_latency)), by: {`subgraph.name`}",
+      "visualization": "scatterplot",
+      "visualizationSettings": {
+        "scatter": {
+          "x": {
+            "field": "requests"
+          },
+          "y": {
+            "field": "p95_latency"
+          },
+          "color": {
+            "field": "subgraph.name"
+          }
+        }
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "35": {
+      "type": "data",
+      "title": "Subgraph Performance Profile (One Week Fixed Time Scale)",
+      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  p95_latency = percentile(`http.client.request.duration`, 95)\n}, from: now()-7d, by: {`subgraph.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`subgraph.name`)\n| summarize requests = sum(arraySum(requests)), p95_latency = avg(arrayAvg(p95_latency)), by: {`subgraph.name`}",
+      "visualization": "scatterplot",
+      "visualizationSettings": {
+        "scatter": {
+          "x": {
+            "field": "requests"
+          },
+          "y": {
+            "field": "p95_latency"
+          },
+          "color": {
+            "field": "subgraph.name"
+          }
+        }
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "36": {
+      "type": "data",
+      "title": "Connector Source Performance Profile (Dashboard Time Scale)",
+      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  p95_latency = percentile(`http.client.request.duration`, 95)\n}, by: {`subgraph.name`, `connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`connector.source.name`)\n| summarize requests = sum(arraySum(requests)), p95_latency = avg(arrayAvg(p95_latency)), by: {`subgraph.name`, `connector.source.name`}",
+      "visualization": "scatterplot",
+      "visualizationSettings": {
+        "scatter": {
+          "x": {
+            "field": "requests"
+          },
+          "y": {
+            "field": "p95_latency"
+          },
+          "color": {
+            "field": "subgraph.name"
+          }
+        }
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "37": {
+      "type": "data",
+      "title": "Connector Source Performance Profile (One Week Fixed Time Scale)",
+      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  p95_latency = percentile(`http.client.request.duration`, 95)\n}, from: now()-7d, by: {`subgraph.name`, `connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`connector.source.name`)\n| summarize requests = sum(arraySum(requests)), p95_latency = avg(arrayAvg(p95_latency)), by: {`subgraph.name`, `connector.source.name`}",
+      "visualization": "scatterplot",
+      "visualizationSettings": {
+        "scatter": {
+          "x": {
+            "field": "requests"
+          },
+          "y": {
+            "field": "p95_latency"
+          },
+          "color": {
+            "field": "subgraph.name"
+          }
+        }
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "38": {
+      "type": "markdown",
+      "content": "These charts aid in assessing the performance of individual subgraphs and connector sources by correlating their request handling with their response times in order to identify hotspots and bottlenecks.\n\n**What to look for**\n\n- Top right — hotspot / bottleneck\n- Bottom left — healthy\n- Good:\n  - Bottom-Right Quadrant (High RPS & Low Latency) — ideal scenario indicating efficient backends.\n  - Bottom-Left Quadrant (Low RPS & Low Latency) — efficient but underutilized.\n- Warning:\n  - Top-Left Quadrant (Low RPS & High Latency) — underutilized and slow; potential future bottlenecks or issues if traffic increases.\n- Bad:\n  - Top-Right Quadrant (High RPS & High Latency) — backends handling many requests with slower responses; may need optimization.\n\n**Why it matters**\n\n- Optimize high-latency backends — perform schema optimizations or improve the performance of backends, starting with ones in the top right.\n- Document known outliers — keep a note (e.g. in a markdown tile) explaining any known anomalies:\n  - “This backend is intentionally slow due to external API call.”\n  - “This one was recently scaled — latency is expected to improve.”\n\n**Caveats**\n\n- Axes auto-scale — this scatterplot dynamically adjusts its axes based on the current data. As a result, a backend may appear in the top-right corner simply due to a narrow overall range — not necessarily because it has poor performance. Always interpret positions relative to other backends, and remember that a top-right placement can still be acceptable if the latency and throughput are within expected bounds."
+    },
+    "39": {
+      "type": "markdown",
+      "content": "These charts are a companion to the scatter plots to the left, set to a fixed time window of 1 week to provide a reference point against whatever timescale you have your dashboard configured to."
+    },
+    "40": {
+      "type": "data",
+      "title": "Backend Request Duration (avg)",
+      "query": "timeseries avg(`http.client.request.duration`), by: {`service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "avg(http.client.request.duration)",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "41": {
+      "type": "markdown",
+      "content": "This chart shows the average backend request duration over time. It helps track how long requests to subgraphs and connector sources take on average, and spot trends or regressions.\n\n**What to look for**\n\n- A low, stable average suggests fast, consistent backend responses.\n- Rising averages over time can highlight new regressions, changes in traffic, or schema changes.\n\n**Caveats**\n\n- An average can't show outliers or tail latency. For distribution analysis (histograms, long tails), open `http.client.request.duration` in a Notebook or Data Explorer, or use the P95 chart in this section."
+    },
+    "42": {
+      "type": "data",
+      "title": "Subgraph Request Duration (avg)",
+      "query": "timeseries avg(`http.client.request.duration`), by: {`subgraph.name`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "avg(http.client.request.duration)",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "43": {
+      "type": "data",
+      "title": "Connector Source Request Duration (avg)",
+      "query": "timeseries avg(`http.client.request.duration`), by: {`connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "avg(http.client.request.duration)",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "44": {
+      "type": "markdown",
+      "content": "The query planner is the heart of the runtime's computational efforts. This is where a request to your supergraph is translated into an invocation plan for the appropriate underlying subgraphs. Its performance will be very closely correlated to your supergraph schema and request characteristics, and will be the other determining factor in your response times beyond the subgraphs themselves."
+    },
+    "45": {
+      "type": "data",
+      "title": "Duration and Wait Time",
+      "query": "timeseries {\n  exec_avg = avg(`apollo.router.compute_jobs.execution.duration`, filter: `job.type` == \"query_planning\"),\n  exec_p95 = percentile(`apollo.router.compute_jobs.execution.duration`, 95, filter: `job.type` == \"query_planning\"),\n  exec_max = max(`apollo.router.compute_jobs.execution.duration`, filter: `job.type` == \"query_planning\"),\n  wait_avg = avg(`apollo.router.compute_jobs.queue.wait.duration`, filter: `job.type` == \"query_planning\"),\n  wait_max = max(`apollo.router.compute_jobs.queue.wait.duration`, filter: `job.type` == \"query_planning\")\n}, filter: in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "exec_avg",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "exec_p95",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "exec_max",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "wait_avg",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "wait_max",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "46": {
+      "type": "data",
+      "title": "Evaluated Plans",
+      "query": "timeseries {\n  evaluated_avg = avg(`apollo.router.query_planning.plan.evaluated_plans`),\n  evaluated_max = max(`apollo.router.query_planning.plan.evaluated_plans`)\n}, filter: in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "47": {
+      "type": "markdown",
+      "content": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**What to look for**\n\n- Low, stable execution times indicate efficient planning.\n- Spikes in max duration could signal complex or inefficient queries.\n- Rising trends after deployments or schema changes may require investigation.\n\n**Why it matters**\n\n- Query planning is critical to routing — delays here increase end-to-end latency.\n- Schema or configuration changes can unexpectedly impact planning performance.\n- High max durations may point to specific queries performing poorly in the planner.\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices)."
+    },
+    "48": {
+      "type": "markdown",
+      "content": "This chart shows how many query plans are evaluated before selecting the optimal one for a request.\n\n**What to look for**\n\n- An average near 1 is ideal — it means the planner is doing the minimal possible work per request.\n- Occasional spikes in max are expected, but frequent or rising values may indicate overly complex queries.\n- Sustained increases above 1 could suggest a need to revisit schema design or client queries.\n\n**Why it matters**\n\n- Fewer evaluated plans mean faster query planning and consequently lower CPU usage and response latency."
+    },
+    "49": {
+      "type": "markdown",
+      "content": "Whenever your router receives an incoming GraphQL operation, it generates a [query plan](https://www.apollographql.com/docs/federation/query-plans/) to determine which subgraphs it needs to query to resolve that operation. By caching previously generated query plans, your router can — skip — generating them — again — if a client later sends the exact same operation. This improves your router's responsiveness.\n\nMonitoring your caching provides insights into both how normal your traffic is and how well your router is able to serve those requests. Your ideal cache performance and hit rates will vary depending on your expected traffic patterns. With the in-memory cache, it will be common to see spikes of cache misses and changes in cache size when new instances are deployed, new schemas are deployed, or new config versions are deployed. During this time, the cache will be evicted and re-warmed up.\n\nWhen interpreting these charts, manually correlate cache changes with your deployment and schema-reload times (e.g. from your CI/CD history or GraphOS launch history) — Grail dashboards do not overlay these events for you. Schema reloads will accompany an expected drop in cache record count and a spike in cache miss rate as unusable cache records are evicted. [Cache warmups](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory#cache-warm-up) will accompany a period of cache misses as new plans are deliberately hit to prime them into the cache. The router does not serve traffic on the new schema until after that precompute warmup has completed.\n\nFor context on what’s cached and why, review the in-memory caching [documentation](https://www.apollographql.com/docs/graphos/routing/performance/caching/in-memory) before interpreting the charts below.\n\n**Caveats**\n\n- These metrics assume that you are running an in-memory cache on your Router.\n- If you are using Redis for distributed caching, you will want to monitor Redis separately (e.g. via [Dynatrace Redis monitoring](https://docs.dynatrace.com/docs/extensions/redis) or your preferred Redis observability).\n- If you are using Entity Caching, [separate metrics will be available](https://www.apollographql.com/docs/graphos/routing/performance/caching/entity#observability) to monitor the performance of that feature."
+    },
+    "50": {
+      "type": "data",
+      "title": "Misses vs. Record Count",
+      "query": "timeseries {\n  misses = count(`apollo.router.cache.miss.time`),\n  hits = count(`apollo.router.cache.hit.time`),\n  records = sum(`apollo.router.cache.size`, rollup: avg)\n}, filter: in(`service.name`, array($service_name))\n| fieldsAdd hit_rate_pct = (hits[] / (hits[] + misses[])) * 100",
+      "visualization": "barChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "51": {
+      "type": "data",
+      "title": "Record Counts by Instance",
+      "query": "timeseries avg(`apollo.router.cache.size`), by: {`host.name`, `k8s.pod.name`, `container.id`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "52": {
+      "type": "markdown",
+      "content": "This chart shows an aggregate view across all cache types of your record counts, cache hits and misses, and overall hit percentage. This is a lower-cardinality aggregate view of all the other charts in this section, specifically for correlating events between them.\n\n**What to look for**\n\n- Drops in record counts that are not correlated to schema reloads or new instance deployments\n- Spikes in cache misses that are not correlated to a drop in record count\n- Spikes in cache misses that do correlate to a significant drop in cache hit percentage\n\n**Why it matters**\n\n- Your cache sizes impact the memory footprint of your runtime\n- Your cache miss counts represent costlier requests to your runtime."
+    },
+    "53": {
+      "type": "markdown",
+      "content": "This chart breaks down the number of records in the cache of each of your runtime instances.\n\n**What to look for**\n\n- An instance or instances that have an anomalous count of records without a corresponding deployment or schema change\n- An instance or instances that are growing at a different rate than the others without a corresponding deployment\n\n**Why it matters**\n\n- If your traffic isn't well-distributed across your instances, some caches will lag behind in growth rate\n- If you have an instance go into an unhealthy state, you may see the anomaly represented here\n\n**Caveats**\n\nGrouping by `host`, `pod_name`, and `container_id` may cause fragmented data if these tags aren’t consistent or unique in your setup. Update the group-by fields to whatever works best in your environment for accurate results."
+    },
+    "54": {
+      "type": "data",
+      "title": "Record Counts by Type",
+      "query": "timeseries sum(`apollo.router.cache.size`, rollup: avg), by: {`kind`, `service.version`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "55": {
+      "type": "data",
+      "title": "Misses by Type",
+      "query": "timeseries count(`apollo.router.cache.miss.time`), by: {`kind`, `service.version`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "barChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "56": {
+      "type": "markdown",
+      "content": "This chart shows cache record counts broken down by each cache type.\n\n**Why it matters**\n\n- When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail."
+    },
+    "57": {
+      "type": "markdown",
+      "content": "This chart shows cache misses broken down by cache type.\n\n**Why it matters**\n\n- When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail."
+    },
+    "58": {
+      "type": "data",
+      "title": "Hit % by Instance",
+      "query": "timeseries {\n  hits = count(`apollo.router.cache.hit.time`),\n  misses = count(`apollo.router.cache.miss.time`)\n}, by: {`host.name`, `k8s.pod.name`, `container.id`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| fieldsAdd hit_rate_pct = (hits[] / (hits[] + misses[])) * 100",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "hit_rate_pct",
+            "unitCategory": "percentage",
+            "baseUnit": "percent",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "59": {
+      "type": "markdown",
+      "content": "This chart shows cache hit rate broken down by each individual running instance of your runtime.\n\n**Why it matters**\n\n- When diagnosing issues with the above aggregate values, it can be informational to see the breakdown at a finer level of detail.\n\n**Caveats**\n\nGrouping by `host`, `pod_name`, and `container_id` may cause fragmented data if these tags aren’t consistent or unique in your setup. Update the group-by fields to whatever works best in your environment for accurate results."
+    },
+    "60": {
+      "type": "markdown",
+      "content": "Compute jobs are CPU-intensive tasks that get managed on a dedicated thread pool, inclusive of query planning tasks. Non-query-planning tasks tend to be either low-cost and are consequently less commonly a performance pain point. Most diagnosis will be done against the query planning metrics directly, but this section is provided for comparative purposes."
+    },
+    "61": {
+      "type": "data",
+      "title": "Query Planning Duration Percentiles and Wait Time",
+      "query": "timeseries {\n  exec_p50 = percentile(`apollo.router.compute_jobs.execution.duration`, 50, filter: `job.type` == \"query_planning\"),\n  exec_p95 = percentile(`apollo.router.compute_jobs.execution.duration`, 95, filter: `job.type` == \"query_planning\"),\n  exec_p99 = percentile(`apollo.router.compute_jobs.execution.duration`, 99, filter: `job.type` == \"query_planning\"),\n  wait_avg = avg(`apollo.router.compute_jobs.queue.wait.duration`, filter: `job.type` == \"query_planning\")\n}, filter: in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "exec_p50",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "exec_p95",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "exec_p99",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "wait_avg",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "62": {
+      "type": "data",
+      "title": "Query Parsing Duration Percentiles and Wait Time",
+      "query": "timeseries {\n  exec_p50 = percentile(`apollo.router.compute_jobs.execution.duration`, 50, filter: `job.type` == \"query_parsing\"),\n  exec_p95 = percentile(`apollo.router.compute_jobs.execution.duration`, 95, filter: `job.type` == \"query_parsing\"),\n  exec_p99 = percentile(`apollo.router.compute_jobs.execution.duration`, 99, filter: `job.type` == \"query_parsing\"),\n  wait_avg = avg(`apollo.router.compute_jobs.queue.wait.duration`, filter: `job.type` == \"query_parsing\")\n}, filter: in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "exec_p50",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "exec_p95",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "exec_p99",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "wait_avg",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "63": {
+      "type": "markdown",
+      "content": "This chart tracks the wait and execution durations for query planning jobs over time.\n\n**What to look for**\n\n- Low, stable execution times indicate efficient planning.\n- Spikes in p99 duration could signal complex or inefficient queries.\n- Rising trends after deployments or schema changes may require investigation.\n\n**Why it matters**\n\n- Query planning is critical to routing — delays here increase end-to-end latency.\n- Schema or configuration changes can unexpectedly impact planning performance.\n- High p99 durations may point to specific queries performing poorly in the planner.\n\nFor deeper analysis of poorly performing queries, review [query planning best practices](https://www.apollographql.com/docs/graphos/routing/query-planning/query-planning-best-practices)."
+    },
+    "64": {
+      "type": "markdown",
+      "content": "This chart tracks how long query parsing jobs take to execute, and how long they wait in the queue before starting.\n\n**What to look for**\n\n-   Stable, low execution and wait times suggest healthy parsing performance.\n-   Spikes in execution time may reflect incoming query complexity or anomalies.\n-   Persistent wait time increases likely mean you need to scale compute or investigate query patterns.\n\n**Why it matters:**\n\n-   Long execution times can point to expensive or malformed queries.\n-   High wait times indicate the system is queuing work faster than it can process it — a sign of CPU pressure or under-provisioning.\n-   Parsing is part of the critical request path, so delays here directly impact overall latency."
+    },
+    "65": {
+      "type": "data",
+      "title": "Queued Jobs",
+      "query": "timeseries sum(`apollo.router.compute_jobs.queued`, rollup: avg), by: {`service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "barChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "66": {
+      "type": "data",
+      "title": "Job Counts by Outcome",
+      "query": "timeseries count(`apollo.router.compute_jobs.duration`), by: {`job.outcome`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "barChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "67": {
+      "type": "markdown",
+      "content": "This chart tracks the depth of the compute job queue over time, showing how many jobs are waiting to be processed.\n\n**What to look for**\n\n- A queue of 0-1 is ideal — jobs are being processed as they arrive.\n- Short spikes can be normal during brief load surges.\n- Sustained periods above a depth of 1 may require scaling CPU resources or optimizing workload.\n\n**Why it matters**\n\n- A queue with a depth greater than 1 means jobs are backing up, introducing latency for any requests that depend on them.\n- Sustained queuing often points to CPU bottlenecks or insufficient compute capacity.\n- Helps identify runtime saturation under load."
+    },
+    "68": {
+      "type": "markdown",
+      "content": "This chart shows the total number of compute jobs actively running in your runtime, broken down by success or failure status.\n\n**What to look for**\n\n-   A steady level of `executed_ok` jobs.\n-   Any presence of failed job types (`executed_error`, `rejected_queue_full`, etc.).\n\n**Why it matters**\n\n-   Failed jobs may indicate internal issues, misconfigurations, or upstream errors.\n-   Monitoring execution volume helps assess load and throughput."
+    },
+    "69": {
+      "type": "markdown",
+      "content": "Monitoring the resource consumption of your execution environment is essential to ensuring that your runtime can perform as desired.\n\nApollo recommends monitoring for and ensuring that your average CPU usage does not exceed 80% load, to leave available overhead for expensive spikes such as schema reloads. You may also find it useful to break out your charts by instance or host ID to identify individually misbehaving instances.\n\nThe charts below query infrastructure metrics directly and are not scoped to your Router service — host and container metrics do not carry a `service.name` attribute, so the dashboard's service filtering does not apply here. Add your own filters (e.g. pod, host, or container name) to scope them to the instances running your Router.\n\nFour flavors are provided — keep only the rows that match your setup and delete the rest:\n\n- **Kubernetes (OTEL Collector — kubeletstats receiver)** — pod CPU/memory usage plus the configured container limits.\n- **Host (OTEL Collector — hostmetrics receiver)** — `system.cpu.utilization` and `system.memory.usage`, split by state.\n- **Host (Dynatrace OneAgent)** — `dt.host.cpu.usage` and `dt.host.memory.usage` percentages.\n- **Containers (OTEL Collector — docker stats receiver)** — container CPU/memory usage plus the configured limits."
+    },
+    "70": {
+      "type": "data",
+      "title": "Kubernetes CPU Usage (OTEL Collector - Kubeletstats)",
+      "query": "timeseries {\n  usage_avg = avg(`k8s.pod.cpu.usage`),\n  usage_max = max(`k8s.pod.cpu.usage`),\n  cpu_limit = max(`k8s.container.cpu_limit`)\n}",
+      "visualization": "lineChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "71": {
+      "type": "data",
+      "title": "Host CPU Usage (OTEL Collector - Hostmetrics)",
+      "query": "timeseries avg(`system.cpu.utilization`), by: {`state`}",
+      "visualization": "lineChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "72": {
+      "type": "data",
+      "title": "Host CPU Usage (Dynatrace OneAgent)",
+      "query": "timeseries {\n  usage_avg = avg(`dt.host.cpu.usage`),\n  usage_max = max(`dt.host.cpu.usage`)\n}",
+      "visualization": "lineChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "73": {
+      "type": "data",
+      "title": "Docker CPU Usage (OTEL Collector  - Docker/stats)",
+      "query": "timeseries {\n  usage_avg = avg(`container.cpu.usage.total`),\n  usage_max = max(`container.cpu.usage.total`),\n  cpu_limit = max(`container.cpu.limit`)\n}",
+      "visualization": "lineChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "74": {
+      "type": "data",
+      "title": "Kubernetes Memory Usage (OTEL Collector - Kubeletstats)",
+      "query": "timeseries {\n  usage_avg = avg(`k8s.pod.memory.usage`),\n  usage_max = max(`k8s.pod.memory.usage`),\n  memory_limit = max(`k8s.container.memory_limit`)\n}",
+      "visualization": "lineChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "75": {
+      "type": "data",
+      "title": "Host Memory Usage (OTEL Collector - Hostmetrics)",
+      "query": "timeseries avg(`system.memory.usage`), by: {`state`}",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "usage_avg",
+            "unitCategory": "data",
+            "baseUnit": "byte",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "usage_max",
+            "unitCategory": "data",
+            "baseUnit": "byte",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "76": {
+      "type": "data",
+      "title": "Host Memory Usage (Dynatrace OneAgent)",
+      "query": "timeseries {\n  usage_avg = avg(`dt.host.memory.usage`),\n  usage_max = max(`dt.host.memory.usage`)\n}",
+      "visualization": "lineChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "77": {
+      "type": "data",
+      "title": "Docker Memory Usage (OTEL Collector  - Docker/stats)",
+      "query": "timeseries {\n  usage_avg = avg(`container.memory.usage.total`),\n  usage_max = max(`container.memory.usage.total`),\n  memory_limit = max(`container.memory.usage.limit`)\n}",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "usage_avg",
+            "unitCategory": "data",
+            "baseUnit": "byte",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "usage_max",
+            "unitCategory": "data",
+            "baseUnit": "byte",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "memory_limit",
+            "unitCategory": "data",
+            "baseUnit": "byte",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "78": {
+      "type": "markdown",
+      "content": "The `cpu_limit` and `memory_limit` series plot the limits configured in Kubernetes alongside usage as regular chart lines, so you can read headroom directly from the chart. If your runtime is deployed across heterogeneous container configurations, the limit line reflects the maximum configured value across containers.\n\nFor more details on available Kubernetes metrics, see the full [Kubernetes monitoring in Dynatrace](https://docs.dynatrace.com/docs/kubernetes)."
+    },
+    "79": {
+      "type": "markdown",
+      "content": "These host charts have no limit series. The OTEL hostmetrics charts plot `system.cpu.utilization` and `system.memory.usage` split by `state`, so you can read headroom directly from the state breakdown (e.g. idle CPU, free memory). The Dynatrace OneAgent charts (`dt.host.cpu.usage`, `dt.host.memory.usage`) report percentages, so 100% is the effective ceiling.\n\nFor more details on available host metrics, see [Dynatrace host monitoring](https://docs.dynatrace.com/docs/infrastructure/hosts) and OTLP ingestion for host metrics."
+    },
+    "80": {
+      "type": "markdown",
+      "content": "The `cpu_limit` and `memory_limit` series plot the limits configured in Docker alongside usage as regular chart lines, so you can read headroom directly from the chart. If your runtime is deployed across heterogeneous container configurations, the limit line reflects the maximum configured value across containers.\n\nFor more details on available Docker metrics in Dynatrace, see [Dynatrace Docker monitoring](https://docs.dynatrace.com/docs/infrastructure/containers/docker)."
+    },
+    "81": {
+      "type": "markdown",
+      "content": "The `cpu_limit` and `memory_limit` series plot the limits configured in Docker alongside usage as regular chart lines, so you can read headroom directly from the chart. If your runtime is deployed across heterogeneous container configurations, the limit line reflects the maximum configured value across containers.\n\nFor more details on available Docker metrics via the OTEL collector, see [Dynatrace Docker monitoring](https://docs.dynatrace.com/docs/infrastructure/containers/docker) and OTLP ingestion."
+    },
+    "82": {
+      "type": "markdown",
+      "content": "If you incorporate [coprocessors](https://www.apollographql.com/docs/graphos/routing/customization/coprocessor) into your runtime, these metrics will be emitted. They indicate basic health and performance impact of the coprocessors on your request lifecycle. In order to correlate any issues Apollo highly recommends you add your own instrumentation to this section to include any health and performance metrics specific to the coprocessors you run and their own request lifecycle."
+    },
+    "83": {
+      "type": "data",
+      "title": "Request Duration",
+      "query": "timeseries avg(`apollo.router.operations.coprocessor.duration`), by: {`coprocessor.stage`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "avg(apollo.router.operations.coprocessor.duration)",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "84": {
+      "type": "data",
+      "title": "Request Count",
+      "query": "timeseries sum(`apollo.router.operations.coprocessor`), by: {`coprocessor.stage`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "barChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "85": {
+      "type": "markdown",
+      "content": "This chart shows the average duration added by coprocessor invocations at each stage of the request lifecycle.\n\n**What to look for**\n\n- Low, stable durations suggest efficient coprocessor behavior.\n- Spikes may indicate backend slowness, increased payload size, or external service degradation.\n\n**Why it matters**\n\n- Coprocessors introduce additional network calls — even fast ones add latency.\n- High or rising durations can affect overall request performance.\n- Each stage (e.g., request, supergraph, subgraph) may have different performance profiles depending on configuration and coprocessor logic."
+    },
+    "86": {
+      "type": "markdown",
+      "content": "This chart breaks down how often coprocessors are invoked at each stage of the request lifecycle.\n\n**What to look for**\n\n- Consistent counts per stage indicate expected behavior.\n- Unexpected drops or surges may reflect routing changes, config issues, or stage-specific errors.\n\n**Why it matters**\n\n- Helps validate where and how often your coprocessors are engaged.\n- Useful for confirming configuration and understanding the load placed on each external service.\n- Invocation patterns typically align with overall request volume, but may vary by routing logic or stage-specific conditions."
+    },
+    "87": {
+      "type": "data",
+      "title": "Coprocessor Success Rate",
+      "query": "timeseries {\n  success = sum(`apollo.router.operations.coprocessor`, filter: `coprocessor.succeeded` == \"true\"),\n  total = sum(`apollo.router.operations.coprocessor`)\n}, by: {`coprocessor.stage`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| fieldsAdd success_rate_pct = (success[] / total[]) * 100",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "success_rate_pct",
+            "unitCategory": "percentage",
+            "baseUnit": "percent",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "88": {
+      "type": "markdown",
+      "content": "This chart tracks the success rate of coprocessor invocations across each stage of the request lifecycle.\n\n**What to look for**\n\n-   A consistent 100% success rate is expected for stable, production-grade coprocessors.\n-   Any dip may signal availability issues, timeouts, or bugs in coprocessor logic.\n-   If supergraph error rates rise while subgraphs remain unaffected, investigate this metric as a potential root cause.\n\n**Why it matters**\n\n-   Coprocessors are on the critical path — failures here can short-circuit requests before they reach subgraphs.\n-   A drop in success rate will correlate with elevated error responses at the supergraph level.\n-   Helps isolate external causes of failure when subgraphs appear healthy."
+    },
+    "89": {
+      "type": "markdown",
+      "content": "This section is a collection of assorted metrics that do not provide directly actionable data, but still may be useful as sentinel values to help diagnose problems occurring in other charts."
+    },
+    "90": {
+      "type": "data",
+      "title": "Uplink and Licensing",
+      "query": "timeseries {\n  uplink_fetch_duration = avg(`apollo.router.uplink.fetch.duration.seconds`),\n  licensed = sum(`apollo.router.lifecycle.license`, filter: `license.state` == \"licensed\"),\n  license_total = sum(`apollo.router.lifecycle.license`)\n}, filter: in(`service.name`, array($service_name))\n| fieldsAdd licensed_pct = (licensed[] / license_total[]) * 100",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "uplink_fetch_duration",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          },
+          {
+            "identifier": "licensed_pct",
+            "unitCategory": "percentage",
+            "baseUnit": "percent",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "91": {
+      "type": "data",
+      "title": "Open Connections by Schema and Launch ID",
+      "query": "timeseries avg(`apollo.router.open_connections`), by: {`schema.id`, `launch.id`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "barChart",
+      "visualizationSettings": {},
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "92": {
+      "type": "markdown",
+      "content": "[Uplink is used to retrieve your GraphOS license (where applicable) and published schemas from Apollo](https://www.apollographql.com/docs/graphos/routing/uplink). If Uplink has an outage or incident, your license or schema pulls may fail, and this metric can give you a warning when that is the reason."
+    },
+    "93": {
+      "type": "markdown",
+      "content": "This graph can help you track the rollout of schema changes across your fleet as a supplemental indicator beyond the query planning cache metrics. Apollo recommends adding markers for new deployments based on your CI system's integration with Dynatrace where appropriate so that you can correlate those with any incidents as well.\n\nTo learn more about launches and what constitutes a new one, see [the documentation](https://www.apollographql.com/docs/graphos/platform/schema-management/delivery/launch)."
+    },
+    "94": {
+      "type": "data",
+      "title": "Router Overhead",
+      "query": "timeseries avg(`apollo.router.overhead`, filter: `subgraph.active_requests` == \"true\"), by: {`service.name`}\n| filter in(`service.name`, array($service_name))",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "avg(apollo.router.overhead)",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      },
+      "querySettings": {
+        "maxResultRecords": 1000,
+        "defaultScanLimitGbytes": 500,
+        "maxResultMegaBytes": 100,
+        "defaultSamplingRatio": 10,
+        "enableSampling": false
+      }
+    },
+    "95": {
+      "type": "markdown",
+      "content": "This metric tracks the time the router spends on tasks other than waiting for downstream HTTP requests. It is filtered to `subgraph.active_requests == \"true\"` to capture overhead time spent only while requests are outstanding.\n\nThe overhead calculation excludes time spent waiting for downstream HTTP services (subgraphs and connectors), giving you visibility into the router's actual processing time versus downstream latency. This metric helps identify when the router itself is a bottleneck versus when delays are caused by downstream services.\n\nFor considerations and common questions, [the documentation](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/standard-instruments#important-considerations) provides further reference."
+    },
+    "96": {
+      "type": "data",
+      "title": "Top Most Queried Subgraphs: Request Count & p95 Latency",
+      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  p95_latency = percentile(`http.client.request.duration`, 95)\n}, by: {`subgraph.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`subgraph.name`)\n| summarize requests = sum(arraySum(requests)), p95_latency = avg(arrayAvg(p95_latency)), by: {`subgraph.name`}\n| sort requests desc\n| limit 12",
+      "visualization": "table",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "p95_latency",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      }
+    },
+    "97": {
+      "type": "data",
+      "title": "Top Most Queried Connector Sources: Request Count & p95 Latency",
+      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  p95_latency = percentile(`http.client.request.duration`, 95)\n}, by: {`connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`connector.source.name`)\n| summarize requests = sum(arraySum(requests)), p95_latency = avg(arrayAvg(p95_latency)), by: {`connector.source.name`}\n| sort requests desc\n| limit 12",
+      "visualization": "table",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "p95_latency",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      }
+    }
+  },
+  "layouts": {
+    "0": {
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 6
+    },
+    "1": {
+      "x": 0,
+      "y": 6,
+      "w": 12,
+      "h": 4
+    },
+    "2": {
+      "x": 12,
+      "y": 6,
+      "w": 12,
+      "h": 4
+    },
+    "3": {
+      "x": 0,
+      "y": 10,
+      "w": 12,
+      "h": 2
+    },
+    "4": {
+      "x": 12,
+      "y": 10,
+      "w": 12,
+      "h": 2
+    },
+    "5": {
+      "x": 0,
+      "y": 12,
+      "w": 12,
+      "h": 4
+    },
+    "6": {
+      "x": 12,
+      "y": 12,
+      "w": 12,
+      "h": 4
+    },
+    "7": {
+      "x": 0,
+      "y": 16,
+      "w": 12,
+      "h": 2
+    },
+    "8": {
+      "x": 12,
+      "y": 16,
+      "w": 12,
+      "h": 2
+    },
+    "9": {
+      "x": 0,
+      "y": 19,
+      "w": 24,
+      "h": 4
+    },
+    "10": {
+      "x": 12,
+      "y": 25,
+      "w": 12,
+      "h": 4
+    },
+    "11": {
+      "x": 0,
+      "y": 23,
+      "w": 24,
+      "h": 2
+    },
+    "12": {
+      "x": 12,
+      "y": 29,
+      "w": 12,
+      "h": 2
+    },
+    "13": {
+      "x": 0,
+      "y": 25,
+      "w": 12,
+      "h": 4
+    },
+    "14": {
+      "x": 0,
+      "y": 29,
+      "w": 12,
+      "h": 2
+    },
+    "15": {
+      "x": 0,
+      "y": 32,
+      "w": 24,
+      "h": 3
+    },
+    "16": {
+      "x": 0,
+      "y": 35,
+      "w": 12,
+      "h": 4
+    },
+    "17": {
+      "x": 12,
+      "y": 35,
+      "w": 12,
+      "h": 4
+    },
+    "18": {
+      "x": 0,
+      "y": 39,
+      "w": 12,
+      "h": 2
+    },
+    "19": {
+      "x": 12,
+      "y": 39,
+      "w": 12,
+      "h": 2
+    },
+    "20": {
+      "x": 0,
+      "y": 42,
+      "w": 24,
+      "h": 5
+    },
+    "21": {
+      "x": 0,
+      "y": 47,
+      "w": 12,
+      "h": 4
+    },
+    "22": {
+      "x": 12,
+      "y": 47,
+      "w": 12,
+      "h": 4
+    },
+    "23": {
+      "x": 0,
+      "y": 51,
+      "w": 12,
+      "h": 2
+    },
+    "24": {
+      "x": 12,
+      "y": 51,
+      "w": 12,
+      "h": 2
+    },
+    "25": {
+      "x": 0,
+      "y": 53,
+      "w": 12,
+      "h": 4
+    },
+    "26": {
+      "x": 0,
+      "y": 57,
+      "w": 12,
+      "h": 2
+    },
+    "27": {
+      "x": 12,
+      "y": 53,
+      "w": 12,
+      "h": 4
+    },
+    "28": {
+      "x": 12,
+      "y": 57,
+      "w": 12,
+      "h": 2
+    },
+    "29": {
+      "x": 0,
+      "y": 60,
+      "w": 24,
+      "h": 2
+    },
+    "30": {
+      "x": 0,
+      "y": 62,
+      "w": 12,
+      "h": 4
+    },
+    "31": {
+      "x": 12,
+      "y": 62,
+      "w": 12,
+      "h": 4
+    },
+    "32": {
+      "x": 0,
+      "y": 66,
+      "w": 12,
+      "h": 2
+    },
+    "33": {
+      "x": 12,
+      "y": 66,
+      "w": 12,
+      "h": 2
+    },
+    "34": {
+      "x": 0,
+      "y": 68,
+      "w": 12,
+      "h": 4
+    },
+    "35": {
+      "x": 12,
+      "y": 68,
+      "w": 12,
+      "h": 4
+    },
+    "36": {
+      "x": 0,
+      "y": 72,
+      "w": 12,
+      "h": 4
+    },
+    "37": {
+      "x": 12,
+      "y": 72,
+      "w": 12,
+      "h": 4
+    },
+    "38": {
+      "x": 0,
+      "y": 76,
+      "w": 12,
+      "h": 2
+    },
+    "39": {
+      "x": 12,
+      "y": 76,
+      "w": 12,
+      "h": 2
+    },
+    "40": {
+      "x": 0,
+      "y": 78,
+      "w": 12,
+      "h": 4
+    },
+    "41": {
+      "x": 0,
+      "y": 82,
+      "w": 12,
+      "h": 2
+    },
+    "42": {
+      "x": 0,
+      "y": 85,
+      "w": 24,
+      "h": 5
+    },
+    "43": {
+      "x": 0,
+      "y": 90,
+      "w": 24,
+      "h": 3
+    },
+    "44": {
+      "x": 0,
+      "y": 93,
+      "w": 24,
+      "h": 2
+    },
+    "45": {
+      "x": 0,
+      "y": 95,
+      "w": 12,
+      "h": 4
+    },
+    "46": {
+      "x": 12,
+      "y": 95,
+      "w": 12,
+      "h": 4
+    },
+    "47": {
+      "x": 0,
+      "y": 99,
+      "w": 12,
+      "h": 2
+    },
+    "48": {
+      "x": 12,
+      "y": 99,
+      "w": 12,
+      "h": 2
+    },
+    "49": {
+      "x": 0,
+      "y": 102,
+      "w": 24,
+      "h": 5
+    },
+    "50": {
+      "x": 0,
+      "y": 107,
+      "w": 12,
+      "h": 4
+    },
+    "51": {
+      "x": 12,
+      "y": 107,
+      "w": 12,
+      "h": 4
+    },
+    "52": {
+      "x": 0,
+      "y": 111,
+      "w": 12,
+      "h": 2
+    },
+    "53": {
+      "x": 12,
+      "y": 111,
+      "w": 12,
+      "h": 2
+    },
+    "54": {
+      "x": 0,
+      "y": 113,
+      "w": 12,
+      "h": 4
+    },
+    "55": {
+      "x": 12,
+      "y": 113,
+      "w": 12,
+      "h": 4
+    },
+    "56": {
+      "x": 0,
+      "y": 117,
+      "w": 12,
+      "h": 2
+    },
+    "57": {
+      "x": 12,
+      "y": 117,
+      "w": 12,
+      "h": 2
+    },
+    "58": {
+      "x": 0,
+      "y": 119,
+      "w": 12,
+      "h": 4
+    },
+    "59": {
+      "x": 0,
+      "y": 123,
+      "w": 12,
+      "h": 2
+    },
+    "60": {
+      "x": 0,
+      "y": 126,
+      "w": 24,
+      "h": 2
+    },
+    "61": {
+      "x": 0,
+      "y": 128,
+      "w": 12,
+      "h": 4
+    },
+    "62": {
+      "x": 12,
+      "y": 128,
+      "w": 12,
+      "h": 4
+    },
+    "63": {
+      "x": 0,
+      "y": 132,
+      "w": 12,
+      "h": 2
+    },
+    "64": {
+      "x": 12,
+      "y": 132,
+      "w": 12,
+      "h": 2
+    },
+    "65": {
+      "x": 0,
+      "y": 134,
+      "w": 12,
+      "h": 4
+    },
+    "66": {
+      "x": 12,
+      "y": 134,
+      "w": 12,
+      "h": 4
+    },
+    "67": {
+      "x": 0,
+      "y": 138,
+      "w": 12,
+      "h": 2
+    },
+    "68": {
+      "x": 12,
+      "y": 138,
+      "w": 12,
+      "h": 2
+    },
+    "69": {
+      "x": 0,
+      "y": 141,
+      "w": 24,
+      "h": 2
+    },
+    "70": {
+      "x": 0,
+      "y": 143,
+      "w": 6,
+      "h": 3
+    },
+    "71": {
+      "x": 6,
+      "y": 143,
+      "w": 6,
+      "h": 3
+    },
+    "72": {
+      "x": 12,
+      "y": 143,
+      "w": 6,
+      "h": 3
+    },
+    "73": {
+      "x": 18,
+      "y": 143,
+      "w": 6,
+      "h": 3
+    },
+    "74": {
+      "x": 0,
+      "y": 146,
+      "w": 6,
+      "h": 3
+    },
+    "75": {
+      "x": 6,
+      "y": 146,
+      "w": 6,
+      "h": 3
+    },
+    "76": {
+      "x": 12,
+      "y": 146,
+      "w": 6,
+      "h": 3
+    },
+    "77": {
+      "x": 18,
+      "y": 146,
+      "w": 6,
+      "h": 3
+    },
+    "78": {
+      "x": 0,
+      "y": 149,
+      "w": 6,
+      "h": 2
+    },
+    "79": {
+      "x": 6,
+      "y": 149,
+      "w": 6,
+      "h": 2
+    },
+    "80": {
+      "x": 12,
+      "y": 149,
+      "w": 6,
+      "h": 2
+    },
+    "81": {
+      "x": 18,
+      "y": 149,
+      "w": 6,
+      "h": 2
+    },
+    "82": {
+      "x": 0,
+      "y": 152,
+      "w": 24,
+      "h": 2
+    },
+    "83": {
+      "x": 0,
+      "y": 154,
+      "w": 12,
+      "h": 4
+    },
+    "84": {
+      "x": 12,
+      "y": 154,
+      "w": 12,
+      "h": 4
+    },
+    "85": {
+      "x": 0,
+      "y": 158,
+      "w": 12,
+      "h": 2
+    },
+    "86": {
+      "x": 12,
+      "y": 158,
+      "w": 12,
+      "h": 2
+    },
+    "87": {
+      "x": 0,
+      "y": 160,
+      "w": 12,
+      "h": 4
+    },
+    "88": {
+      "x": 0,
+      "y": 164,
+      "w": 12,
+      "h": 2
+    },
+    "89": {
+      "x": 0,
+      "y": 167,
+      "w": 24,
+      "h": 2
+    },
+    "90": {
+      "x": 0,
+      "y": 168,
+      "w": 12,
+      "h": 4
+    },
+    "91": {
+      "x": 12,
+      "y": 168,
+      "w": 12,
+      "h": 4
+    },
+    "92": {
+      "x": 0,
+      "y": 172,
+      "w": 12,
+      "h": 2
+    },
+    "93": {
+      "x": 12,
+      "y": 172,
+      "w": 12,
+      "h": 2
+    },
+    "94": {
+      "x": 0,
+      "y": 174,
+      "w": 12,
+      "h": 4
+    },
+    "95": {
+      "x": 0,
+      "y": 178,
+      "w": 12,
+      "h": 3
+    },
+    "96": {
+      "x": 0,
+      "y": 181,
+      "w": 24,
+      "h": 6
+    },
+    "97": {
+      "x": 0,
+      "y": 187,
+      "w": 24,
+      "h": 6
+    }
+  }
+}
