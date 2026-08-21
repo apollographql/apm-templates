@@ -21,7 +21,7 @@ dir = "../../"
 run = "typos"
 
 [tools]
-"cargo:dprint" = "0.55"
+"cargo:dprint" = "0.56"
 "cargo:typos-cli" = "1.36"
 rust = "latest"
 
