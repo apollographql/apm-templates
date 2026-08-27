@@ -3798,7 +3798,7 @@
                 "filterType": "DIMENSION",
                 "dimensionKey": "subgraph.active_requests",
                 "evaluator": "EQ",
-                "value": "true"
+                "value": "false"
               }
             ]
           },
@@ -3868,7 +3868,7 @@
         "height": 150
       },
       "tileFilter": {},
-      "markdown": "This metric tracks the time the router spends on tasks other than waiting for downstream HTTP requests. It is filtered to `subgraph.active_requests: true` to capture overhead time spent only while requests are outstanding.\n\nThe overhead calculation excludes time spent waiting for downstream HTTP services (subgraphs and connectors), giving you visibility into the router's actual processing time versus downstream latency. This metric helps identify when the router itself is a bottleneck versus when delays are caused by downstream services.\n\nFor considerations and common questions, [the documentation](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/standard-instruments#important-considerations) provides further reference."
+      "markdown": "This metric tracks the time the router spends on tasks other than waiting for downstream HTTP requests. It is filtered to `subgraph.active_requests: false` to keep only pure router processing time — measurements taken while subgraph requests were still in flight include subgraph wait interference and are excluded.\n\nThe overhead calculation excludes time spent waiting for downstream HTTP services (subgraphs and connectors), giving you visibility into the router's actual processing time versus downstream latency. This metric helps identify when the router itself is a bottleneck versus when delays are caused by downstream services.\n\nFor considerations and common questions, [the documentation](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/standard-instruments#important-considerations) provides further reference."
     }
   ]
 }

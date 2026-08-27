@@ -15,7 +15,7 @@
     "2": {
       "type": "data",
       "title": "Throughput: Requests Per Second",
-      "query": "timeseries count(`http.server.request.duration`, rate: 1s)",
+      "query": "timeseries requests = count(`http.server.request.duration`)\n| fieldsAdd rps = requests[] / (toLong(interval) / 1000000000)\n| fieldsRemove requests",
       "visualization": "lineChart"
     },
     "3": {
@@ -61,8 +61,8 @@
     },
     "9": {
       "type": "data",
-      "title": "Request Body Size (p99 / Max)",
-      "query": "timeseries {\n  Max = max(`http.server.request.body.size`),\n  p99 = percentile(`http.server.request.body.size`, 99)\n}",
+      "title": "Request Body Size (Avg / Max)",
+      "query": "timeseries {\n  Max = max(`http.server.request.body.size`),\n  Avg = avg(`http.server.request.body.size`)\n}",
       "visualization": "lineChart",
       "visualizationSettings": {
         "unitsOverrides": [
@@ -76,7 +76,7 @@
             "delimiter": false
           },
           {
-            "identifier": "p99",
+            "identifier": "Avg",
             "unitCategory": "data",
             "baseUnit": "byte",
             "displayUnit": null,
@@ -210,7 +210,7 @@
     "22": {
       "type": "data",
       "title": "Throughput (Requests per Second)",
-      "query": "timeseries count(`http.client.request.duration`, rate: 1s), by: {`subgraph.name`, `connector.source.name`}",
+      "query": "timeseries requests = count(`http.client.request.duration`), by: {`subgraph.name`, `connector.source.name`}\n| fieldsAdd rps = requests[] / (toLong(interval) / 1000000000)\n| fieldsRemove requests",
       "visualization": "lineChart"
     },
     "23": {
@@ -280,7 +280,7 @@
     "31": {
       "type": "data",
       "title": "GraphQL Errors by Subgraph",
-      "query": "fetch spans\n| filter service.name == \"router\" or service.name == \"apollo-router\"\n| filter span.name == \"subgraph\"\n| filter isNotNull(`subgraph.name`) and lower(toString(span.status_code)) == \"error\"\n| summarize count(), by: {bin(timestamp, 1m), `subgraph.name`}",
+      "query": "fetch spans\n| filter service.name == \"router\" or service.name == \"apollo-router\"\n| filter span.name == \"subgraph\"\n| filter isNotNull(`subgraph.name`) and lower(toString(span.status_code)) == \"error\"\n| makeTimeseries errors = count(), by: {`subgraph.name`}",
       "visualization": "barChart"
     },
     "32": {
@@ -870,7 +870,7 @@
     "94": {
       "type": "data",
       "title": "Router Overhead",
-      "query": "timeseries avg(`apollo.router.overhead`, filter: `subgraph.active_requests` == \"true\")",
+      "query": "timeseries avg(`apollo.router.overhead`, filter: `subgraph.active_requests` == \"false\")",
       "visualization": "lineChart",
       "visualizationSettings": {
         "unitsOverrides": [
@@ -888,7 +888,7 @@
     },
     "95": {
       "type": "markdown",
-      "content": "This metric tracks the time the router spends on tasks other than waiting for downstream HTTP requests. It is filtered to `subgraph.active_requests == \"true\"` to capture overhead time spent only while requests are outstanding.\n\nThe overhead calculation excludes time spent waiting for downstream HTTP services (subgraphs and connectors), giving you visibility into the router's actual processing time versus downstream latency. This metric helps identify when the router itself is a bottleneck versus when delays are caused by downstream services.\n\nFor considerations and common questions, [the documentation](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/standard-instruments#important-considerations) provides further reference."
+      "content": "This metric tracks the time the router spends on tasks other than waiting for downstream HTTP requests. It is filtered to `subgraph.active_requests == \"false\"` to keep only pure router processing time — measurements taken while subgraph requests were still in flight include subgraph wait interference and are excluded.\n\nThe overhead calculation excludes time spent waiting for downstream HTTP services (subgraphs and connectors), giving you visibility into the router's actual processing time versus downstream latency. This metric helps identify when the router itself is a bottleneck versus when delays are caused by downstream services.\n\nFor considerations and common questions, [the documentation](https://www.apollographql.com/docs/graphos/routing/observability/router-telemetry-otel/enabling-telemetry/standard-instruments#important-considerations) provides further reference."
     },
     "96": {
       "type": "data",

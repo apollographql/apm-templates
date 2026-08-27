@@ -193,31 +193,13 @@
     },
     "17": {
       "type": "data",
-      "title": "Request Duration Percentiles",
-      "query": "timeseries {\n  p99 = percentile(`http.server.request.duration`, 99),\n  p95 = percentile(`http.server.request.duration`, 95),\n  p90 = percentile(`http.server.request.duration`, 90),\n  Min = min(`http.server.request.duration`),\n  Max = max(`http.server.request.duration`)\n}, by: {`service.name`}\n| filter in(`service.name`, array($service_name))",
+      "title": "Request Duration (Avg / Min / Max)",
+      "query": "timeseries {\n  Avg = avg(`http.server.request.duration`),\n  Min = min(`http.server.request.duration`),\n  Max = max(`http.server.request.duration`)\n}, by: {`service.name`}\n| filter in(`service.name`, array($service_name))",
       "visualization": "lineChart",
       "visualizationSettings": {
         "unitsOverrides": [
           {
-            "identifier": "p99",
-            "unitCategory": "time",
-            "baseUnit": "second",
-            "displayUnit": null,
-            "decimals": null,
-            "suffix": "",
-            "delimiter": false
-          },
-          {
-            "identifier": "p95",
-            "unitCategory": "time",
-            "baseUnit": "second",
-            "displayUnit": null,
-            "decimals": null,
-            "suffix": "",
-            "delimiter": false
-          },
-          {
-            "identifier": "p90",
+            "identifier": "Avg",
             "unitCategory": "time",
             "baseUnit": "second",
             "displayUnit": null,
@@ -259,7 +241,7 @@
     },
     "19": {
       "type": "markdown",
-      "content": "**How to interpret percentiles**\n\n- p90 / p95 — these percentiles represent the upper range of typical request latencies. If these values rise, it generally means a significant portion of requests are experiencing slower responses. Possible causes include:\n\n  - A subgraph is responding more slowly than usual (e.g., due to load or inefficiency)\n  - The Router’s query planning step is taking longer (especially with complex or highly federated queries)\n  - Overall increased load causing processing delays\n\n- p99 — this is a tail latency metric that reflects the slowest 1% of requests. Spikes here often indicate rare but impactful delays, such as:\n\n  - Intermittent subgraph performance issues or temporary timeouts\n  - Specific heavy or complex queries that take much longer to plan or execute\n  - Unusual overhead in middleware or Router internals affecting some requests\n\n- Max — the absolute slowest observed request during the timeframe. Isolated high max values are usually less concerning (e.g., caused by a single unusual request). However, frequent or sustained high max latencies may point to:\n\n  - Clients issuing extremely large or repeated queries causing resource exhaustion or retries\n  - Transient infrastructure problems (network issues, DNS delays, resource contention)\n\n- Min — represents the fastest possible response from the Router. A surprisingly high minimum usually reflects baseline overhead within the Router itself — such as:\n\n  - Middleware or plugin execution time\n  - Query parsing, validation, or planning\n  - Routing logic that's inherently non-negligible\n\n**Caveats**\n\n- Low request volumes can skew percentiles; a single slow request distorts p99 or max.\n- Slow subgraphs inflate Router latency here—this chart shows total request time, not internal breakdowns.\n- Latency spikes without load increase may point to network hiccups, subgraph cold starts, or cloud platform noise outside the Router’s control."
+      "content": "**Summary-statistics variant**\n\nThis dashboard uses avg/min/max instead of percentiles because the DQL `timeseries percentile()` function requires the DPS **Metrics powered by Grail** rate card (histogram buckets are not stored without it).\n\n- Avg — the mean request duration. Rising averages indicate broad slowdowns (subgraph latency, query planning, or load), but hide tail behavior: a small share of very slow requests barely moves the mean.\n- Max — the slowest observed request. Isolated spikes are usually harmless one-offs; frequent or sustained high max values point to heavy queries, retries, or transient infrastructure problems.\n- Min — the fastest possible response, reflecting the Router's baseline overhead (parsing, validation, planning, middleware).\n\n**Caveats**\n\n- Without percentiles, tail latency regressions (p95/p99) are invisible here — watch Max and the error-rate charts, and consider upgrading to the Metrics powered by Grail rate card for true percentile tiles (the non-summary templates)."
     },
     "20": {
       "type": "markdown",
@@ -355,13 +337,13 @@
     },
     "30": {
       "type": "data",
-      "title": "P95 Latency by Subgraph",
-      "query": "timeseries percentile(`http.client.request.duration`, 95), by: {`subgraph.name`, `connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))",
+      "title": "Avg Latency by Subgraph",
+      "query": "timeseries avg(`http.client.request.duration`), by: {`subgraph.name`, `connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))",
       "visualization": "lineChart",
       "visualizationSettings": {
         "unitsOverrides": [
           {
-            "identifier": "percentile(http.client.request.duration, 95)",
+            "identifier": "avg(http.client.request.duration)",
             "unitCategory": "time",
             "baseUnit": "second",
             "displayUnit": null,
@@ -404,7 +386,7 @@
     "34": {
       "type": "data",
       "title": "Subgraph Performance Profile (Dashboard Time Scale)",
-      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  p95_latency = percentile(`http.client.request.duration`, 95)\n}, by: {`subgraph.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`subgraph.name`)\n| summarize requests = sum(arraySum(requests)), p95_latency = avg(arrayAvg(p95_latency)), by: {`subgraph.name`}",
+      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  avg_latency = avg(`http.client.request.duration`)\n}, by: {`subgraph.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`subgraph.name`)\n| summarize requests = sum(arraySum(requests)), avg_latency = avg(arrayAvg(avg_latency)), by: {`subgraph.name`}",
       "visualization": "scatterplot",
       "visualizationSettings": {
         "scatter": {
@@ -412,7 +394,7 @@
             "field": "requests"
           },
           "y": {
-            "field": "p95_latency"
+            "field": "avg_latency"
           },
           "color": {
             "field": "subgraph.name"
@@ -430,7 +412,7 @@
     "35": {
       "type": "data",
       "title": "Subgraph Performance Profile (One Week Fixed Time Scale)",
-      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  p95_latency = percentile(`http.client.request.duration`, 95)\n}, from: now()-7d, by: {`subgraph.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`subgraph.name`)\n| summarize requests = sum(arraySum(requests)), p95_latency = avg(arrayAvg(p95_latency)), by: {`subgraph.name`}",
+      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  avg_latency = avg(`http.client.request.duration`)\n}, from: now()-7d, by: {`subgraph.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`subgraph.name`)\n| summarize requests = sum(arraySum(requests)), avg_latency = avg(arrayAvg(avg_latency)), by: {`subgraph.name`}",
       "visualization": "scatterplot",
       "visualizationSettings": {
         "scatter": {
@@ -438,7 +420,7 @@
             "field": "requests"
           },
           "y": {
-            "field": "p95_latency"
+            "field": "avg_latency"
           },
           "color": {
             "field": "subgraph.name"
@@ -456,7 +438,7 @@
     "36": {
       "type": "data",
       "title": "Connector Source Performance Profile (Dashboard Time Scale)",
-      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  p95_latency = percentile(`http.client.request.duration`, 95)\n}, by: {`subgraph.name`, `connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`connector.source.name`)\n| summarize requests = sum(arraySum(requests)), p95_latency = avg(arrayAvg(p95_latency)), by: {`subgraph.name`, `connector.source.name`}",
+      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  avg_latency = avg(`http.client.request.duration`)\n}, by: {`subgraph.name`, `connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`connector.source.name`)\n| summarize requests = sum(arraySum(requests)), avg_latency = avg(arrayAvg(avg_latency)), by: {`subgraph.name`, `connector.source.name`}",
       "visualization": "scatterplot",
       "visualizationSettings": {
         "scatter": {
@@ -464,7 +446,7 @@
             "field": "requests"
           },
           "y": {
-            "field": "p95_latency"
+            "field": "avg_latency"
           },
           "color": {
             "field": "subgraph.name"
@@ -482,7 +464,7 @@
     "37": {
       "type": "data",
       "title": "Connector Source Performance Profile (One Week Fixed Time Scale)",
-      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  p95_latency = percentile(`http.client.request.duration`, 95)\n}, from: now()-7d, by: {`subgraph.name`, `connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`connector.source.name`)\n| summarize requests = sum(arraySum(requests)), p95_latency = avg(arrayAvg(p95_latency)), by: {`subgraph.name`, `connector.source.name`}",
+      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  avg_latency = avg(`http.client.request.duration`)\n}, from: now()-7d, by: {`subgraph.name`, `connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`connector.source.name`)\n| summarize requests = sum(arraySum(requests)), avg_latency = avg(arrayAvg(avg_latency)), by: {`subgraph.name`, `connector.source.name`}",
       "visualization": "scatterplot",
       "visualizationSettings": {
         "scatter": {
@@ -490,7 +472,7 @@
             "field": "requests"
           },
           "y": {
-            "field": "p95_latency"
+            "field": "avg_latency"
           },
           "color": {
             "field": "subgraph.name"
@@ -602,21 +584,12 @@
     "45": {
       "type": "data",
       "title": "Duration and Wait Time",
-      "query": "timeseries {\n  exec_avg = avg(`apollo.router.compute_jobs.execution.duration`, filter: `job.type` == \"query_planning\"),\n  exec_p95 = percentile(`apollo.router.compute_jobs.execution.duration`, 95, filter: `job.type` == \"query_planning\"),\n  exec_max = max(`apollo.router.compute_jobs.execution.duration`, filter: `job.type` == \"query_planning\"),\n  wait_avg = avg(`apollo.router.compute_jobs.queue.wait.duration`, filter: `job.type` == \"query_planning\"),\n  wait_max = max(`apollo.router.compute_jobs.queue.wait.duration`, filter: `job.type` == \"query_planning\")\n}, filter: in(`service.name`, array($service_name))",
+      "query": "timeseries {\n  exec_avg = avg(`apollo.router.compute_jobs.execution.duration`, filter: `job.type` == \"query_planning\"),\n  exec_max = max(`apollo.router.compute_jobs.execution.duration`, filter: `job.type` == \"query_planning\"),\n  wait_avg = avg(`apollo.router.compute_jobs.queue.wait.duration`, filter: `job.type` == \"query_planning\"),\n  wait_max = max(`apollo.router.compute_jobs.queue.wait.duration`, filter: `job.type` == \"query_planning\")\n}, filter: in(`service.name`, array($service_name))",
       "visualization": "lineChart",
       "visualizationSettings": {
         "unitsOverrides": [
           {
             "identifier": "exec_avg",
-            "unitCategory": "time",
-            "baseUnit": "second",
-            "displayUnit": null,
-            "decimals": null,
-            "suffix": "",
-            "delimiter": false
-          },
-          {
-            "identifier": "exec_p95",
             "unitCategory": "time",
             "baseUnit": "second",
             "displayUnit": null,
@@ -795,31 +768,13 @@
     },
     "61": {
       "type": "data",
-      "title": "Query Planning Duration Percentiles and Wait Time",
-      "query": "timeseries {\n  exec_p50 = percentile(`apollo.router.compute_jobs.execution.duration`, 50, filter: `job.type` == \"query_planning\"),\n  exec_p95 = percentile(`apollo.router.compute_jobs.execution.duration`, 95, filter: `job.type` == \"query_planning\"),\n  exec_p99 = percentile(`apollo.router.compute_jobs.execution.duration`, 99, filter: `job.type` == \"query_planning\"),\n  wait_avg = avg(`apollo.router.compute_jobs.queue.wait.duration`, filter: `job.type` == \"query_planning\")\n}, filter: in(`service.name`, array($service_name))",
+      "title": "Query Planning Duration (Avg) and Wait Time",
+      "query": "timeseries {\n  exec_avg = avg(`apollo.router.compute_jobs.execution.duration`, filter: `job.type` == \"query_planning\"),\n  wait_avg = avg(`apollo.router.compute_jobs.queue.wait.duration`, filter: `job.type` == \"query_planning\")\n}, filter: in(`service.name`, array($service_name))",
       "visualization": "lineChart",
       "visualizationSettings": {
         "unitsOverrides": [
           {
-            "identifier": "exec_p50",
-            "unitCategory": "time",
-            "baseUnit": "second",
-            "displayUnit": null,
-            "decimals": null,
-            "suffix": "",
-            "delimiter": false
-          },
-          {
-            "identifier": "exec_p95",
-            "unitCategory": "time",
-            "baseUnit": "second",
-            "displayUnit": null,
-            "decimals": null,
-            "suffix": "",
-            "delimiter": false
-          },
-          {
-            "identifier": "exec_p99",
+            "identifier": "exec_avg",
             "unitCategory": "time",
             "baseUnit": "second",
             "displayUnit": null,
@@ -848,31 +803,13 @@
     },
     "62": {
       "type": "data",
-      "title": "Query Parsing Duration Percentiles and Wait Time",
-      "query": "timeseries {\n  exec_p50 = percentile(`apollo.router.compute_jobs.execution.duration`, 50, filter: `job.type` == \"query_parsing\"),\n  exec_p95 = percentile(`apollo.router.compute_jobs.execution.duration`, 95, filter: `job.type` == \"query_parsing\"),\n  exec_p99 = percentile(`apollo.router.compute_jobs.execution.duration`, 99, filter: `job.type` == \"query_parsing\"),\n  wait_avg = avg(`apollo.router.compute_jobs.queue.wait.duration`, filter: `job.type` == \"query_parsing\")\n}, filter: in(`service.name`, array($service_name))",
+      "title": "Query Parsing Duration (Avg) and Wait Time",
+      "query": "timeseries {\n  exec_avg = avg(`apollo.router.compute_jobs.execution.duration`, filter: `job.type` == \"query_parsing\"),\n  wait_avg = avg(`apollo.router.compute_jobs.queue.wait.duration`, filter: `job.type` == \"query_parsing\")\n}, filter: in(`service.name`, array($service_name))",
       "visualization": "lineChart",
       "visualizationSettings": {
         "unitsOverrides": [
           {
-            "identifier": "exec_p50",
-            "unitCategory": "time",
-            "baseUnit": "second",
-            "displayUnit": null,
-            "decimals": null,
-            "suffix": "",
-            "delimiter": false
-          },
-          {
-            "identifier": "exec_p95",
-            "unitCategory": "time",
-            "baseUnit": "second",
-            "displayUnit": null,
-            "decimals": null,
-            "suffix": "",
-            "delimiter": false
-          },
-          {
-            "identifier": "exec_p99",
+            "identifier": "exec_avg",
             "unitCategory": "time",
             "baseUnit": "second",
             "displayUnit": null,
@@ -1301,13 +1238,13 @@
     },
     "96": {
       "type": "data",
-      "title": "Top Most Queried Subgraphs: Request Count & p95 Latency",
-      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  p95_latency = percentile(`http.client.request.duration`, 95)\n}, by: {`subgraph.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`subgraph.name`)\n| summarize requests = sum(arraySum(requests)), p95_latency = avg(arrayAvg(p95_latency)), by: {`subgraph.name`}\n| sort requests desc\n| limit 12",
+      "title": "Top Most Queried Subgraphs: Request Count & Avg Latency",
+      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  avg_latency = avg(`http.client.request.duration`)\n}, by: {`subgraph.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`subgraph.name`)\n| summarize requests = sum(arraySum(requests)), avg_latency = avg(arrayAvg(avg_latency)), by: {`subgraph.name`}\n| sort requests desc\n| limit 12",
       "visualization": "table",
       "visualizationSettings": {
         "unitsOverrides": [
           {
-            "identifier": "p95_latency",
+            "identifier": "avg_latency",
             "unitCategory": "time",
             "baseUnit": "second",
             "displayUnit": null,
@@ -1320,13 +1257,13 @@
     },
     "97": {
       "type": "data",
-      "title": "Top Most Queried Connector Sources: Request Count & p95 Latency",
-      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  p95_latency = percentile(`http.client.request.duration`, 95)\n}, by: {`connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`connector.source.name`)\n| summarize requests = sum(arraySum(requests)), p95_latency = avg(arrayAvg(p95_latency)), by: {`connector.source.name`}\n| sort requests desc\n| limit 12",
+      "title": "Top Most Queried Connector Sources: Request Count & Avg Latency",
+      "query": "timeseries {\n  requests = count(`http.client.request.duration`),\n  avg_latency = avg(`http.client.request.duration`)\n}, by: {`connector.source.name`, `service.name`}\n| filter in(`service.name`, array($service_name))\n| filter isNotNull(`connector.source.name`)\n| summarize requests = sum(arraySum(requests)), avg_latency = avg(arrayAvg(avg_latency)), by: {`connector.source.name`}\n| sort requests desc\n| limit 12",
       "visualization": "table",
       "visualizationSettings": {
         "unitsOverrides": [
           {
-            "identifier": "p95_latency",
+            "identifier": "avg_latency",
             "unitCategory": "time",
             "baseUnit": "second",
             "displayUnit": null,

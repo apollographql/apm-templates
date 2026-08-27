@@ -25,8 +25,8 @@
     },
     "2": {
       "type": "data",
-      "title": "p90 duration of call_tool (split by tool)",
-      "query": "timeseries percentile(`apollo.mcp.tool.duration`, 90), by: {`apollo.mcp.tool_name`}, filter: {in(`service.name`, array($service_name))}",
+      "title": "avg duration of call_tool (split by tool)",
+      "query": "timeseries avg(`apollo.mcp.tool.duration`), by: {`apollo.mcp.tool_name`}, filter: {in(`service.name`, array($service_name))}",
       "visualization": "lineChart"
     },
     "3": {
@@ -37,8 +37,8 @@
     },
     "4": {
       "type": "data",
-      "title": "p90 duration of graphql operations",
-      "query": "timeseries percentile(`apollo.mcp.operation.duration`, 90), by: {`apollo.mcp.operation_id`}, filter: {in(`service.name`, array($service_name))}",
+      "title": "avg duration of graphql operations",
+      "query": "timeseries avg(`apollo.mcp.operation.duration`), by: {`apollo.mcp.operation_id`}, filter: {in(`service.name`, array($service_name))}",
       "visualization": "lineChart"
     },
     "5": {
@@ -55,13 +55,13 @@
     },
     "7": {
       "type": "data",
-      "title": "p99 HTTP server duration",
-      "query": "timeseries percentile(`http.server.request.duration`, 99), filter: {in(`service.name`, array($service_name))}",
+      "title": "avg HTTP server duration",
+      "query": "timeseries avg(`http.server.request.duration`), filter: {in(`service.name`, array($service_name))}",
       "visualization": "lineChart",
       "visualizationSettings": {
         "unitsOverrides": [
           {
-            "identifier": "percentile(http.server.request.duration, 99)",
+            "identifier": "avg(http.server.request.duration)",
             "unitCategory": "time",
             "baseUnit": "second",
             "displayUnit": null,
