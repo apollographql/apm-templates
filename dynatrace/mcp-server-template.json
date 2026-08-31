@@ -1,0 +1,775 @@
+{
+  "dashboardMetadata": {
+    "name": "Apollo MCP Server Dashboard Template",
+    "owner": "apm-templates",
+    "shared": true,
+    "dynamicFilters": {
+      "filters": [
+        "SERVICE_TAG_KEY:service",
+        "CUSTOM_DIMENSION:env"
+      ],
+      "genericTagFilters": []
+    }
+  },
+  "tiles": [
+    {
+      "name": "Service overview",
+      "tileType": "MARKDOWN",
+      "configured": true,
+      "bounds": {
+        "top": 0,
+        "left": 0,
+        "width": 1824,
+        "height": 550
+      },
+      "tileFilter": {},
+      "markdown": "## $service #$env\n\nUse dashboard filters (service, env) to scope to your Apollo MCP Server. For a native service-centric view, assign a Dynatrace service entity to a SERVICE_VERSATILE tile or link to the service from here."
+    },
+    {
+      "name": "MCP Tool Call Count (split by tool name)",
+      "tileType": "DATA_EXPLORER",
+      "configured": true,
+      "bounds": {
+        "top": 550,
+        "left": 0,
+        "width": 912,
+        "height": 150
+      },
+      "tileFilter": {},
+      "customName": "MCP Tool Call Count (split by tool name)",
+      "queries": [
+        {
+          "id": "A",
+          "metric": "custom:apollo.mcp.tool.count",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "SUM",
+          "splitBy": [
+            "apollo.mcp.tool_name"
+          ],
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": [
+              {
+                "filterType": "DIMENSION",
+                "dimensionKey": "apollo.mcp.success",
+                "evaluator": "EQ",
+                "value": "true"
+              }
+            ]
+          },
+          "limit": 100,
+          "enabled": true
+        },
+        {
+          "id": "B",
+          "metric": "custom:apollo.mcp.tool.count",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "SUM",
+          "splitBy": [
+            "apollo.mcp.tool_name"
+          ],
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": [
+              {
+                "filterType": "DIMENSION",
+                "dimensionKey": "apollo.mcp.success",
+                "evaluator": "EQ",
+                "value": "false"
+              }
+            ]
+          },
+          "limit": 100,
+          "enabled": true
+        }
+      ],
+      "queriesSettings": {
+        "resolution": ""
+      },
+      "visualConfig": {
+        "type": "GRAPH_CHART",
+        "global": {
+          "hideLegend": false,
+          "seriesType": "COLUMN"
+        },
+        "rules": [
+          {
+            "matcher": "A:",
+            "valueFormat": "auto",
+            "properties": {
+              "color": "DEFAULT",
+              "seriesType": "COLUMN"
+            },
+            "seriesOverrides": []
+          }
+        ],
+        "axes": {
+          "xAxis": {
+            "displayName": "",
+            "visible": true
+          },
+          "yAxes": [
+            {
+              "displayName": "",
+              "visible": true,
+              "min": "AUTO",
+              "max": "AUTO",
+              "position": "LEFT",
+              "queryIds": [
+                "A"
+              ],
+              "defaultAxis": true
+            }
+          ]
+        },
+        "graphChartSettings": {
+          "connectNulls": true
+        }
+      },
+      "metricExpressions": []
+    },
+    {
+      "name": "p90 duration of call_tool (split by tool)",
+      "tileType": "DATA_EXPLORER",
+      "configured": true,
+      "bounds": {
+        "top": 550,
+        "left": 912,
+        "width": 912,
+        "height": 150
+      },
+      "tileFilter": {},
+      "customName": "p90 duration of call_tool (split by tool)",
+      "queries": [
+        {
+          "id": "A",
+          "metric": "custom:apollo.mcp.tool.duration",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "PERCENTILE_90",
+          "splitBy": [
+            "apollo.mcp.tool_name"
+          ],
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": []
+          },
+          "limit": 100,
+          "enabled": true
+        }
+      ],
+      "queriesSettings": {
+        "resolution": ""
+      },
+      "visualConfig": {
+        "type": "GRAPH_CHART",
+        "global": {
+          "hideLegend": false,
+          "seriesType": "LINE"
+        },
+        "rules": [
+          {
+            "matcher": "A:",
+            "valueFormat": "auto",
+            "properties": {
+              "color": "DEFAULT",
+              "seriesType": "LINE"
+            },
+            "seriesOverrides": []
+          }
+        ],
+        "axes": {
+          "xAxis": {
+            "displayName": "",
+            "visible": true
+          },
+          "yAxes": [
+            {
+              "displayName": "",
+              "visible": true,
+              "min": "AUTO",
+              "max": "AUTO",
+              "position": "LEFT",
+              "queryIds": [
+                "A"
+              ],
+              "defaultAxis": true
+            }
+          ]
+        },
+        "graphChartSettings": {
+          "connectNulls": true
+        }
+      },
+      "metricExpressions": []
+    },
+    {
+      "name": "GraphQL Operation Call Count (split by operation name)",
+      "tileType": "DATA_EXPLORER",
+      "configured": true,
+      "bounds": {
+        "top": 700,
+        "left": 0,
+        "width": 912,
+        "height": 150
+      },
+      "tileFilter": {},
+      "customName": "GraphQL Operation Call Count (split by operation name)",
+      "queries": [
+        {
+          "id": "A",
+          "metric": "custom:apollo.mcp.operation.count",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "SUM",
+          "splitBy": [
+            "apollo.mcp.operation_id"
+          ],
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": [
+              {
+                "filterType": "DIMENSION",
+                "dimensionKey": "apollo.mcp.success",
+                "evaluator": "EQ",
+                "value": "true"
+              }
+            ]
+          },
+          "limit": 100,
+          "enabled": true
+        },
+        {
+          "id": "B",
+          "metric": "custom:apollo.mcp.operation.count",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "SUM",
+          "splitBy": [
+            "apollo.mcp.operation_id"
+          ],
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": [
+              {
+                "filterType": "DIMENSION",
+                "dimensionKey": "apollo.mcp.success",
+                "evaluator": "EQ",
+                "value": "false"
+              }
+            ]
+          },
+          "limit": 100,
+          "enabled": true
+        }
+      ],
+      "queriesSettings": {
+        "resolution": ""
+      },
+      "visualConfig": {
+        "type": "GRAPH_CHART",
+        "global": {
+          "hideLegend": false,
+          "seriesType": "COLUMN"
+        },
+        "rules": [
+          {
+            "matcher": "A:",
+            "valueFormat": "auto",
+            "properties": {
+              "color": "DEFAULT",
+              "seriesType": "COLUMN"
+            },
+            "seriesOverrides": []
+          }
+        ],
+        "axes": {
+          "xAxis": {
+            "displayName": "",
+            "visible": true
+          },
+          "yAxes": [
+            {
+              "displayName": "",
+              "visible": true,
+              "min": "AUTO",
+              "max": "AUTO",
+              "position": "LEFT",
+              "queryIds": [
+                "A"
+              ],
+              "defaultAxis": true
+            }
+          ]
+        },
+        "graphChartSettings": {
+          "connectNulls": true
+        }
+      },
+      "metricExpressions": []
+    },
+    {
+      "name": "p90 duration of graphql operations",
+      "tileType": "DATA_EXPLORER",
+      "configured": true,
+      "bounds": {
+        "top": 700,
+        "left": 912,
+        "width": 912,
+        "height": 150
+      },
+      "tileFilter": {},
+      "customName": "p90 duration of graphql operations",
+      "queries": [
+        {
+          "id": "A",
+          "metric": "custom:apollo.mcp.operation.duration",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "AVG",
+          "splitBy": [
+            "apollo.mcp.operation_id"
+          ],
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": []
+          },
+          "limit": 100,
+          "enabled": true
+        }
+      ],
+      "queriesSettings": {
+        "resolution": ""
+      },
+      "visualConfig": {
+        "type": "GRAPH_CHART",
+        "global": {
+          "hideLegend": false,
+          "seriesType": "LINE"
+        },
+        "rules": [
+          {
+            "matcher": "A:",
+            "valueFormat": "auto",
+            "properties": {
+              "color": "DEFAULT",
+              "seriesType": "LINE"
+            },
+            "seriesOverrides": []
+          }
+        ],
+        "axes": {
+          "xAxis": {
+            "displayName": "",
+            "visible": true
+          },
+          "yAxes": [
+            {
+              "displayName": "",
+              "visible": true,
+              "min": "AUTO",
+              "max": "AUTO",
+              "position": "LEFT",
+              "queryIds": [
+                "A"
+              ],
+              "defaultAxis": true
+            }
+          ]
+        },
+        "graphChartSettings": {
+          "connectNulls": true
+        }
+      },
+      "metricExpressions": []
+    },
+    {
+      "name": "MCP Lifecycle Operations Count",
+      "tileType": "DATA_EXPLORER",
+      "configured": true,
+      "bounds": {
+        "top": 850,
+        "left": 0,
+        "width": 912,
+        "height": 150
+      },
+      "tileFilter": {},
+      "customName": "MCP Lifecycle Operations Count",
+      "queries": [
+        {
+          "id": "A",
+          "metric": "custom:apollo.mcp.initialize.count",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "SUM",
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": []
+          },
+          "limit": 100,
+          "enabled": true
+        },
+        {
+          "id": "B",
+          "metric": "custom:apollo.mcp.get_info.count",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "SUM",
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": []
+          },
+          "limit": 100,
+          "enabled": true
+        },
+        {
+          "id": "C",
+          "metric": "custom:apollo.mcp.list_tools.count",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "SUM",
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": []
+          },
+          "limit": 100,
+          "enabled": true
+        }
+      ],
+      "queriesSettings": {
+        "resolution": ""
+      },
+      "visualConfig": {
+        "type": "GRAPH_CHART",
+        "global": {
+          "hideLegend": false,
+          "seriesType": "COLUMN"
+        },
+        "rules": [
+          {
+            "matcher": "A:",
+            "valueFormat": "auto",
+            "properties": {
+              "alias": "initialize",
+              "color": "DEFAULT",
+              "seriesType": "COLUMN"
+            },
+            "seriesOverrides": []
+          },
+          {
+            "matcher": "B:",
+            "valueFormat": "auto",
+            "properties": {
+              "alias": "get_info",
+              "color": "DEFAULT",
+              "seriesType": "COLUMN"
+            },
+            "seriesOverrides": []
+          },
+          {
+            "matcher": "C:",
+            "valueFormat": "auto",
+            "properties": {
+              "alias": "list_tools",
+              "color": "DEFAULT",
+              "seriesType": "COLUMN"
+            },
+            "seriesOverrides": []
+          }
+        ],
+        "axes": {
+          "xAxis": {
+            "displayName": "",
+            "visible": true
+          },
+          "yAxes": [
+            {
+              "displayName": "",
+              "visible": true,
+              "min": "AUTO",
+              "max": "AUTO",
+              "position": "LEFT",
+              "queryIds": [
+                "A",
+                "B",
+                "C"
+              ],
+              "defaultAxis": true
+            }
+          ]
+        },
+        "graphChartSettings": {
+          "connectNulls": true
+        }
+      },
+      "metricExpressions": []
+    },
+    {
+      "name": "MCP Initialize count by client",
+      "tileType": "DATA_EXPLORER",
+      "configured": true,
+      "bounds": {
+        "top": 850,
+        "left": 912,
+        "width": 912,
+        "height": 150
+      },
+      "tileFilter": {},
+      "customName": "MCP Initialize count by client",
+      "queries": [
+        {
+          "id": "A",
+          "metric": "custom:apollo.mcp.initialize.count",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "SUM",
+          "splitBy": [
+            "apollo.mcp.client_name"
+          ],
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": []
+          },
+          "limit": 100,
+          "enabled": true
+        }
+      ],
+      "queriesSettings": {
+        "resolution": ""
+      },
+      "visualConfig": {
+        "type": "TABLE",
+        "rules": [
+          {
+            "matcher": "A:",
+            "valueFormat": "auto",
+            "properties": {},
+            "seriesOverrides": []
+          }
+        ],
+        "tableSettings": {
+          "isThresholdBackgroundAppliedToCell": false
+        }
+      },
+      "metricExpressions": []
+    },
+    {
+      "name": "p90 HTTP server duration",
+      "tileType": "DATA_EXPLORER",
+      "configured": true,
+      "bounds": {
+        "top": 1050,
+        "left": 0,
+        "width": 608,
+        "height": 100
+      },
+      "tileFilter": {},
+      "customName": "p99 HTTP server duration",
+      "queries": [
+        {
+          "id": "A",
+          "metric": "custom:http.server.request.duration",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "PERCENTILE_90",
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": []
+          },
+          "limit": 100,
+          "enabled": true
+        }
+      ],
+      "queriesSettings": {
+        "resolution": ""
+      },
+      "visualConfig": {
+        "type": "GRAPH_CHART",
+        "global": {
+          "hideLegend": false,
+          "seriesType": "LINE"
+        },
+        "rules": [
+          {
+            "matcher": "A:",
+            "valueFormat": "auto",
+            "properties": {
+              "color": "DEFAULT",
+              "seriesType": "LINE"
+            },
+            "seriesOverrides": []
+          }
+        ],
+        "axes": {
+          "xAxis": {
+            "displayName": "",
+            "visible": true
+          },
+          "yAxes": [
+            {
+              "displayName": "",
+              "visible": true,
+              "min": "AUTO",
+              "max": "AUTO",
+              "position": "LEFT",
+              "queryIds": [
+                "A"
+              ],
+              "defaultAxis": true
+            }
+          ]
+        },
+        "graphChartSettings": {
+          "connectNulls": true
+        }
+      },
+      "metricExpressions": []
+    },
+    {
+      "name": "avg HTTP request size",
+      "tileType": "DATA_EXPLORER",
+      "configured": true,
+      "bounds": {
+        "top": 1050,
+        "left": 608,
+        "width": 608,
+        "height": 100
+      },
+      "tileFilter": {},
+      "customName": "avg HTTP request size",
+      "queries": [
+        {
+          "id": "A",
+          "metric": "custom:http.server.request.body.size",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "AVG",
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": []
+          },
+          "limit": 100,
+          "enabled": true
+        }
+      ],
+      "queriesSettings": {
+        "resolution": ""
+      },
+      "visualConfig": {
+        "type": "GRAPH_CHART",
+        "global": {
+          "hideLegend": false,
+          "seriesType": "LINE"
+        },
+        "rules": [
+          {
+            "matcher": "A:",
+            "valueFormat": "auto",
+            "properties": {
+              "color": "DEFAULT",
+              "seriesType": "LINE"
+            },
+            "seriesOverrides": []
+          }
+        ],
+        "axes": {
+          "xAxis": {
+            "displayName": "",
+            "visible": true
+          },
+          "yAxes": [
+            {
+              "displayName": "",
+              "visible": true,
+              "min": "AUTO",
+              "max": "AUTO",
+              "position": "LEFT",
+              "queryIds": [
+                "A"
+              ],
+              "defaultAxis": true
+            }
+          ]
+        },
+        "graphChartSettings": {
+          "connectNulls": true
+        }
+      },
+      "metricExpressions": []
+    },
+    {
+      "name": "avg HTTP response size",
+      "tileType": "DATA_EXPLORER",
+      "configured": true,
+      "bounds": {
+        "top": 1050,
+        "left": 1216,
+        "width": 608,
+        "height": 100
+      },
+      "tileFilter": {},
+      "customName": "avg HTTP response size",
+      "queries": [
+        {
+          "id": "A",
+          "metric": "custom:http.server.response.body.size",
+          "timeAggregation": "DEFAULT",
+          "spaceAggregation": "AVG",
+          "filterBy": {
+            "filterOperator": "AND",
+            "nestedFilters": [],
+            "criteria": []
+          },
+          "limit": 100,
+          "enabled": true
+        }
+      ],
+      "queriesSettings": {
+        "resolution": ""
+      },
+      "visualConfig": {
+        "type": "GRAPH_CHART",
+        "global": {
+          "hideLegend": false,
+          "seriesType": "LINE"
+        },
+        "rules": [
+          {
+            "matcher": "A:",
+            "valueFormat": "auto",
+            "properties": {
+              "color": "DEFAULT",
+              "seriesType": "LINE"
+            },
+            "seriesOverrides": []
+          }
+        ],
+        "axes": {
+          "xAxis": {
+            "displayName": "",
+            "visible": true
+          },
+          "yAxes": [
+            {
+              "displayName": "",
+              "visible": true,
+              "min": "AUTO",
+              "max": "AUTO",
+              "position": "LEFT",
+              "queryIds": [
+                "A"
+              ],
+              "defaultAxis": true
+            }
+          ]
+        },
+        "graphChartSettings": {
+          "connectNulls": true
+        }
+      },
+      "metricExpressions": []
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "version": 13,
+  "variables": [
+    {
+      "key": "service_name",
+      "type": "csv",
+      "defaultValue": "apollo-mcp-server",
+      "input": "apollo-mcp-server",
+      "version": 2,
+      "visible": true,
+      "editable": true,
+      "multiple": true
+    }
+  ],
+  "tiles": {
+    "0": {
+      "type": "markdown",
+      "content": "## $service_name\n\nUse the `service_name` dashboard filter to scope to your Apollo MCP Server. For a native service-centric view, assign a Dynatrace service entity to a SERVICE_VERSATILE tile or link to the service from here."
+    },
+    "1": {
+      "type": "data",
+      "title": "MCP Tool Call Count (split by tool name)",
+      "query": "timeseries {\n  calls = sum(`apollo.mcp.tool.count`, filter: `apollo.mcp.success` == \"true\"),\n  failures = sum(`apollo.mcp.tool.count`, filter: `apollo.mcp.success` == \"false\")\n}, by: {`apollo.mcp.tool_name`}, filter: {in(`service.name`, array($service_name))}",
+      "visualization": "barChart"
+    },
+    "2": {
+      "type": "data",
+      "title": "avg duration of call_tool (split by tool)",
+      "query": "timeseries avg(`apollo.mcp.tool.duration`), by: {`apollo.mcp.tool_name`}, filter: {in(`service.name`, array($service_name))}",
+      "visualization": "lineChart"
+    },
+    "3": {
+      "type": "data",
+      "title": "GraphQL Operation Call Count (split by operation name)",
+      "query": "timeseries {\n  calls = sum(`apollo.mcp.operation.count`, filter: `apollo.mcp.success` == \"true\"),\n  failures = sum(`apollo.mcp.operation.count`, filter: `apollo.mcp.success` == \"false\")\n}, by: {`apollo.mcp.operation_id`}, filter: {in(`service.name`, array($service_name))}",
+      "visualization": "barChart"
+    },
+    "4": {
+      "type": "data",
+      "title": "avg duration of graphql operations",
+      "query": "timeseries avg(`apollo.mcp.operation.duration`), by: {`apollo.mcp.operation_id`}, filter: {in(`service.name`, array($service_name))}",
+      "visualization": "lineChart"
+    },
+    "5": {
+      "type": "data",
+      "title": "MCP Lifecycle Operations Count",
+      "query": "timeseries {\n  initialize = sum(`apollo.mcp.initialize.count`),\n  get_info = sum(`apollo.mcp.get_info.count`),\n  list_tools = sum(`apollo.mcp.list_tools.count`)\n}, filter: {in(`service.name`, array($service_name))}",
+      "visualization": "barChart"
+    },
+    "6": {
+      "type": "data",
+      "title": "MCP Initialize count by client",
+      "query": "timeseries sum(`apollo.mcp.initialize.count`), by: {`apollo.mcp.client_name`}, filter: {in(`service.name`, array($service_name))}",
+      "visualization": "table"
+    },
+    "7": {
+      "type": "data",
+      "title": "avg HTTP server duration",
+      "query": "timeseries avg(`http.server.request.duration`), filter: {in(`service.name`, array($service_name))}",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "avg(http.server.request.duration)",
+            "unitCategory": "time",
+            "baseUnit": "second",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      }
+    },
+    "8": {
+      "type": "data",
+      "title": "avg HTTP request size",
+      "query": "timeseries avg(`http.server.request.body.size`), filter: {in(`service.name`, array($service_name))}",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "avg(http.server.request.body.size)",
+            "unitCategory": "data",
+            "baseUnit": "byte",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      }
+    },
+    "9": {
+      "type": "data",
+      "title": "avg HTTP response size",
+      "query": "timeseries avg(`http.server.response.body.size`), filter: {in(`service.name`, array($service_name))}",
+      "visualization": "lineChart",
+      "visualizationSettings": {
+        "unitsOverrides": [
+          {
+            "identifier": "avg(http.server.response.body.size)",
+            "unitCategory": "data",
+            "baseUnit": "byte",
+            "displayUnit": null,
+            "decimals": null,
+            "suffix": "",
+            "delimiter": false
+          }
+        ]
+      }
+    }
+  },
+  "layouts": {
+    "0": {
+      "x": 0,
+      "y": 0,
+      "w": 24,
+      "h": 11
+    },
+    "1": {
+      "x": 0,
+      "y": 11,
+      "w": 12,
+      "h": 3
+    },
+    "2": {
+      "x": 12,
+      "y": 11,
+      "w": 12,
+      "h": 3
+    },
+    "3": {
+      "x": 0,
+      "y": 14,
+      "w": 12,
+      "h": 3
+    },
+    "4": {
+      "x": 12,
+      "y": 14,
+      "w": 12,
+      "h": 3
+    },
+    "5": {
+      "x": 0,
+      "y": 17,
+      "w": 12,
+      "h": 3
+    },
+    "6": {
+      "x": 12,
+      "y": 17,
+      "w": 12,
+      "h": 3
+    },
+    "7": {
+      "x": 0,
+      "y": 21,
+      "w": 8,
+      "h": 2
+    },
+    "8": {
+      "x": 8,
+      "y": 21,
+      "w": 8,
+      "h": 2
+    },
+    "9": {
+      "x": 16,
+      "y": 21,
+      "w": 8,
+      "h": 2
+    }
+  }
+}
