@@ -27,6 +27,405 @@
       }
     },
     {
+      "definition": {
+        "type": "note",
+        "content": "**APM hits count most MCP requests twice.** Datadog names both the HTTP span and the MCP handler span `http.server.request`, so a request that reaches a handler, such as `tools/call`, has two hits. With the server's default `parent_based_sampler: true`, hits also leave out every request whose caller sends trace flags `00`. Count requests with the metric widgets below, and set `telemetry.exporters.tracing.parent_based_sampler: false` to trace every request.",
+        "background_color": "yellow",
+        "font_size": "14",
+        "text_align": "left",
+        "vertical_align": "top",
+        "show_tick": false,
+        "tick_pos": "50%",
+        "tick_edge": "left",
+        "has_padding": true
+      },
+      "layout": {
+        "x": 0,
+        "y": 11,
+        "width": 12,
+        "height": 2
+      }
+    },
+    {
+      "definition": {
+        "layout_type": "ordered",
+        "show_title": true,
+        "title": "MCP Requests",
+        "type": "group",
+        "widgets": [
+          {
+            "definition": {
+              "type": "note",
+              "content": "Built on `mcp.server.operation.duration` from the OpenTelemetry MCP semantic conventions (Apollo MCP Server v2.2.0 and later). The conventions are experimental, so these names can change in a minor release. The latency widgets leave out `subscriptions/listen`, which measures how long a client listened rather than request latency.",
+              "background_color": "gray",
+              "font_size": "14",
+              "text_align": "left",
+              "vertical_align": "top",
+              "show_tick": false,
+              "tick_pos": "50%",
+              "tick_edge": "left",
+              "has_padding": true
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 2
+            }
+          },
+          {
+            "definition": {
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "display_type": "bars",
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "count:mcp.server.operation.duration{$service, $env} by {mcp.method.name}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "line_type": "solid",
+                    "line_width": "normal",
+                    "order_by": "values",
+                    "palette": "dog_classic"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "title": "Requests by MCP method",
+              "title_align": "left",
+              "title_size": "16",
+              "type": "timeseries"
+            },
+            "layout": {
+              "x": 0,
+              "y": 2,
+              "width": 6,
+              "height": 3
+            }
+          },
+          {
+            "definition": {
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "display_type": "bars",
+                  "formulas": [
+                    {
+                      "formula": "query1",
+                      "style": {
+                        "palette": "warm"
+                      }
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "count:mcp.server.operation.duration{$service, $env, error.type:*} by {mcp.method.name,error.type}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "line_type": "solid",
+                    "line_width": "normal",
+                    "order_by": "values",
+                    "palette": "dog_classic"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "title": "Errors by MCP method and error type",
+              "title_align": "left",
+              "title_size": "16",
+              "type": "timeseries"
+            },
+            "layout": {
+              "x": 6,
+              "y": 2,
+              "width": 6,
+              "height": 3
+            }
+          },
+          {
+            "definition": {
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "display_type": "line",
+                  "formulas": [
+                    {
+                      "formula": "100 * errors / total",
+                      "number_format": {
+                        "unit": {
+                          "type": "canonical_unit",
+                          "unit_name": "percent"
+                        }
+                      }
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "errors",
+                      "query": "count:mcp.server.operation.duration{$service, $env, error.type:*} by {mcp.method.name}.as_count()"
+                    },
+                    {
+                      "data_source": "metrics",
+                      "name": "total",
+                      "query": "count:mcp.server.operation.duration{$service, $env} by {mcp.method.name}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "line_type": "solid",
+                    "line_width": "normal",
+                    "order_by": "values",
+                    "palette": "dog_classic"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "title": "Error rate by MCP method",
+              "title_align": "left",
+              "title_size": "16",
+              "type": "timeseries"
+            },
+            "layout": {
+              "x": 0,
+              "y": 5,
+              "width": 6,
+              "height": 3
+            }
+          },
+          {
+            "definition": {
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "display_type": "line",
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "p95:mcp.server.operation.duration{$service, $env, !mcp.method.name:subscriptions/listen} by {mcp.method.name}"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "line_type": "solid",
+                    "line_width": "normal",
+                    "order_by": "values",
+                    "palette": "dog_classic"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "title": "p95 latency by MCP method",
+              "title_align": "left",
+              "title_size": "16",
+              "type": "timeseries"
+            },
+            "layout": {
+              "x": 6,
+              "y": 5,
+              "width": 6,
+              "height": 3
+            }
+          },
+          {
+            "definition": {
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "display_type": "line",
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "p50:mcp.server.operation.duration{$service, $env, mcp.method.name:tools/call} by {gen_ai.tool.name}"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "line_type": "solid",
+                    "line_width": "normal",
+                    "order_by": "values",
+                    "palette": "dog_classic"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "title": "p50 tool call latency by tool",
+              "title_align": "left",
+              "title_size": "16",
+              "type": "timeseries"
+            },
+            "layout": {
+              "x": 0,
+              "y": 8,
+              "width": 6,
+              "height": 3
+            }
+          },
+          {
+            "definition": {
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "display_type": "line",
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "p95:mcp.server.operation.duration{$service, $env, mcp.method.name:tools/call} by {gen_ai.tool.name}"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "line_type": "solid",
+                    "line_width": "normal",
+                    "order_by": "values",
+                    "palette": "dog_classic"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "title": "p95 tool call latency by tool",
+              "title_align": "left",
+              "title_size": "16",
+              "type": "timeseries"
+            },
+            "layout": {
+              "x": 6,
+              "y": 8,
+              "width": 6,
+              "height": 3
+            }
+          },
+          {
+            "definition": {
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "display_type": "bars",
+                  "formulas": [
+                    {
+                      "formula": "query1"
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "count:mcp.server.operation.duration{$service, $env} by {mcp.protocol.version}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "line_type": "solid",
+                    "line_width": "normal",
+                    "order_by": "values",
+                    "palette": "dog_classic"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "title": "Requests by MCP protocol version",
+              "title_align": "left",
+              "title_size": "16",
+              "type": "timeseries"
+            },
+            "layout": {
+              "x": 0,
+              "y": 11,
+              "width": 12,
+              "height": 3
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 13,
+        "width": 12,
+        "height": 15
+      }
+    },
+    {
       "id": 4517945996963640,
       "definition": {
         "title": "Tools and Operations",
@@ -108,54 +507,6 @@
             }
           },
           {
-            "id": 5678534275850432,
-            "definition": {
-              "title": "p90 duration of call_tool (split by tool)",
-              "title_size": "16",
-              "title_align": "left",
-              "show_legend": true,
-              "legend_layout": "auto",
-              "legend_columns": [
-                "avg",
-                "min",
-                "max",
-                "value",
-                "sum"
-              ],
-              "type": "timeseries",
-              "requests": [
-                {
-                  "response_format": "timeseries",
-                  "queries": [
-                    {
-                      "data_source": "metrics",
-                      "name": "query1",
-                      "query": "p90:apollo.mcp.tool.duration{$service, $env} by {apollo.mcp.tool_name}"
-                    }
-                  ],
-                  "formulas": [
-                    {
-                      "formula": "default_zero(query1)"
-                    }
-                  ],
-                  "style": {
-                    "palette": "dog_classic",
-                    "order_by": "values",
-                    "line_type": "solid",
-                    "line_width": "normal"
-                  },
-                  "display_type": "line"
-                }
-              ]
-            },
-            "layout": {
-              "x": 6,
-              "y": 0,
-              "width": 6,
-              "height": 3
-            }
-          },
-          {
             "id": 6996903466842182,
             "definition": {
               "title": "GraphQL Operation Call Count (split by operation name)",
@@ -222,16 +573,16 @@
               ]
             },
             "layout": {
-              "x": 0,
-              "y": 3,
+              "x": 6,
+              "y": 0,
               "width": 6,
               "height": 3
             }
           },
           {
-            "id": 2703805236998665,
+            "id": 5678534275850432,
             "definition": {
-              "title": "p90 duration of graphql operations",
+              "title": "p95 tool call duration (split by tool)",
               "title_size": "16",
               "title_align": "left",
               "show_legend": true,
@@ -251,7 +602,55 @@
                     {
                       "data_source": "metrics",
                       "name": "query1",
-                      "query": "avg:apollo.mcp.operation.duration{$service, $env} by {apollo.mcp.operation_id}"
+                      "query": "p95:apollo.mcp.tool.duration{$service, $env} by {apollo.mcp.tool_name}"
+                    }
+                  ],
+                  "formulas": [
+                    {
+                      "formula": "default_zero(query1)"
+                    }
+                  ],
+                  "style": {
+                    "palette": "dog_classic",
+                    "order_by": "values",
+                    "line_type": "solid",
+                    "line_width": "normal"
+                  },
+                  "display_type": "line"
+                }
+              ]
+            },
+            "layout": {
+              "x": 0,
+              "y": 3,
+              "width": 6,
+              "height": 3
+            }
+          },
+          {
+            "id": 2703805236998665,
+            "definition": {
+              "title": "p95 downstream GraphQL operation duration (split by operation)",
+              "title_size": "16",
+              "title_align": "left",
+              "show_legend": true,
+              "legend_layout": "auto",
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "type": "timeseries",
+              "requests": [
+                {
+                  "response_format": "timeseries",
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "p95:apollo.mcp.operation.duration{$service, $env} by {apollo.mcp.operation_id}"
                     }
                   ],
                   "formulas": [
@@ -346,7 +745,7 @@
           {
             "id": 1230179664684202,
             "definition": {
-              "title": "MCP Initialize count by client",
+              "title": "Top 10 clients by initialize count",
               "title_size": "16",
               "title_align": "left",
               "type": "query_table",
@@ -362,7 +761,7 @@
                   ],
                   "response_format": "scalar",
                   "sort": {
-                    "count": 500,
+                    "count": 10,
                     "order_by": [
                       {
                         "type": "formula",
@@ -393,9 +792,152 @@
       },
       "layout": {
         "x": 0,
-        "y": 11,
+        "y": 28,
         "width": 12,
         "height": 10
+      }
+    },
+    {
+      "definition": {
+        "layout_type": "ordered",
+        "show_title": true,
+        "title": "Authentication",
+        "type": "group",
+        "widgets": [
+          {
+            "definition": {
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "display_type": "bars",
+                  "formulas": [
+                    {
+                      "formula": "rejected",
+                      "alias": "Rejected",
+                      "style": {
+                        "palette": "warm"
+                      }
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "rejected",
+                      "query": "sum:apollo.mcp.auth.rate_limit.count{$service, $env}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "line_type": "solid",
+                    "line_width": "normal",
+                    "order_by": "values",
+                    "palette": "dog_classic"
+                  }
+                },
+                {
+                  "display_type": "bars",
+                  "formulas": [
+                    {
+                      "formula": "overflow",
+                      "alias": "Allowed untracked (key table full)",
+                      "style": {
+                        "palette": "purple"
+                      }
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "overflow",
+                      "query": "sum:apollo.mcp.auth.rate_limit.overflow.count{$service, $env}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "line_type": "solid",
+                    "line_width": "normal",
+                    "order_by": "values",
+                    "palette": "dog_classic"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "title": "Authentication rate limiter",
+              "title_align": "left",
+              "title_size": "16",
+              "type": "timeseries"
+            },
+            "layout": {
+              "x": 0,
+              "y": 0,
+              "width": 6,
+              "height": 3
+            }
+          },
+          {
+            "definition": {
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "display_type": "bars",
+                  "formulas": [
+                    {
+                      "formula": "query1",
+                      "style": {
+                        "palette": "warm"
+                      }
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "count:http.server.request.duration{$service, $env, http.response.status_code IN (401,429)} by {http.response.status_code}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "line_type": "solid",
+                    "line_width": "normal",
+                    "order_by": "values",
+                    "palette": "dog_classic"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "title": "401 and 429 responses",
+              "title_align": "left",
+              "title_size": "16",
+              "type": "timeseries"
+            },
+            "layout": {
+              "x": 6,
+              "y": 0,
+              "width": 6,
+              "height": 3
+            }
+          }
+        ]
+      },
+      "layout": {
+        "x": 0,
+        "y": 38,
+        "width": 12,
+        "height": 4
       }
     },
     {
@@ -549,14 +1091,64 @@
               "width": 4,
               "height": 2
             }
+          },
+          {
+            "definition": {
+              "legend_columns": [
+                "avg",
+                "min",
+                "max",
+                "value",
+                "sum"
+              ],
+              "legend_layout": "auto",
+              "requests": [
+                {
+                  "display_type": "bars",
+                  "formulas": [
+                    {
+                      "formula": "query1",
+                      "style": {
+                        "palette": "warm"
+                      }
+                    }
+                  ],
+                  "queries": [
+                    {
+                      "data_source": "metrics",
+                      "name": "query1",
+                      "query": "count:http.server.request.duration{$service, $env, !http.response.status_code:2*} by {http.response.status_code}.as_count()"
+                    }
+                  ],
+                  "response_format": "timeseries",
+                  "style": {
+                    "line_type": "solid",
+                    "line_width": "normal",
+                    "order_by": "values",
+                    "palette": "dog_classic"
+                  }
+                }
+              ],
+              "show_legend": true,
+              "title": "HTTP non-2XX responses",
+              "title_align": "left",
+              "title_size": "16",
+              "type": "timeseries"
+            },
+            "layout": {
+              "x": 0,
+              "y": 2,
+              "width": 12,
+              "height": 3
+            }
           }
         ]
       },
       "layout": {
         "x": 0,
-        "y": 21,
+        "y": 42,
         "width": 12,
-        "height": 3
+        "height": 6
       }
     }
   ],
